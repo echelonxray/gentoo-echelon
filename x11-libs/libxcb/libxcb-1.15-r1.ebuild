@@ -16,7 +16,7 @@ DESCRIPTION="X C-language Bindings library"
 HOMEPAGE="https://xcb.freedesktop.org/ https://gitlab.freedesktop.org/xorg/lib/libxcb"
 
 KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
-IUSE="doc selinux test +xkb"
+IUSE="doc selinux test static-libs +xkb"
 RESTRICT="!test? ( test )"
 SLOT="0/1.12"
 

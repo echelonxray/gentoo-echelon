@@ -385,12 +385,12 @@ xorg-3_src_configure() {
 	# Check if package supports disabling of static libraries
 	if grep -q -s "able-static" ${ECONF_SOURCE:-.}/configure; then
 		local no_static="--disable-static"
+		local yes_static="--enable-static"
 	fi
 
 	local econfargs=(
 		${dep_track}
 		${selective_werror}
-		${no_static}
 		"${FONT_OPTIONS[@]}"
 		"${xorgconfadd[@]}"
 	)
@@ -399,7 +399,12 @@ xorg-3_src_configure() {
 	if in_iuse static-libs; then
 		econfargs+=(
 			--enable-shared
+			"${yes_static}"
 			$(use_enable static-libs static)
+		)
+	else
+		econfargs+=(
+			"${no_static}"
 		)
 	fi
 
