@@ -20,7 +20,7 @@ if [[ ${PV} == *9999 ]]; then
 else
 	SRC_URI="https://nodejs.org/dist/v${PV}/node-v${PV}.tar.xz"
 	SLOT="0/$(ver_cut 1)"
-	KEYWORDS="amd64 arm ~arm64 ~loong ~ppc64 ~riscv ~x86 ~amd64-linux ~x64-macos"
+	KEYWORDS="amd64 arm arm64 ~loong ~ppc64 ~riscv x86 ~amd64-linux ~x64-macos"
 	S="${WORKDIR}/node-v${PV}"
 fi
 
@@ -111,7 +111,7 @@ src_configure() {
 	xdg_environment_reset
 
 	# LTO compiler flags are handled by configure.py itself
-	filter-flags '-flto*'
+	filter-lto
 	# nodejs unconditionally links to libatomic #869992
 	# specifically it requires __atomic_is_lock_free which
 	# is not yet implemented by sys-libs/compiler-rt (see

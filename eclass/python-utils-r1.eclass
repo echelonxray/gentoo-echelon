@@ -114,11 +114,18 @@ _python_verify_patterns() {
 _python_set_impls() {
 	local i
 
-	if ! declare -p PYTHON_COMPAT &>/dev/null; then
-		die 'PYTHON_COMPAT not declared.'
+	# TODO: drop BASH_VERSINFO check when we require EAPI 8
+	if [[ ${BASH_VERSINFO[0]} -ge 5 ]]; then
+		[[ ${PYTHON_COMPAT@a} == *a* ]]
+	else
+		[[ $(declare -p PYTHON_COMPAT) == "declare -a"* ]]
 	fi
-	if [[ $(declare -p PYTHON_COMPAT) != "declare -a"* ]]; then
-		die 'PYTHON_COMPAT must be an array.'
+	if [[ ${?} -ne 0 ]]; then
+		if ! declare -p PYTHON_COMPAT &>/dev/null; then
+			die 'PYTHON_COMPAT not declared.'
+		else
+			die 'PYTHON_COMPAT must be an array.'
+		fi
 	fi
 
 	local obsolete=()
@@ -231,12 +238,12 @@ _python_impl_matches() {
 				fi
 				return 0
 				;;
-			3.9)
-				# the only unmasked pypy3 version is pypy3.9 atm
+			3.9|3.10)
+				# <pypy3-7.3.12 is 3.9, >=7.3.12 is 3.10
 				[[ ${impl} == python${pattern/./_} || ${impl} == pypy3 ]] &&
 					return 0
 				;;
-			3.8|3.1[0-2])
+			3.8|3.1[1-2])
 				[[ ${impl} == python${pattern/./_} ]] && return 0
 				;;
 			*)
@@ -441,13 +448,13 @@ _python_export() {
 				local d
 				case ${impl} in
 					python3.10)
-						PYTHON_PKG_DEP=">=dev-lang/python-3.10.9-r1:3.10";;
+						PYTHON_PKG_DEP=">=dev-lang/python-3.10.12:3.10";;
 					python3.11)
-						PYTHON_PKG_DEP=">=dev-lang/python-3.11.1-r1:3.11";;
+						PYTHON_PKG_DEP=">=dev-lang/python-3.11.4:3.11";;
 					python3.12)
-						PYTHON_PKG_DEP=">=dev-lang/python-3.12.0_beta1:3.12";;
+						PYTHON_PKG_DEP=">=dev-lang/python-3.12.0_beta3:3.12";;
 					pypy3)
-						PYTHON_PKG_DEP='>=dev-python/pypy3-7.3.11-r1:0=';;
+						PYTHON_PKG_DEP='>=dev-python/pypy3-7.3.11_p1:0=';;
 					*)
 						die "Invalid implementation: ${impl}"
 				esac

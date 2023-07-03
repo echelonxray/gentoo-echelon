@@ -42,8 +42,8 @@ IUSE="alsa cpu_flags_x86_sse4_1 dbus jack pulseaudio sndio test vulkan wayland"
 REQUIRED_USE="cpu_flags_x86_sse4_1" # dies at runtime if no support
 RESTRICT="!test? ( test )"
 
-# dlopen: ffmpeg, qtsvg, vulkan-loader, wayland
-RDEPEND="
+# dlopen: qtsvg, vulkan-loader, wayland
+COMMON_DEPEND="
 	app-arch/xz-utils
 	app-arch/zstd:=
 	dev-cpp/rapidyaml:=
@@ -55,7 +55,6 @@ RDEPEND="
 	media-libs/libglvnd
 	media-libs/libpng:=
 	>=media-libs/libsdl2-2.0.22[haptic,joystick]
-	media-libs/libsoundtouch:=
 	media-video/ffmpeg:=
 	net-libs/libpcap
 	net-misc/curl
@@ -69,8 +68,13 @@ RDEPEND="
 	sndio? ( media-sound/sndio:= )
 	vulkan? ( media-libs/vulkan-loader )
 	wayland? ( dev-libs/wayland )"
+# patches is a optfeature but always pull given PCSX2 complaints if it
+# is missing and it is fairly small (installs a ~1.5MB patches.zip)
+RDEPEND="
+	${COMMON_DEPEND}
+	games-emulation/pcsx2_patches"
 DEPEND="
-	${RDEPEND}
+	${COMMON_DEPEND}
 	x11-base/xorg-proto
 	test? ( dev-cpp/gtest )"
 BDEPEND="dev-qt/qttools:6[linguist]"
@@ -80,9 +84,12 @@ FILECAPS=(
 )
 
 PATCHES=(
-	"${FILESDIR}"/${PN}-1.7.3351-unbundle.patch
 	"${FILESDIR}"/${PN}-1.7.3468-cubeb-automagic.patch
 	"${FILESDIR}"/${PN}-1.7.3773-lto.patch
+	"${FILESDIR}"/${PN}-1.7.4667-flags.patch
+	"${FILESDIR}"/${PN}-1.7.4667-system-chdr.patch
+	"${FILESDIR}"/${PN}-1.7.4667-system-gtest.patch
+	"${FILESDIR}"/${PN}-1.7.4667-system-zstd.patch
 )
 
 src_unpack() {
@@ -169,6 +176,7 @@ src_configure() {
 		-DDBUS_API=$(usex dbus)
 		-DDISABLE_BUILD_DATE=yes
 		-DENABLE_TESTS=$(usex test)
+		-DUSE_LINKED_FFMPEG=yes
 		-DUSE_VTUNE=no
 		-DUSE_VULKAN=$(usex vulkan)
 		-DWAYLAND_API=$(usex wayland)
@@ -184,6 +192,9 @@ src_configure() {
 		# (see PCSX2Base.h) and it dies if no support at runtime (AppInit.cpp)
 		# https://github.com/PCSX2/pcsx2/pull/4329
 		-DARCH_FLAG=-msse4.1
+
+		# not packaged due to bug #885471, but still disable for no automagic
+		-DCMAKE_DISABLE_FIND_PACKAGE_Libbacktrace=yes
 
 		# bundled cubeb flags, see media-libs/cubeb and cubeb-automagic.patch
 		-DCHECK_ALSA=$(usex alsa)

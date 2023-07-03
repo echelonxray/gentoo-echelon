@@ -13,7 +13,7 @@ HOMEPAGE="https://www.ubnt.com"
 SRC_URI="https://dl.ui.com/unifi/${PV}${RC_SUFFIX}/UniFi.unix.zip -> ${P}.zip"
 S="${WORKDIR}/UniFi"
 
-KEYWORDS="-* ~amd64 ~arm64"
+KEYWORDS="-* amd64 ~arm64"
 LICENSE="Apache-1.0 Apache-2.0 BSD-1 BSD-2 BSD CDDL EPL-1.0 GPL-2 LGPL-2.1 LGPL-3 MIT ubiquiti"
 SLOT="0/$(ver_cut 1-2)"
 IUSE="systemd system-mongodb"
@@ -33,9 +33,6 @@ DOCS=( "readme.txt" )
 QA_PREBUILT="usr/lib/unifi/lib/native/Linux/x86_64/*.so"
 
 src_prepare() {
-	# Remove unneeded files Mac and Windows
-	rm -r lib/native/{Mac,Windows} || die
-
 	if [[ ${CHOST} != aarch64* ]]; then
 		rm -r lib/native/Linux/aarch64 || die "Failed in removing aarch64 native libraries"
 	fi

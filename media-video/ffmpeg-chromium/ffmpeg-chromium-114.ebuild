@@ -16,7 +16,7 @@ LICENSE="
 	gpl? ( GPL-2 )
 "
 
-KEYWORDS="~amd64 ~arm ~arm64"
+KEYWORDS="amd64 ~arm ~arm64"
 
 # Options to use as use_enable in the foo[:bar] form.
 # This will feed configure with $(use_enable foo bar)
@@ -180,9 +180,6 @@ src_configure() {
 	if tc-is-cross-compiler ; then
 		myconf+=( --enable-cross-compile --arch=$(tc-arch-kernel) --cross-prefix=${CHOST}- --host-cc="$(tc-getBUILD_CC)" )
 		case ${CHOST} in
-			*freebsd*)
-				myconf+=( --target-os=freebsd )
-				;;
 			*mingw32*)
 				myconf+=( --target-os=mingw32 )
 				;;

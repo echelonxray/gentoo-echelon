@@ -4,7 +4,7 @@
 EAPI=8
 
 VERIFY_SIG_OPENPGP_KEY_PATH="${BROOT}"/usr/share/openpgp-keys/danielstenberg.asc
-inherit autotools multilib-minimal prefix verify-sig
+inherit autotools multilib-minimal multiprocessing prefix toolchain-funcs verify-sig
 
 DESCRIPTION="A Client that groks URLs"
 HOMEPAGE="https://curl.se/"
@@ -137,46 +137,47 @@ multilib_src_configure() {
 	local myconf=()
 
 	myconf+=( --without-ca-fallback --with-ca-bundle="${EPREFIX}"/etc/ssl/certs/ca-certificates.crt  )
-	if use ssl ; then
+	if use ssl; then
 		myconf+=( --without-gnutls --without-mbedtls --without-nss --without-rustls )
 
 		if use gnutls; then
-			einfo "SSL provided by gnutls"
+			multilib_is_native_abi && einfo "SSL provided by gnutls"
 			myconf+=( --with-gnutls )
 		fi
 		if use mbedtls; then
-			einfo "SSL provided by mbedtls"
+			multilib_is_native_abi && einfo "SSL provided by mbedtls"
 			myconf+=( --with-mbedtls )
 		fi
 		if use nss; then
-			einfo "SSL provided by nss"
+			multilib_is_native_abi && einfo "SSL provided by nss"
 			myconf+=( --with-nss --with-nss-deprecated )
 		fi
 		if use openssl; then
-			einfo "SSL provided by openssl"
+			multilib_is_native_abi && einfo "SSL provided by openssl"
 			myconf+=( --with-ssl --with-ca-path="${EPREFIX}"/etc/ssl/certs )
 		fi
 		if use rustls; then
-			einfo "SSL provided by rustls"
+			multilib_is_native_abi && einfo "SSL provided by rustls"
 			myconf+=( --with-rustls )
 		fi
 		if use curl_ssl_gnutls; then
-			einfo "Default SSL provided by gnutls"
+			multilib_is_native_abi && einfo "Default SSL provided by gnutls"
 			myconf+=( --with-default-ssl-backend=gnutls )
 		elif use curl_ssl_mbedtls; then
-			einfo "Default SSL provided by mbedtls"
+			multilib_is_native_abi && einfo "Default SSL provided by mbedtls"
 			myconf+=( --with-default-ssl-backend=mbedtls )
 		elif use curl_ssl_nss; then
-			einfo "Default SSL provided by nss"
+			multilib_is_native_abi && einfo "Default SSL provided by nss"
 			myconf+=( --with-default-ssl-backend=nss )
 		elif use curl_ssl_openssl; then
-			einfo "Default SSL provided by openssl"
+			multilib_is_native_abi && einfo "Default SSL provided by openssl"
 			myconf+=( --with-default-ssl-backend=openssl )
 		elif use curl_ssl_rustls; then
-			einfo "Default SSL provided by rustls"
+			multilib_is_native_abi && einfo "Default SSL provided by rustls"
 			myconf+=( --with-default-ssl-backend=rustls )
 		else
 			eerror "We can't be here because of REQUIRED_USE."
+			die "Please file a bug, hit impossible condition w/ USE=ssl handling."
 		fi
 
 	else
@@ -241,7 +242,7 @@ multilib_src_configure() {
 		--without-amissl
 		--without-bearssl
 		$(use_with brotli)
-		--without-fish-functions-dir
+		--with-fish-functions-dir="${EPREFIX}"/usr/share/fish/vendor_completions.d
 		$(use_with http2 nghttp2)
 		--without-hyper
 		$(use_with idn libidn2)
@@ -263,6 +264,7 @@ multilib_src_configure() {
 		--without-wolfssl
 		--with-zlib
 		$(use_with zstd)
+		--with-zsh-functions-dir="${EPREFIX}"/usr/share/zsh/site-functions
 	)
 
 	if use test && multilib_is_native_abi && ( use http2 || use nghttp3 ); then
@@ -305,6 +307,17 @@ multilib_src_configure() {
 	echo "Requires.private: ${priv[*]}" >> libcurl.pc || die
 }
 
+multilib_src_compile() {
+	default
+
+	if multilib_is_native_abi; then
+		# Shell completions
+		! tc-is-cross-compiler && emake -C scripts
+	fi
+}
+
+# There is also a pytest harness that tests for bugs in some very specific
+# situations; we can rely on upstream for this rather than adding additional test deps.
 multilib_src_test() {
 	# See https://github.com/curl/curl/blob/master/tests/runtests.pl#L5721
 	# -n: no valgrind (unreliable in sandbox and doesn't work correctly on all arches)
@@ -316,7 +329,19 @@ multilib_src_test() {
 	# Note: if needed, we can skip specific tests. See e.g. Fedora's packaging
 	# or just read https://github.com/curl/curl/tree/master/tests#run.
 	# Note: we don't run the testsuite for cross-compilation.
-	multilib_is_native_abi && emake test TFLAGS="-n -v -a -k -am -p"
+	# Upstream recommend 7*nproc as a starting point for parallel tests.
+	# The network sandbox causes tests 241 and 1083 to fail; these are typically skipped
+	# as most gentoo users don't have an 'ip6-localhost'
+	multilib_is_native_abi && emake test TFLAGS="-n -v -a -k -am -p -j$((7*$(makeopts_jobs))) !241 !1083"
+}
+
+multilib_src_install() {
+	emake DESTDIR="${D}" install
+
+	if multilib_is_native_abi; then
+		# Shell completions
+		! tc-is-cross-compiler && emake -C scripts DESTDIR="${D}" install
+	fi
 }
 
 multilib_src_install_all() {

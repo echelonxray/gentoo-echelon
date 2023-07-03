@@ -5,7 +5,7 @@ EAPI=8
 
 DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( pypy3 python3_{10..11} )
+PYTHON_COMPAT=( pypy3 python3_{10..12} )
 PYTHON_REQ_USE="sqlite?"
 
 inherit distutils-r1 optfeature pypi
@@ -22,7 +22,7 @@ S="${WORKDIR}/${MY_PN}-${PV}"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ~ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
 IUSE="examples +sqlite test"
 
 RDEPEND="
@@ -67,6 +67,10 @@ python_test() {
 		"test/dialect/test_sqlite.py::TestTypes_sqlite+pysqlite_${sqlite_version//./_}::test_cant_parse_datetime_message"
 		"test/dialect/test_suite.py::ReturningGuardsTest_sqlite+pysqlite_${sqlite_version//./_}"::test_{delete,insert,update}_single
 		test/base/test_utils.py::ImmutableDictTest::test_pep584
+	)
+	[[ ${EPYTHON} == python3.12 ]] && EPYTEST_DESELECT+=(
+		# see https://github.com/sqlalchemy/sqlalchemy/issues/9819
+		test/base/test_result.py::ResultTupleTest::test_slices_arent_in_mappings
 	)
 	if ! has_version "dev-python/greenlet[${PYTHON_USEDEP}]"; then
 		EPYTEST_DESELECT+=(

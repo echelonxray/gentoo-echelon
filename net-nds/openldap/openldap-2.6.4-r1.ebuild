@@ -144,6 +144,7 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-2.6.1-flags.patch
 	"${FILESDIR}"/${PN}-2.6.1-fix-missing-mapping.patch
 	"${FILESDIR}"/${PN}-2.6.4-clang16.patch
+	"${FILESDIR}"/${PN}-2.6.4-libressl.patch #903001
 )
 
 openldap_filecount() {
@@ -342,7 +343,7 @@ src_prepare() {
 	# Fish out MDB_VERSION_MAJOR/MDB_VERSION_MINOR/MDB_VERSION_PATCH from
 	# the bundled lmdb's header to find out the version.
 	local bundled_lmdb_version=$(sed -En '/^#define MDB_VERSION_(MAJOR|MINOR|PATCH)(\s+)?/{s/[^0-9.]//gp}' libraries/liblmdb/lmdb.h || die)
-	bundled_lmdb_version=$(printf "%s." ${bundled_lmdb_version})
+	printf -v bundled_lmdb_version "%s." ${bundled_lmdb_version}
 
 	if [[ ${SYSTEM_LMDB_VER}. != ${bundled_lmdb_version} ]] ; then
 		eerror "Source lmdb version: ${bundled_lmdb_version}"

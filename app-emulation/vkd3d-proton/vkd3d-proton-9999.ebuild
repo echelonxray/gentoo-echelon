@@ -41,7 +41,7 @@ HOMEPAGE="https://github.com/HansKristian-Work/vkd3d-proton/"
 
 LICENSE="LGPL-2.1+ Apache-2.0 MIT"
 SLOT="0"
-IUSE="+abi_x86_32 crossdev-mingw debug extras"
+IUSE="+abi_x86_32 crossdev-mingw debug extras +strip"
 
 BDEPEND="
 	dev-util/glslang
@@ -105,6 +105,12 @@ src_prepare() {
 src_configure() {
 	use crossdev-mingw || PATH=${BROOT}/usr/lib/mingw64-toolchain/bin:${PATH}
 
+	# -mavx with mingw-gcc has a history of obscure issues and
+	# disabling is seen as safer, e.g. `WINEARCH=win32 winecfg`
+	# crashes with -march=skylake >=wine-8.10, similar issues with
+	# znver4: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110273
+	append-flags -mno-avx
+
 	if [[ ${CHOST} != *-mingw* ]]; then
 		if [[ ! -v MINGW_BYPASS ]]; then
 			unset AR CC CXX RC STRIP WIDL
@@ -149,7 +155,7 @@ multilib_src_configure() {
 		--{cross,native}-file="${T}"/widl.${ABI}.ini
 		$(meson_use {,enable_}extras)
 		$(meson_use debug enable_trace)
-		$(usev !debug --strip) # portage won't strip .dll, so allow it here
+		$(usev strip --strip) # portage won't strip .dll, so allow it here
 		-Denable_tests=false # needs wine/vulkan and is intended for manual use
 	)
 

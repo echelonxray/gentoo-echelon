@@ -33,7 +33,7 @@ else
 			-> ${PN}-spirv-headers-${HASH_SPIRV_DXIL::10}.tar.gz
 		https://github.com/KhronosGroup/Vulkan-Headers/archive/${HASH_VULKAN}.tar.gz
 			-> ${PN}-vulkan-headers-${HASH_VULKAN::10}.tar.gz"
-	KEYWORDS="-* ~amd64 ~x86"
+	KEYWORDS="-* amd64 x86"
 fi
 
 DESCRIPTION="Fork of VKD3D, development branches for Proton's Direct3D 12 implementation"
@@ -104,6 +104,12 @@ src_prepare() {
 
 src_configure() {
 	use crossdev-mingw || PATH=${BROOT}/usr/lib/mingw64-toolchain/bin:${PATH}
+
+	# -mavx with mingw-gcc has a history of obscure issues and
+	# disabling is seen as safer, e.g. `WINEARCH=win32 winecfg`
+	# crashes with -march=skylake >=wine-8.10, similar issues with
+	# znver4: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110273
+	append-flags -mno-avx
 
 	if [[ ${CHOST} != *-mingw* ]]; then
 		if [[ ! -v MINGW_BYPASS ]]; then

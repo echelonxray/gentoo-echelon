@@ -20,7 +20,7 @@ S=${WORKDIR}/${PN}-${P}
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
 IUSE="conch http2 serial ssl test"
 RESTRICT="!test? ( test )"
 
@@ -49,7 +49,7 @@ RDEPEND="
 	)
 	ssl? (
 		>=dev-python/pyopenssl-21.0.0[${PYTHON_USEDEP}]
-		>=dev-python/service_identity-18.1.0[${PYTHON_USEDEP}]
+		>=dev-python/service-identity-18.1.0[${PYTHON_USEDEP}]
 		>=dev-python/idna-2.4[${PYTHON_USEDEP}]
 	)
 "
@@ -72,7 +72,7 @@ BDEPEND="
 			)
 			ssl? (
 				>=dev-python/pyopenssl-21.0.0[${PYTHON_USEDEP}]
-				>=dev-python/service_identity-18.1.0[${PYTHON_USEDEP}]
+				>=dev-python/service-identity-18.1.0[${PYTHON_USEDEP}]
 			)
 		' "${PYTHON_TESTED[@]}")
 		$(python_gen_cond_dep '
