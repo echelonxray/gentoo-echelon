@@ -12,7 +12,7 @@ LICENSE="GPL-3+"
 SLOT="0"
 IUSE="test"
 RESTRICT="!test? ( test )"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc ~ppc64 ~riscv ~x86"
+KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc ~ppc64 ~riscv ~x86"
 
 DEPEND="
 	>=x11-libs/cairo-1.2
@@ -68,7 +68,7 @@ src_configure() {
 }
 
 src_test() {
-	virtx meson_src_test --timeout-multiplier=30
+	virtx meson_src_test
 }
 
 pkg_postinst() {
