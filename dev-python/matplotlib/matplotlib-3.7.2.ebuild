@@ -30,7 +30,7 @@ SRC_URI+="
 # Fonts: BitstreamVera, OFL-1.1
 LICENSE="BitstreamVera BSD matplotlib MIT OFL-1.1"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~arm64-macos ~x64-macos"
 IUSE="cairo doc excel examples gtk3 latex qt5 tk webagg wxwidgets"
 
 # internal copy of pycxx highly patched
@@ -56,9 +56,6 @@ RDEPEND="
 	media-libs/libpng:0
 	>=media-libs/qhull-2013:=
 	virtual/imagemagick-tools[jpeg,tiff]
-	$(python_gen_cond_dep '
-		dev-python/importlib-resources[${PYTHON_USEDEP}]
-	' 3.9)
 	cairo? (
 		dev-python/cairocffi[${PYTHON_USEDEP}]
 	)
@@ -151,6 +148,7 @@ python_prepare_all() {
 	local PATCHES=(
 		"${FILESDIR}"/matplotlib-3.3.3-disable-lto.patch
 		"${FILESDIR}"/matplotlib-3.7.1-test.patch
+		"${FILESDIR}"/matplotlib-3.7.2-macOS_no-Cocoa.patch
 	)
 
 	sed \

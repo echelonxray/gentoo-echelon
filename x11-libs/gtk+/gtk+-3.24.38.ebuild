@@ -18,7 +18,7 @@ REQUIRED_USE="
 "
 RESTRICT="!test? ( test )"
 
-KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~mips ~ppc ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-solaris"
+KEYWORDS="~alpha amd64 arm ~arm64 ~hppa ~ia64 ~loong ~mips ~ppc ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-solaris"
 
 COMMON_DEPEND="
 	>=app-accessibility/at-spi2-core-2.46.0[introspection?,${MULTILIB_USEDEP}]
@@ -26,7 +26,7 @@ COMMON_DEPEND="
 	>=dev-libs/glib-2.57.2:2[${MULTILIB_USEDEP}]
 	media-libs/fontconfig[${MULTILIB_USEDEP}]
 	>=media-libs/harfbuzz-2.2.0:=
-	>=media-libs/libepoxy-1.4[X(+)?,${MULTILIB_USEDEP}]
+	>=media-libs/libepoxy-1.4[X(+)?,egl(+),${MULTILIB_USEDEP}]
 	virtual/libintl[${MULTILIB_USEDEP}]
 	>=x11-libs/cairo-1.14[aqua?,glib,svg(+),X?,${MULTILIB_USEDEP}]
 	>=x11-libs/gdk-pixbuf-2.30:2[introspection?,${MULTILIB_USEDEP}]

@@ -28,6 +28,7 @@ BDEPEND="virtual/pkgconfig"
 PATCHES=(
 	"${FILESDIR}/${PN}-0.3.23-shared-blas-lapack.patch"
 	"${FILESDIR}/${PN}-0.3.21-fix-loong.patch"
+	"${FILESDIR}/${PN}-0.3.23-parallel-make.patch"
 )
 
 pkg_pretend() {
@@ -121,9 +122,8 @@ src_prepare() {
 }
 
 src_compile() {
-	default
-	cd interface || die
-	emake shared-blas-lapack
+	emake shared
+	use eselect-ldso && emake -C interface shared-blas-lapack
 
 	if use index-64bit; then
 		emake -C"${S}-index-64bit" \

@@ -51,7 +51,7 @@ python_compile_all() {
 	# https://bytemeta.vip/repo/facelessuser/pymdown-extensions/issues/1446
 	# https://bugs.gentoo.org/859637
 	if use doc; then
-		python -m mkdocs build || die "Failed to make docs"
+		${EPYTHON} -m mkdocs build || die "Failed to make docs"
 		# Colliding files found by ecompress:
 		rm site/sitemap.xml.gz || die
 		HTML_DOCS=( "site/." )

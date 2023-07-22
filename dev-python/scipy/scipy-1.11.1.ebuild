@@ -38,7 +38,7 @@ else
 		)"
 
 	if [[ ${PV} != *rc* ]] ; then
-		KEYWORDS="~amd64 ~arm ~arm64 -hppa ~ia64 ~loong ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+		KEYWORDS="~amd64 ~arm ~arm64 -hppa ~ia64 ~loong ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~arm64-macos ~x64-macos"
 	fi
 fi
 
@@ -64,7 +64,7 @@ BDEPEND="
 	>=dev-python/meson-python-0.12.1[${PYTHON_USEDEP}]
 	>=dev-python/pybind11-2.10.4[${PYTHON_USEDEP}]
 	>=dev-util/meson-1.1.0
-	dev-util/patchelf
+	!kernel_Darwin? ( dev-util/patchelf )
 	virtual/pkgconfig
 	doc? ( app-arch/unzip )
 	fortran? ( dev-python/pythran[${PYTHON_USEDEP}] )
