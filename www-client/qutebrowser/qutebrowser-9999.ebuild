@@ -5,7 +5,10 @@ EAPI=8
 
 DISTUTILS_SINGLE_IMPL=1
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{9..11} )
+# py3.12 should work (no tests regressions), but waiting on the last dep
+# (pytest-qt) to properly have py3.12 which gets more complicated with
+# QtPy + pyside* that we don't actually use here
+PYTHON_COMPAT=( python3_{10..11} )
 inherit distutils-r1 xdg
 
 if [[ ${PV} == 9999 ]]; then
@@ -34,7 +37,7 @@ RDEPEND="
 		adblock? ( dev-python/adblock[${PYTHON_USEDEP}] )
 	')
 	qt6? (
-		dev-qt/qtbase:6[icu]
+		dev-qt/qtbase:6[icu,sqlite]
 		$(python_gen_cond_dep '
 			dev-python/PyQt6[${PYTHON_USEDEP},dbus,gui,network,opengl,printsupport,qml,sql,widgets]
 			dev-python/PyQt6-WebEngine[${PYTHON_USEDEP},widgets]
@@ -44,6 +47,7 @@ RDEPEND="
 	!qt6? (
 		dev-qt/qtcore:5[icu]
 		dev-qt/qtgui:5[png]
+		dev-qt/qtsql:5[sqlite]
 		$(python_gen_cond_dep '
 			dev-python/PyQt5[${PYTHON_USEDEP},dbus,declarative,gui,network,opengl,printsupport,sql,widgets]
 			dev-python/PyQtWebEngine[${PYTHON_USEDEP}]

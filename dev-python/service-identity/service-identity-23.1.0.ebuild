@@ -16,7 +16,7 @@ HOMEPAGE="
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~x64-macos"
+KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~x64-macos"
 
 RDEPEND="
 	>=dev-python/attrs-19.1.0[${PYTHON_USEDEP}]
@@ -25,6 +25,8 @@ RDEPEND="
 	dev-python/pyasn1-modules[${PYTHON_USEDEP}]
 "
 BDEPEND="
+	dev-python/hatch-fancy-pypi-readme[${PYTHON_USEDEP}]
+	dev-python/hatch-vcs[${PYTHON_USEDEP}]
 	test? (
 		dev-python/pyopenssl[${PYTHON_USEDEP}]
 	)
