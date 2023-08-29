@@ -169,11 +169,13 @@ BDEPEND="
 	sys-devel/flex
 	virtual/pkgconfig
 	$(python_gen_any_dep ">=dev-python/mako-0.8.0[\${PYTHON_USEDEP}]")
-	vulkan? (
-		dev-util/glslang
-		video_cards_intel? (
-			amd64? (
-				$(python_gen_any_dep "dev-python/ply[\${PYTHON_USEDEP}]")
+	llvm? (
+		vulkan? (
+			dev-util/glslang
+			video_cards_intel? (
+				amd64? (
+					$(python_gen_any_dep "dev-python/ply[\${PYTHON_USEDEP}]")
+				)
 			)
 		)
 	)
@@ -396,9 +398,11 @@ multilib_src_configure() {
 	use vulkan-overlay && vulkan_layers+=",overlay"
 	emesonargs+=(-Dvulkan-layers=${vulkan_layers#,})
 
-	if use vulkan && use video_cards_intel; then
+	if use llvm && use vulkan && use video_cards_intel; then
 		PKG_CONFIG_PATH="$(get_llvm_prefix)/$(get_libdir)/pkgconfig"
-		emesonargs+=($(meson_feature llvm intel-clc))
+		emesonargs+=(-Dintel-clc=enabled)
+	else
+		emesonargs+=(-Dintel-clc=disabled)
 	fi
 
 	emesonargs+=(
