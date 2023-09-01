@@ -13,7 +13,7 @@ SRC_URI="https://download.gluster.org/pub/gluster/${PN}/$(ver_cut 1)/${PV}/${P}.
 
 LICENSE="|| ( GPL-2 LGPL-3+ )"
 SLOT="0/${PV%%.*}"
-KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc ~ppc64 ~riscv ~x86"
+KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc ppc64 ~riscv ~x86"
 
 IUSE="debug emacs +fuse georeplication ipv6 +libtirpc rsyslog selinux static-libs tcmalloc test +uring xml"
 
@@ -147,8 +147,7 @@ src_install() {
 
 	if use emacs ; then
 		elisp-install ${PN} extras/glusterfs-mode.el*
-		elisp-site-file-install "50${PN}-mode-gentoo.el"
-
+		elisp-site-file-install "${FILESDIR}/50glusterfs-mode-gentoo.el"
 	fi
 
 	insinto /usr/share/vim/vimfiles/ftdetect; doins "${FILESDIR}"/${PN}.vim
