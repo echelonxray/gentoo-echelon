@@ -36,7 +36,7 @@ RDEPEND="
 	dev-libs/libxslt
 	dev-libs/nspr
 	dev-libs/nss
-	~dev-qt/qtbase-${PV}:6[X,gui,opengl=,vulkan?,widgets?]
+	~dev-qt/qtbase-${PV}:6[gui,opengl=,vulkan?,widgets?]
 	~dev-qt/qtwebchannel-${PV}:6[qml?]
 	media-libs/fontconfig
 	media-libs/freetype
@@ -101,6 +101,7 @@ PATCHES=( "${WORKDIR}"/patches/${PN} )
 
 PATCHES+=(
 	# add extras as needed here, may merge in set if carries across versions
+	"${FILESDIR}"/${PN}-6.5.2-libcxx17.patch
 )
 
 python_check_deps() {
