@@ -13,7 +13,7 @@ if [[ ${PV} == 9999 ]] ; then
 	EGIT_REPO_URI="https://github.com/bugaevc/${PN}.git"
 else
 	SRC_URI="https://github.com/bugaevc/${PN}/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc64 ~riscv ~x86"
+	KEYWORDS="amd64 ~arm arm64 ~loong ~ppc64 ~riscv x86"
 fi
 
 LICENSE="GPL-3"
@@ -25,3 +25,10 @@ RDEPEND="${DEPEND}"
 BDEPEND="
 	dev-util/wayland-scanner
 	dev-libs/wayland-protocols"
+
+src_configure() {
+	local -a emesonargs=(
+		-Dfishcompletiondir="${EPREFIX}/usr/share/fish/vendor_completions.d"
+	)
+	meson_src_configure
+}
