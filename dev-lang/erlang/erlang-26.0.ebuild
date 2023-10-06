@@ -22,7 +22,7 @@ LICENSE="Apache-2.0"
 # same build of ERTS that was used when compiling the code.  See
 # http://erlang.org/doc/system_principles/misc.html for more information.
 SLOT="0/${PV}"
-KEYWORDS="amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
+KEYWORDS="amd64 ~arm ~arm64 ~hppa ~ia64 ppc ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
 IUSE="doc emacs java +kpoll odbc sctp ssl systemd tk wxwidgets"
 
 RDEPEND="
@@ -38,8 +38,15 @@ RDEPEND="
 	systemd? ( sys-apps/systemd )
 	wxwidgets? ( x11-libs/wxGTK:${WX_GTK_VER}[X,opengl] )
 "
+
+# libei.so (from dev-libs/libei) conflicts with libei.a from
+# erl_interface. Causes build faiure. Erlang build system needs to be
+# patched to prefer its own libei instead of system libei. Installed
+# into /usr/lib/erlang so no conflict following installation. Bug
+# #912888.
 DEPEND="${RDEPEND}
 	dev-lang/perl
+	!!dev-libs/libei
 "
 
 S="${WORKDIR}/otp-OTP-${PV}"
