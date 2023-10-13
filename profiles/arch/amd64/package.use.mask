@@ -17,6 +17,10 @@
 
 #--- END OF EXAMPLES ---
 
+# Ionen Wolkens <ionen@gentoo.org> (2023-10-09)
+# media-libs/shaderc is keyworded here.
+media-libs/libplacebo -shaderc
+
 # Michał Górny <mgorny@gentoo.org> (2023-09-19)
 # dev-cpp/cpp-httplib is keyworded here.
 sys-devel/llvm -debuginfod
@@ -220,13 +224,6 @@ sci-physics/root -cudnn
 # Encrypted Media Extensions (eme-free) can be disabled on amd64
 mail-client/thunderbird -eme-free
 www-client/firefox -eme-free
-
-# Andreas Sturmlechner <asturm@gentoo.org> (2020-02-26)
-# Vulkan is available on amd64.
-dev-qt/qt3d -vulkan
-dev-qt/qtdeclarative -vulkan
-dev-qt/qtgui -vulkan
-dev-qt/qtwayland -vulkan
 
 # James Le Cuirot <chewi@gentoo.org> (2019-12-10)
 # The JIT feature only works on amd64 and x86.

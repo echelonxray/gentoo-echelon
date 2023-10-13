@@ -33,6 +33,76 @@
 
 #--- END OF EXAMPLES ---
 
+# Andrey Grozin <grozin@gentoo.org> (2023-10-12)
+# The last upstream tag in 2021
+# There is an active fork: app-text/crqt-ng and app-text/crwx-ng
+# Bug https://bugs.gentoo.org/915634
+# Removal on 2023-11-11
+app-text/coolreader
+
+# Ionen Wolkens <ionen@gentoo.org> (2023-10-10)
+# Formerly added for unbundling on games-emulation/pcsx2, which is
+# no longer needed. Has no real use on its own, has no revdeps, and
+# does not have real releases (snapshot-only).
+# Removal on 2023-11-09.
+dev-libs/libchdr
+
+# Patrick Lauer <patrick@gentoo.org> (2023-10-09)
+# ROCm 5.7 doesn't reliably work yet.
+=dev-util/rocm-cmake-5.7.0
+=dev-libs/roct-thunk-interface-5.7.0
+=dev-libs/rocm-device-libs-5.7.0
+=dev-libs/rocm-comgr-5.7.0
+=dev-libs/rocr-runtime-5.7.0
+=dev-libs/rocm-opencl-runtime-5.7.0
+=dev-util/rocminfo-5.7.0
+=dev-util/hip-5.7.0
+=dev-util/hipcc-5.7.0
+
+# David Seifert <soap@gentoo.org> (2023-10-08)
+# Upstream long gone, unmaintained, EAPI 6, only Gentoo still packages
+# this. Removal on 2023-11-07. Bug #905187.
+app-misc/dvorakng
+
+# David Seifert <soap@gentoo.org> (2023-10-08)
+# Unmaintained, EAPI 6, tons of patches we have to carry, last release
+# 20 years ago, all major distros have removed this.
+# Removal on 2023-11-07. Bug #602382.
+app-backup/flexbackup
+
+# David Seifert <soap@gentoo.org> (2023-10-08)
+# Unmaintained, last release over 23 years(!) ago, multiple QA issues,
+# no other major distro carries this anymore. Removal on 2023-11-07.
+# Bug #425872, #452982, #520968, #605450, #878621, #905945.
+app-admin/qpage
+
+# David Seifert <soap@gentoo.org> (2023-10-08)
+# Upstream gone, kept on life support by Debian, most distros don't
+# carry this anymore, Transmeta CPUs are long obsolete at this point.
+# Removal on 2023-11-07. Bug #541694, #905186.
+app-admin/longrun
+
+# David Seifert <soap@gentoo.org> (2023-10-08)
+# Unmaintained, typical broken suckless build system, no upstream
+# activity, only Fedora still carries it.
+# Removal on 2023-11-06. Bug #732422, #914638.
+x11-misc/sselp
+
+# David Seifert <soap@gentoo.org> (2023-10-08)
+# Unmaintained, last release over 5 years ago, lots of QA issues, no
+# other distro carries this.
+# Removal on 2023-11-06. Bug #742782, #742809, #771858, #811393,
+# #898314, #898322, #898324, #898326.
+dev-libs/libtubo
+x11-libs/librfm
+x11-misc/rodent
+
+# Hans de Graaff <graaff@gentoo.org> (2023-10-07)
+# Unresolved security issues since two years, bug #792336. Original
+# upstream inactive since 2019. Substitute upstream inactive since
+# 2020. No reverse dependencies. Masked for removal on 2023-11-07.
+sys-fs/dmg2img
+
 # Sam James <sam@gentoo.org> (2023-10-06)
 # Breaks building scipy: https://github.com/cython/cython/issues/5748
 =dev-python/cython-3.0.3
@@ -158,46 +228,6 @@ dev-ruby/ruby-elf
 # Removal on 2023-10-14
 dev-python/abydos
 
-# Andreas K. Hüttel <dilfridge@gentoo.org> (2023-09-11)
-# Dead project accumulating open bugs and incompatibilities.
-#
-# For more detail, please see the '2021-08-24-eudev-retirement' news item
-# as well as the '2022-04-19-systemd-utils' news item.
-#
-# No Gentoo maintainer commits since February 2021.
-#
-# Many Gentoo packaging issues (some may need to go upstream):
-#  bug #713106, #753134, bug #667686, bug #771705, bug #668880, #770358, bug #851255
-#  bug #711462, #904741
-#
-# But more pressingly, lacks support for the udev 'tags' API which libgudev now
-# requires. No fix has been committed upstream and other software like Plymouth
-# has been broken with eudev for some time because of this missing support.
-# See bug #913702.
-#
-# Removal on 2023-10-11.
-sys-fs/eudev
-
-# Leonardo Hernández Hernández <leohdz172@proton.me> (2023-09-10)
-# Upstream has marked this packaged as unmaintained[0] and recommends usage of
-# the active fork eza[1] available as sys-apps/eza
-# Please transition to the new package.
-# Removal: 2023-10-10.  Bug #913737.
-# [0]: https://github.com/ogham/exa/commit/fb05c421ae98e076989eb6e8b1bcf42c07c1d0fe
-# [1]: https://github.com/eza-community/eza
-sys-apps/exa
-
-# Hans de Graaff <graaff@gentoo.org> (2023-09-10)
-# Obsolete slot that no longer has any reverse dependencies. Not
-# compatible with openssl 3. Use the newer slot instead. Masked for
-# removal on 2023-10-10.
-dev-ruby/net-ssh:6
-
-# Hans de Graaff <graaff@gentoo.org> (2023-09-10)
-# Obsolete slot that no longer has any reverse dependencies. Use the
-# newer slot instead. Masked for removal on 2023-10-10.
-dev-ruby/mail:2.7
-
 # Sam James <sam@gentoo.org> (2023-09-09)
 # OpenSSL 1.1.x is EOL on 2023-09-11. Please upgrade immediately to >= OpenSSL 3.
 # https://www.openssl.org/blog/blog/2023/03/28/1.1.1-EOL/
@@ -206,46 +236,6 @@ dev-ruby/mail:2.7
 # for old PHP or Ruby references.
 <dev-libs/openssl-3
 <app-crypt/xca-2.4.0_p20230526
-
-# David Seifert <soap@gentoo.org> (2023-09-09)
-# EOL upstream in 2 months, causes major headaches for OpenSSL 1.1
-# masking. Removal on 2023-10-09.
-dev-lang/php:8.0
-virtual/httpd-php:8.0
-
-# David Seifert <soap@gentoo.org> (2023-09-09)
-# Depends on PHP 8.0. Removal on 2023-10-09.
-~www-apps/tt-rss-20220218
-
-# David Seifert <soap@gentoo.org> (2023-09-09)
-# Depends on PHP 8.0, which in turn depends on OpenSSL 1.1, which in
-# turn is to be masked and removed soon. Removal on 2023-10-09.
-www-apps/moodle:3.11.16
-www-apps/moodle:4.0.10
-
-# Andreas Sturmlechner <asturm@gentoo.org> (2023-09-06)
-# dev-libs/sink is unmaintained upstream, in Gentoo, fails to build.
-# Masked for removal on 2023-10-06, together with mail-client/kube and
-# would-be orphan libraries. Bugs #907499, #904876, #872062, #856094
-net-libs/kdav2
-net-libs/kimap2
-dev-libs/kasync
-dev-libs/sink
-mail-client/kube
-
-# David Seifert <soap@gentoo.org> (2023-09-05)
-# OpenSSL 1.1 based, does not work with 3.0+. tpm2-openssl is the
-# spiritual successor for OpenSSL 3.0+, but isn't packaged.
-# Removal on 2023-10-05.
-app-crypt/tpm2-tss-engine
-
-# Florian Schmaus <flow@gentoo.org> (2023-09-03)
-# Became a leaf package after dev-erlang/riak_pb was removed (989c0f55e0).
-# Unmaintained in ::gentoo and upstream since multiple years. Alternative at
-# https://github.com/tomas-abrahamsson/gpb.
-# Two open bugs: #725584 and #793236.
-# Removal on 2023-10-03.
-dev-erlang/protobuffs
 
 # Sam James <sam@gentoo.org> (2023-08-04)
 # Stricter behavior which causes some packages to fail, see bug #911721.
@@ -290,7 +280,6 @@ dev-erlang/protobuffs
 # Matt Turner <mattst88@gentoo.org> (2023-07-06)
 # GNOME 45 mask
 >=app-editors/ghex-45_alpha
->=app-misc/gnote-45_alpha
 >=gnome-extra/gnome-logs-45_alpha
 >=net-misc/gnome-remote-desktop-45_alpha
 >=x11-libs/pango-1.51.0

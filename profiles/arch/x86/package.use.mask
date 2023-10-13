@@ -1,6 +1,16 @@
 # Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
+# Joonas Niilola <juippis@gentoo.org> (2023-10-13)
+# Pulls webkit-gtk unconditionally, which (at least :4.1) doesn't
+# compile on x86. Bug #915197.
+gnome-extra/cinnamon eds
+gnome-extra/cinnamon-control-center gnome-online-accounts
+
+# Ionen Wolkens <ionen@gentoo.org> (2023-10-09)
+# media-libs/shaderc is keyworded here.
+media-libs/libplacebo -shaderc
+
 # Michał Górny <mgorny@gentoo.org> (2023-09-19)
 # dev-cpp/cpp-httplib is keyworded here.
 sys-devel/llvm -debuginfod
@@ -230,13 +240,6 @@ sys-libs/glibc -static-pie
 # Encrypted Media Extensions (eme-free) can be disabled on x86
 mail-client/thunderbird -eme-free
 www-client/firefox -eme-free
-
-# Andreas Sturmlechner <asturm@gentoo.org> (2020-02-26)
-# Vulkan is available on x86.
-dev-qt/qt3d -vulkan
-dev-qt/qtdeclarative -vulkan
-dev-qt/qtgui -vulkan
-dev-qt/qtwayland -vulkan
 
 # Georgy Yakovlev <gyakovlev@gentoo.org (2020-01-04)
 # zfs is not keyworded on x86
