@@ -16,7 +16,7 @@ HOMEPAGE="
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64 ~x86"
+KEYWORDS="amd64 arm64 x86"
 
 RDEPEND="
 	>=dev-python/flask-2.0.0[${PYTHON_USEDEP}]
@@ -25,3 +25,7 @@ RDEPEND="
 distutils_enable_sphinx docs \
 	dev-python/flask-sphinx-themes
 distutils_enable_tests pytest
+
+PATCHES=(
+	"${FILESDIR}/${P}-hatchling.patch"
+)
