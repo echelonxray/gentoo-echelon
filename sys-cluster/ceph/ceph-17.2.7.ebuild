@@ -1,4 +1,4 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -14,7 +14,7 @@ SRC_URI="
 	https://download.ceph.com/tarballs/${P}.tar.gz
 	parquet? ( https://github.com/xtensor-stack/xsimd/archive/${XSIMD_HASH}.tar.gz -> ceph-xsimd-${PV}.tar.gz )
 "
-KEYWORDS="amd64 ~arm64"
+KEYWORDS="amd64 ~arm64 ppc64"
 
 DESCRIPTION="Ceph distributed filesystem"
 HOMEPAGE="https://ceph.com/"
@@ -74,7 +74,7 @@ DEPEND="
 	sys-process/numactl:=
 	virtual/libcrypt:=
 	x11-libs/libpciaccess:=
-	babeltrace? ( dev-util/babeltrace )
+	babeltrace? ( dev-util/babeltrace:0/1 )
 	fuse? ( sys-fs/fuse:3= )
 	jemalloc? ( dev-libs/jemalloc:= )
 	!jemalloc? ( >=dev-util/google-perftools-2.6.1:= )
