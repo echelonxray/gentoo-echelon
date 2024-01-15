@@ -20,13 +20,14 @@ LICENSE="BSD BSD-2 ISC MIT"
 SLOT="0/1"
 
 BDEPEND="
-	sys-devel/libtool
+	dev-build/libtool
 	virtual/pkgconfig
 "
 
 PATCHES=(
 	"${FILESDIR}"/${P}-ipv6-tests.patch
 	"${FILESDIR}"/${P}-hppa-kernel.patch
+	"${FILESDIR}"/${P}-darwin17.patch  # upstream
 )
 
 src_prepare() {

@@ -1,9 +1,9 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..11} )
+PYTHON_COMPAT=( python3_{10..12} )
 
 DOCS_BUILDER="mkdocs"
 DOCS_DEPEND="
@@ -12,7 +12,7 @@ DOCS_DEPEND="
 
 inherit python-single-r1 docs wrapper
 
-DESCRIPTION="A GDB Enhanced Features for exploit devs & reversers"
+DESCRIPTION="GDB Enhanced Features for exploit devs & reversers"
 HOMEPAGE="https://github.com/hugsy/gef"
 
 if [[ ${PV} == 9999 ]]; then
@@ -20,7 +20,7 @@ if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://github.com/hugsy/gef"
 else
 	SRC_URI="https://github.com/hugsy/gef/archive/${PV}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="~amd64 ~arm ~arm64 ~ppc ~ppc64 ~x86"
+	KEYWORDS="~amd64 ~arm64 ~x86"
 fi
 
 LICENSE="MIT"
@@ -32,12 +32,13 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RDEPEND="
 	${PYTHON_DEPS}
+	dev-debug/gdb[python,${PYTHON_SINGLE_USEDEP}]
 	dev-util/ropper[${PYTHON_SINGLE_USEDEP}]
-	sys-devel/gdb[python,${PYTHON_SINGLE_USEDEP}]
 	$(python_gen_cond_dep '
 		dev-libs/capstone[python,${PYTHON_USEDEP}]
 		dev-libs/keystone[python,${PYTHON_USEDEP}]
 		dev-python/pylint[${PYTHON_USEDEP}]
+		dev-python/rpyc[${PYTHON_USEDEP}]
 		dev-util/unicorn[python,${PYTHON_USEDEP}]
 	')"
 
