@@ -170,7 +170,7 @@ RDEPEND="
 		diskprediction? (
 			>=dev-python/scipy-1.4.0[${PYTHON_USEDEP}]
 		)
-		sci-libs/scikit-learn[${PYTHON_USEDEP}]
+		dev-python/scikit-learn[${PYTHON_USEDEP}]
 		dev-python/six[${PYTHON_USEDEP}]
 	)
 	selinux? ( sec-policy/selinux-ceph )
@@ -380,6 +380,9 @@ ceph_src_configure() {
 	# hopefully this will not be necessary in the next release
 	use parquet && export ARROW_XSIMD_URL="file:///${DISTDIR}/ceph-xsimd-${PV}.tar.gz"
 
+	# https://bugs.gentoo.org/927066
+	filter-lto
+
 	cmake_src_configure
 
 	# bug #630232
@@ -414,6 +417,9 @@ src_install() {
 
 	python_setup
 	cmake_src_install
+
+	# the cmake_src_install here installs more egg-info files
+	rm -rf "${D}/$(python_get_sitedir)"/*.egg-info || die
 	python_optimize
 
 	find "${ED}" -name '*.la' -type f -delete || die
@@ -471,6 +477,8 @@ python_install() {
 	local CMAKE_USE_DIR="${S}"
 	DESTDIR="${ED}" cmake_build src/pybind/install
 	DESTDIR="${ED}" cmake_build src/cephadm/install
+
+	rm -rf "${D}/$(python_get_sitedir)"/*.egg-info || die
 
 	python_optimize
 }
