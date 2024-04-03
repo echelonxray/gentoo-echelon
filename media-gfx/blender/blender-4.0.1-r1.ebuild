@@ -71,7 +71,7 @@ RDEPEND="${PYTHON_DEPS}
 	collada? ( >=media-libs/opencollada-1.6.68 )
 	color-management? ( media-libs/opencolorio:= )
 	cuda? ( dev-util/nvidia-cuda-toolkit:= )
-	embree? ( >=media-libs/embree-3.13.0[raymask] )
+	embree? ( >=media-libs/embree-3.13.0:=[raymask] )
 	ffmpeg? ( media-video/ffmpeg:=[x264,mp3,encode,theora,jpeg2k?,vpx,vorbis,opus,xvid] )
 	fftw? ( sci-libs/fftw:3.0= )
 	gmp? ( dev-libs/gmp )
@@ -97,7 +97,7 @@ RDEPEND="${PYTHON_DEPS}
 		dev-libs/c-blosc:=
 	)
 	optix? ( <dev-libs/optix-7.5.0 )
-	osl? ( >=media-libs/osl-1.11.16.0-r3:= )
+	osl? ( <media-libs/osl-1.13:= )
 	pdf? ( media-libs/libharu )
 	potrace? ( media-gfx/potrace )
 	pugixml? ( dev-libs/pugixml )
@@ -400,11 +400,14 @@ src_install() {
 	# Pax mark blender for hardened support.
 	pax-mark m "${BUILD_DIR}"/bin/blender
 
-	cmake_src_install
-
 	if use man; then
+		# XXX: Stupid temporary hack for bug #925254
+		cmake_src_install -j1
+
 		# Slot the man page
 		mv "${ED}/usr/share/man/man1/blender.1" "${ED}/usr/share/man/man1/blender-${BV}.1" || die
+	else
+		cmake_src_install
 	fi
 
 	if use doc; then
