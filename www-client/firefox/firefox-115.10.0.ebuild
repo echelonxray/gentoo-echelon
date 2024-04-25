@@ -56,7 +56,7 @@ SRC_URI="${MOZ_SRC_BASE_URI}/source/${MOZ_P}.source.tar.xz -> ${MOZ_P_DISTFILES}
 DESCRIPTION="Firefox Web Browser"
 HOMEPAGE="https://www.mozilla.com/firefox"
 
-KEYWORDS="~amd64 ~arm64 ~ppc64 ~riscv ~x86"
+KEYWORDS="amd64 ~arm64 ~ppc64 ~riscv x86"
 
 SLOT="esr"
 LICENSE="MPL-2.0 GPL-2 LGPL-2.1"
@@ -1396,5 +1396,11 @@ pkg_postinst() {
 		elog "glibc not found! You won't be able to play DRM content."
 		elog "See Gentoo bug #910309 or upstream bug #1843683."
 		elog
+	fi
+
+	if use geckodriver ; then
+		ewarn "You have enabled the 'geckodriver' USE flag. Geckodriver is now"
+		ewarn "packaged separately as net-misc/geckodriver and the use flag will be"
+		ewarn "dropped from main Firefox package by Firefox 128.0 release."
 	fi
 }

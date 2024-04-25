@@ -86,12 +86,12 @@ src_compile() {
 
 	ebegin "Waiting for unfinished parallel jobs"
 	while [[ ! -f "bin/nim" ]] ; do
-		sleep 1
+		sleep 3
 	done
+	sleep 10
 	eend 0
 
-	chmod +x ./bin/nim || die
-
+	edo chmod +x ./bin/nim
 	edo ./bin/nim compile -d:release koch
 	edo ./koch boot -d:nimUseLinenoise -d:release --skipParentCfg:off
 	edo ./koch tools -d:release
@@ -107,7 +107,7 @@ src_test() {
 		--hint:UserRaw:on
 	)
 	local -a testament_args=(
-		--skipFrom:"${FILESDIR}/${PN}-1.6.14-testament-skipfile.txt"
+		--skipFrom:"${FILESDIR}/${PN}-2.0.4-testament-skipfile.txt"
 		--nim:"bin/nim"
 		--targets:"$(usex test-js 'c js' 'c')"
 	)
