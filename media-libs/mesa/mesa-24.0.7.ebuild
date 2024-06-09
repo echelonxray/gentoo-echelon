@@ -19,7 +19,7 @@ if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
 else
 	SRC_URI="https://archive.mesa3d.org/${MY_P}.tar.xz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~x64-solaris"
+	KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~x64-solaris"
 fi
 S="${WORKDIR}/${MY_P}"
 EGIT_CHECKOUT_DIR=${S}
@@ -137,7 +137,10 @@ BDEPEND="
 	app-alternatives/yacc
 	app-alternatives/lex
 	virtual/pkgconfig
-	$(python_gen_any_dep ">=dev-python/mako-0.8.0[\${PYTHON_USEDEP}]")
+	$(python_gen_any_dep "
+		>=dev-python/mako-0.8.0[\${PYTHON_USEDEP}]
+		dev-python/packaging[\${PYTHON_USEDEP}]
+	")
 	vulkan? (
 		dev-util/glslang
 		llvm? (
@@ -212,7 +215,8 @@ pkg_pretend() {
 }
 
 python_check_deps() {
-	python_has_version -b ">=dev-python/mako-0.8.0[${PYTHON_USEDEP}]" || return 1
+	python_has_version -b ">=dev-python/mako-0.8.0[${PYTHON_USEDEP}]" &&
+	python_has_version -b "dev-python/packaging[${PYTHON_USEDEP}]" || return 1
 	if use llvm && use vulkan && use video_cards_intel && use amd64; then
 		python_has_version -b "dev-python/ply[${PYTHON_USEDEP}]" || return 1
 	fi

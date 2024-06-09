@@ -27,7 +27,7 @@ else
 	S="${WORKDIR}"/${MY_P}
 
 	if [[ ${PV} != *_rc* ]] ; then
-		KEYWORDS="-* ~amd64 ~arm ~arm64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x64-solaris"
+		KEYWORDS="-* amd64 ~arm arm64 ~ppc ppc64 x86 ~amd64-linux ~x86-linux ~x64-macos ~x64-solaris"
 	fi
 fi
 
@@ -51,6 +51,13 @@ PATCHES=(
 	"${FILESDIR}"/0002-Bug-476548-valgrind-3.22.0-fails-on-assertion-when-l.patch
 	"${FILESDIR}"/0003-Add-fchmodat2-syscall-on-linux.patch
 	"${FILESDIR}"/0004-Bug-478624-Valgrind-incompatibility-with-binutils-2..patch
+)
+
+QA_CONFIG_IMPL_DECL_SKIP+=(
+	# "checking if gcc accepts nested functions" but clang cannot handle good
+	# errors and reports both "function definition is not allowed here" and
+	# -Wimplicit-function-declaration. bug #900396
+	foo
 )
 
 src_prepare() {

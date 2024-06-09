@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{10..13} )
 
 # behaves very badly when qtdeclarative is not already installed, also
 # other more minor issues (installs junk, sandbox/offscreen issues)
@@ -17,7 +17,7 @@ if [[ ${QT6_BUILD_TYPE} == release ]]; then
 	KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~loong ~ppc ~ppc64 ~riscv ~sparc ~x86"
 fi
 
-IUSE="accessibility +network opengl qmlls +sql +ssl svg vulkan +widgets"
+IUSE="accessibility +jit +network opengl qmlls +sql +ssl svg vulkan +widgets"
 
 RDEPEND="
 	~dev-qt/qtbase-${PV}:6[accessibility=,gui,network=,opengl=,sql?,ssl?,vulkan=,widgets=]
@@ -38,6 +38,7 @@ src_configure() {
 		$(cmake_use_find_package qmlls Qt6LanguageServerPrivate)
 		$(cmake_use_find_package sql Qt6Sql)
 		$(cmake_use_find_package svg Qt6Svg)
+		$(qt_feature jit qml_jit)
 		$(qt_feature network qml_network)
 		$(qt_feature ssl qml_ssl)
 	)
