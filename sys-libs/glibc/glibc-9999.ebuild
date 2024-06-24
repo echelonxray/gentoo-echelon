@@ -515,11 +515,14 @@ setup_flags() {
 	# dealing with CET in ld.so. So if CET is supposed to be
 	# disabled for glibc, be explicit about it.
 	if ! use cet; then
-		if use amd64 || use x86; then
-			append-flags '-fcf-protection=none'
-		elif use arm64; then
-			append-flags '-mbranch-protection=none'
-		fi
+		case ${ABI}-${CTARGET} in
+			amd64-x86_64-*|x32-x86_64-*-*-gnux32)
+				append-flags '-fcf-protection=none'
+				;;
+			arm64-aarch64*)
+				append-flags '-mbranch-protection=none'
+				;;
+		esac
 	fi
 }
 
@@ -994,7 +997,7 @@ glibc_do_configure() {
 	# worth protecting from stack smashes.
 	myconf+=( --enable-stack-protector=$(usex ssp strong no) )
 
-	# Keep a whitelist of targets supporing IFUNC. glibc's ./configure
+	# Keep a whitelist of targets supporting IFUNC. glibc's ./configure
 	# is not robust enough to detect proper support:
 	#    https://bugs.gentoo.org/641216
 	#    https://sourceware.org/PR22634#c0

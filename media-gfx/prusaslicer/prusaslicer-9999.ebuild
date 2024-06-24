@@ -51,7 +51,7 @@ RDEPEND="
 	sys-libs/zlib:=
 	virtual/opengl
 	x11-libs/gtk+:3
-	>=x11-libs/wxGTK-3.2.2.1-r3:${WX_GTK_VER}[X,opengl]
+	>=x11-libs/wxGTK-3.2.2.1-r3:${WX_GTK_VER}[X,opengl,webkit]
 	media-libs/nanosvg:=
 "
 DEPEND="${RDEPEND}
@@ -60,9 +60,8 @@ DEPEND="${RDEPEND}
 "
 
 PATCHES=(
-	"${FILESDIR}/${PN}-2.6.0-libexpat-double-definition-fix.patch"
-	"${FILESDIR}/${PN}-2.6.0-dont-force-link-to-wayland-and-x11.patch"
-	"${FILESDIR}/${PN}-2.7.4-boost-1.85.patch"
+	"${FILESDIR}/${PN}-2.8.0-missing-includes.patch"
+	"${FILESDIR}/${PN}-2.8.0-fixed-linking.patch"
 )
 
 src_prepare() {
