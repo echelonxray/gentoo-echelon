@@ -33,6 +33,69 @@
 
 #--- END OF EXAMPLES ---
 
+# Leonardo Hernández Hernández <leohdz172@proton.me> (2024-07-07)
+# New major ffmpeg version. Tracker bug #928905.
+>=media-video/ffmpeg-7.0
+
+# Michał Górny <mgorny@gentoo.org> (2024-07-06)
+# Leftover backport for Python 3.9.  No revdeps.
+# Removal on 2024-08-05.  Bug #935676.
+dev-python/pathlib2
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2024-07-05)
+# rime-data is EAPI=6, and with it last-rite it's reverse-dependencies.
+# Removal on 2024-08-04.  Bugs #935555, #935155, #695056, #924139.
+app-i18n/fcitx-rime
+app-i18n/ibus-rime
+app-i18n/rime-data
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2024-07-05)
+# EAPI=6, no reverse dependencies, various issues with modern C.
+# Removal on 2024-08-04.  Bugs #935553, #875746, #875245, #731094.
+media-video/luvcview
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2024-07-05)
+# EAPI=6, no reverse dependencies, fails tests.
+# Removal on 2024-08-04.  Bugs #935549, #873463, #741508.
+sci-libs/minuit
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2024-07-05)
+# EAPI=6, many compilation and configure issues, more QA issues.
+# Removal on 2024-08-04.  Bug #935545.
+sci-astronomy/esomidas
+
+# Joonas Niilola <juippis@gentoo.org> (2024-07-04)
+# libxml2-2.13.1 removed "deprecated" symbols that other (older)
+# packages depend upon. It can be mitigated with a --with-legacy
+# configure option, but it's still not a perfect fix. Bug #935452
+# to track and work on tree-wide support. Masking the exact version
+# so we can revbump the package with a fix.
+=dev-libs/libxml2-2.13.1
+=dev-libs/libxslt-1.1.41
+
+# James Le Cuirot <chewi@gentoo.org> (2024-07-01)
+# Ancient, dead upstream, generally awful.
+# Removal on 2024-08-01.  Bugs #935307, #935308, #935309.
+games-arcade/spacerider
+games-arcade/tuxdash
+games-arcade/xsfcave
+
+# NHOrus <jy6x2b32pie9@yahoo.com> (2024-06-28)
+# games-puzzle/seatris: last rites
+# Twenty-year-old tetris clone with upstream that wasn't touched since,
+# broken code and broken autoconf.
+# Removed after 2024-08-01
+# Bug: https://bugs.gentoo.org/935057
+games-puzzle/seatris
+
+# Sam James <sam@gentoo.org> (2024-06-25)
+# Subvolume printing is broken: https://github.com/kdave/btrfs-progs/issues/829
+=sys-fs/btrfs-progs-6.9.1
+
+# Sam James <sam@gentoo.org> (2024-06-25)
+# The symbol versioning "fix" breaks anything built with 3.0.0.
+=dev-libs/libassuan-3.0.1
+
 # NHOrus <jy6x2b32pie9@yahoo.com> (2024-06-24)
 # Masked for removal in 30 days.
 # It's a dependency of cinelerra, written for cinelerra.
@@ -40,11 +103,6 @@
 #
 # Bugs #871387, #907261, #712480, #931765.
 media-libs/libmpeg3
-
-# Arthur Zamarin <arthurzam@gentoo.org> (2024-06-23)
-# EAPI=6, waiting for a version bump, no reverse-dependencies.
-# Removal on 2024-07-23.  Bugs #934756, #924303.
-sci-astronomy/scamp
 
 # Arthur Zamarin <arthurzam@gentoo.org> (2024-06-22)
 # EAPI=6, no reverse-dependencies, various issues with modern C,
@@ -159,11 +217,6 @@ kde-apps/kopete
 # patches). Not really maintained in Gentoo for a long time.
 # Removal on 2024-07-15.  Bugs #934366, #871378, #716084, #924302.
 sci-astronomy/predict
-
-# Arthur Zamarin <arthurzam@gentoo.org> (2024-06-15)
-# EAPI=6, no reverse dependencies, manifest doesn't match upstream.
-# Removal on 2024-07-15.  Bugs #934365, #832746.
-sci-chemistry/xds-bin
 
 # Cédric Krier <cedk@gentoo.org> (2023-06-15)
 # critical regression with potential data loss:
@@ -424,6 +477,8 @@ dev-ml/async_log:0/0.17
 dev-ml/textutils:0/0.17
 dev-ml/async:0/0.17
 >=dev-ml/labltk-8.06.14
+dev-ml/patience_diff:0/0.17
+>=dev-ml/ppx_deriving-6.0.2
 
 # Arthur Zamarin <arthurzam@gentoo.org> (2024-06-08)
 # EAPI=6, waiting for a version bump, not maintained for many years.
@@ -461,6 +516,7 @@ sci-libs/coinhsl
 # Michał Górny <mgorny@gentoo.org> (2024-06-08)
 # Prereleases of Xfce 4.20.  Masking upon popular request, due to
 # a large number of regressions in every new release.
+>=dev-build/xfce4-dev-tools-4.19
 >=xfce-base/exo-4.19
 >=xfce-base/garcon-4.19
 >=xfce-base/libxfce4ui-4.19
@@ -475,12 +531,6 @@ sci-libs/coinhsl
 >=xfce-base/xfconf-4.19
 >=xfce-base/xfdesktop-4.19
 
-# David Seifert <soap@gentoo.org> (2024-06-08)
-# Last release 12 years ago, clearly abandoned upstream, EAPI 6, no
-# other major distro still carries this.
-# Removal on 2024-07-08. Bug #933825.
-app-i18n/imhangul
-
 # Arthur Zamarin <arthurzam@gentoo.org> (2024-06-08)
 # EAPI=6, not maintained since cvs days. Keyworded for x86 and ppc
 # only. Fails to compile with modern C.
@@ -493,53 +543,11 @@ net-p2p/gnut
 # #741444, #831092, #862717.
 sci-libs/h5part
 
-# Maciej Barć <xgqt@gentoo.org> (2024-06-05)
-# Old and experimental Scheme compiler.
-# Bugs: 870472 and 906863
-# Removal on 2024-07-05.
-dev-scheme/scheme48
-
-# Maciej Barć <xgqt@gentoo.org> (2024-06-04)
-# Deprecated git integration backend of "app-emacs/magit".
-# No longer supported by upstream. Fails to compile (bug 928920).
-# Removal on 2024-07-04.
-app-emacs/libegit2
-
-# Mike Gilbert <floppym@gentoo.org> (2024-06-01)
-# Abandoned upstream. No Gentoo maintainer since 2021.
-# Plugin system seems quite broken (bug 887119).
-# Removal on 2024-07-01.
-sys-fs/reiser4progs
-sys-libs/libaal
-
-# Hans de Graaff <graaff@gentoo.org> (2024-06-01)
-# Old ruby31-only slots. Please use a newer slot of these
-# packages. Masked for removal on 2024-07-01.
-dev-ruby/elasticsearch:6.8.3
-dev-ruby/elasticsearch-api:6.8.3
-dev-ruby/elasticsearch-transport:6.8.3
-dev-ruby/mimemagic:0
-dev-ruby/puppet_forge:2
-dev-ruby/puppet_forge:4
-dev-ruby/rspec-rails:5
-
 # Arthur Zamarin <arthurzam@gentoo.org> (2024-05-31)
 # EAPI=6, maintainer-needed, incorrect LICENSE, fails to compile with
 # clang.
-# Removal on 2024-06-30.  Bugs #933241, #889912, #880267, #562822, #930500.
+# Removal on 2024-07-09.  Bugs #933241, #889912, #880267, #562822, #930500.
 net-mail/gnubiff
-
-# Arthur Zamarin <arthurzam@gentoo.org> (2024-05-31)
-# EAPI=6, no activity upstream, maintianer-needed.
-# Removal on 2024-06-30.  Bugs #933239, #828068.
-app-emulation/phpvirtualbox
-
-# Sam James <sam@gentoo.org> (2024-05-29)
-# OpenPGP key of malicious upstream xz co-maintainer. This key is no longer
-# used by any ebuilds in tree. Removal on 2024-06-29. This package was already
-# masked a while ago but is now being removed. See the bug for details
-# on the gap. Bug #928134 (GLSA-202403-04).
-sec-keys/openpgp-keys-jiatan
 
 # Sam James <sam@gentoo.org> (2024-05-28)
 # Breaks reverse dependencies like protobuf-c (bug #932857) and protobuf-26.1
@@ -548,12 +556,6 @@ sec-keys/openpgp-keys-jiatan
 # for protobuf because of its abseil dependency - see the discussion in bug #912819.
 ~dev-libs/protobuf-26.1
 ~dev-cpp/abseil-cpp-20240116.2
-
-# Hans de Graaff <graaff@gentoo.org> (2024-05-26)
-# Upstream is gone. No longer compiles with modern C compilers. Last
-# release in 2011. No reverse dependencies. Masked for removal on
-# 20240-06-26.
-dev-ruby/uconv
 
 # Sam James <sam@gentoo.org> (2024-04-28)
 # Masked for testing. Tracker bug: bug #930805.
@@ -596,17 +598,6 @@ sec-keys/openpgp-keys-jiatan
 # Masked for testing.
 # Test failure in watchpoints.dem, undefined function FresnelC.
 ~sci-visualization/gnuplot-6.0.0
-
-# Patrick Lauer <patrick@gentoo.org> (2023-12-23)
-# ROCm-6 builds but has runtime issues for me
->=dev-libs/roct-thunk-interface-6.0.0
->=dev-libs/rocr-runtime-6.0.0
->=dev-libs/rocm-comgr-6.0.0
->=dev-libs/rocm-device-libs-6.0.0
->=dev-libs/rocm-opencl-runtime-6.0.0
->=dev-util/hipcc-6.0.0
->=dev-util/hip-6.0.0
->=dev-util/rocminfo-6.0.0
 
 # Sam James <sam@gentoo.org> (2023-12-14)
 # Gentoo's kernel maintainers have decided to discontinue gentoo-sources and
@@ -669,7 +660,7 @@ sec-keys/openpgp-keys-jiatan
 # Sam James <sam@gentoo.org> (2023-05-10)
 # Lots of package breakage as usual for new versions. Masked until most/all
 # reverse dependencies are fixed. Tracker bug is bug #906077.
-=dev-libs/libfmt-10*
+>=dev-libs/libfmt-10
 
 # Ionen Wolkens <ionen@gentoo.org> (2023-03-30)
 # NVIDIA dropped support for the 390.xx branch in December 2022[1].

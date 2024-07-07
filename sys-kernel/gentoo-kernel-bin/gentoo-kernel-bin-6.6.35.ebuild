@@ -38,7 +38,7 @@ SRC_URI+="
 "
 S=${WORKDIR}
 
-KEYWORDS="~amd64 ~arm64 ~ppc64 ~x86"
+KEYWORDS="amd64 arm64 ppc64 x86"
 
 RDEPEND="
 	!sys-kernel/gentoo-kernel:${SLOT}
@@ -133,6 +133,9 @@ src_install() {
 			> "${uki}" || die
 		fi
 	fi
+
+	# Overwrite the identifier in the prebuilt package
+	echo "${CATEGORY}/${PF}:${SLOT}" > "${kernel_dir}/dist-kernel" || die
 
 	mv "${BINPKG}"/image/{lib,usr} "${ED}"/ || die
 

@@ -52,6 +52,7 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-multilib-syspath.patch
 	"${FILESDIR}"/${PN}-powerpc-darwin.patch
 	"${FILESDIR}"/${P}-s390x.patch
+	"${FILESDIR}"/${P}-o-flag-munging.patch
 )
 
 MULTILIB_CHOST_TOOLS=(
@@ -82,6 +83,14 @@ pkg_setup() {
 src_prepare() {
 	default
 	eautoreconf
+}
+
+src_configure() {
+	# Sensitive to optimisation; parts of the codebase are built with
+	# -O0 already. Don't risk it with UB.
+	strip-flags
+
+	multilib-minimal_src_configure
 }
 
 multilib_src_configure() {
