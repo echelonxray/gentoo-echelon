@@ -32,6 +32,7 @@ RDEPEND="
 	|| (
 		>=sys-apps/sysvinit-2.87-r3
 		sys-apps/openrc[sysv-utils(-),selinux?]
+		sys-apps/openrc-navi[sysv-utils(-),selinux?]
 		sys-apps/systemd[sysv-utils]
 		sys-apps/s6-linux-init[sysv-utils(-)]
 	)
@@ -63,6 +64,8 @@ QA_MULTILIB_PATHS="usr/lib/dracut/.*"
 
 PATCHES=(
 	"${FILESDIR}"/gentoo-ldconfig-paths-r1.patch
+	# Gentoo specific acct-user and acct-group conf adjustments
+	"${FILESDIR}"/${PN}-103-acct-user-group-gentoo.patch
 )
 
 src_configure() {
