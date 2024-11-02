@@ -21,19 +21,21 @@ else
 		https://curl.se/download/${P}.tar.xz
 		verify-sig? ( https://curl.se/download/${P}.tar.xz.asc )
 	"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
 fi
 
 LICENSE="BSD curl ISC test? ( BSD-4 )"
 SLOT="0"
-IUSE="+adns +alt-svc brotli debug +ftp gnutls gopher +hsts +http2 http3 idn +imap kerberos ldap mbedtls +openssl +pop3"
-IUSE+=" +psl +progress-meter quic rtmp rustls samba +smtp ssh ssl sslv3 static-libs test telnet +tftp websockets zstd"
+IUSE="+adns +alt-svc brotli debug +ftp gnutls gopher +hsts +http2 +http3 idn +imap kerberos ldap mbedtls +openssl +pop3"
+IUSE+=" +psl +progress-meter +quic rtmp rustls samba +smtp ssh ssl sslv3 static-libs test telnet +tftp +websockets zstd"
 # These select the default tls implementation / which quic impl to use
-IUSE+=" curl_quic_openssl curl_quic_ngtcp2 curl_ssl_gnutls curl_ssl_mbedtls +curl_ssl_openssl curl_ssl_rustls"
+IUSE+=" +curl_quic_openssl curl_quic_ngtcp2 curl_ssl_gnutls curl_ssl_mbedtls +curl_ssl_openssl curl_ssl_rustls"
 RESTRICT="!test? ( test )"
 
 # Only one default ssl / quic provider can be enabled
 # The default provider needs its USE satisfied
+# HTTP/3 and MultiSSL are mutually exclusive; it's not clear if MultiSSL offers any benefit at all in the modern day.
+# https://github.com/curl/curl/commit/65ece771f4602107d9cdd339dff4b420280a2c2e
 REQUIRED_USE="
 	quic? (
 		^^ (
@@ -41,6 +43,7 @@ REQUIRED_USE="
 			curl_quic_ngtcp2
 		)
 		http3
+		ssl
 	)
 	ssl? (
 		^^ (
@@ -50,8 +53,20 @@ REQUIRED_USE="
 			curl_ssl_rustls
 		)
 	)
-	curl_quic_openssl? ( openssl )
-	curl_quic_ngtcp2? ( gnutls )
+	curl_quic_openssl? (
+		curl_ssl_openssl
+		quic
+		!gnutls
+		!mbedtls
+		!rustls
+	)
+	curl_quic_ngtcp2? (
+		curl_ssl_gnutls
+		quic
+		!mbedtls
+		!openssl
+		!rustls
+	)
 	curl_ssl_gnutls? ( gnutls )
 	curl_ssl_mbedtls? ( mbedtls )
 	curl_ssl_openssl? ( openssl )
@@ -63,7 +78,7 @@ REQUIRED_USE="
 # particulary for fast-moving targets like HTTP/2 and TCP/2 e.g.:
 # - https://github.com/curl/curl/blob/master/docs/INTERNALS.md (core dependencies + minimum versions)
 # - https://github.com/curl/curl/blob/master/docs/HTTP3.md (example of a feature that moves quickly)
-# - https://github.com/curl/curl/blob/master/.github/workflows/quiche-linux.yml (CI/CD for TCP/2)
+# - https://github.com/curl/curl/blob/master/.github/workflows/http3-linux.yml (CI/CD for TCP/2)
 # However 'supported' vs 'works' are two entirely different things; be sane but
 # don't be afraid to require a later version.
 # ngtcp2 = https://bugs.gentoo.org/912029 - can only build with one tls backend at a time.
@@ -71,9 +86,9 @@ RDEPEND="
 	>=sys-libs/zlib-1.1.4[${MULTILIB_USEDEP}]
 	adns? ( >=net-dns/c-ares-1.16.0:=[${MULTILIB_USEDEP}] )
 	brotli? ( app-arch/brotli:=[${MULTILIB_USEDEP}] )
-	http2? ( >=net-libs/nghttp2-1.12.0:=[${MULTILIB_USEDEP}] )
+	http2? ( >=net-libs/nghttp2-1.15.0:=[${MULTILIB_USEDEP}] )
 	http3? ( >=net-libs/nghttp3-1.1.0[${MULTILIB_USEDEP}] )
-	idn? ( net-dns/libidn2:=[static-libs?,${MULTILIB_USEDEP}] )
+	idn? ( >=net-dns/libidn2-2.0.0:=[static-libs?,${MULTILIB_USEDEP}] )
 	kerberos? ( >=virtual/krb5-0-r1[${MULTILIB_USEDEP}] )
 	ldap? ( >=net-nds/openldap-2.0.0:=[static-libs?,${MULTILIB_USEDEP}] )
 	psl? ( net-libs/libpsl[${MULTILIB_USEDEP}] )
@@ -116,7 +131,7 @@ BDEPEND="
 	verify-sig? ( sec-keys/openpgp-keys-danielstenberg )
 "
 
-DOCS=( CHANGES README docs/{FEATURES.md,INTERNALS.md,FAQ,BUGS.md,CONTRIBUTE.md} )
+DOCS=( README docs/{FEATURES.md,INTERNALS.md,FAQ,BUGS.md,CONTRIBUTE.md} )
 
 MULTILIB_WRAPPED_HEADERS=(
 	/usr/include/curl/curlbuild.h
@@ -330,7 +345,7 @@ multilib_src_test() {
 	# See https://github.com/curl/curl/blob/master/tests/runtests.pl#L5721
 	# -n: no valgrind (unreliable in sandbox and doesn't work correctly on all arches)
 	# -v: verbose
-	# -a: keep going on failure (so we see everything which breaks, not just 1st test)
+	# -a: keep going on failure (so we see everything that breaks, not just 1st test)
 	# -k: keep test files after completion
 	# -am: automake style TAP output
 	# -p: print logs if test fails

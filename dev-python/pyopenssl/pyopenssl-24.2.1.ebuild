@@ -19,7 +19,7 @@ HOMEPAGE="
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="amd64 arm arm64 ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
 	<dev-python/cryptography-44[${PYTHON_USEDEP}]
@@ -45,15 +45,7 @@ src_test() {
 		tests/test_ssl.py::TestContext::test_set_default_verify_paths
 	)
 
-	# test for 32-bit time_t
-	"$(tc-getCC)" ${CFLAGS} ${CPPFLAGS} -c -x c - -o /dev/null <<-EOF &>/dev/null
-		#include <sys/types.h>
-		int test[sizeof(time_t) >= 8 ? 1 : -1];
-	EOF
-
-	if [[ ${?} -eq 0 ]]; then
-		einfo "time_t is at least 64-bit long"
-	else
+	if ! tc-has-64bit-time_t; then
 		einfo "time_t is smaller than 64 bits, will skip broken tests"
 		EPYTEST_DESELECT+=(
 			tests/test_crypto.py::TestX509StoreContext::test_verify_with_time

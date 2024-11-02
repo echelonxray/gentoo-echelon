@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{10..13} )
 inherit cmake-multilib flag-o-matic multiprocessing python-any-r1
 
 if [[ ${PV} == *9999* ]]; then
@@ -14,9 +14,9 @@ else
 	# chromium-tools.git/generate-libaom-test-tarball.sh
 	SRC_URI="
 		https://storage.googleapis.com/aom-releases/${P}.tar.gz
-		test? ( https://dev.gentoo.org/~sam/distfiles/${CATEGORY}/${PN}/${P}-testdata.tar.xz )
+		test? ( https://deps.gentoo.zip/${CATEGORY}/${P}-testdata.tar.xz )
 	"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~loong ~ppc64 ~riscv ~x86"
+	KEYWORDS="~alpha amd64 arm arm64 ~loong ppc64 ~riscv x86"
 fi
 
 DESCRIPTION="Alliance for Open Media AV1 Codec SDK"
@@ -50,6 +50,7 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-3.4.0-posix-c-source-ftello.patch
 	"${FILESDIR}"/${PN}-3.7.0-allow-fortify-source.patch
 	"${FILESDIR}"/${PN}-3.8.1-tests-parallel.patch
+	"${FILESDIR}"/${PN}-3.9.1-gcc15-cstdint.patch
 )
 
 multilib_src_configure() {

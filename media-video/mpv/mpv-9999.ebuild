@@ -46,7 +46,7 @@ RESTRICT="!test? ( test )"
 
 COMMON_DEPEND="
 	media-libs/libass:=[fontconfig]
-	>=media-libs/libplacebo-6.338.2:=[opengl?,vulkan?]
+	>=media-libs/libplacebo-7.349.0:=[opengl?,vulkan?]
 	>=media-video/ffmpeg-6.1:=[encode,soc(-)?,threads,vaapi?,vdpau?]
 	X? (
 		x11-libs/libX11
@@ -115,6 +115,7 @@ DEPEND="
 	X? ( x11-base/xorg-proto )
 	dvb? ( sys-kernel/linux-headers )
 	nvenc? ( media-libs/nv-codec-headers )
+	vulkan? ( dev-util/vulkan-headers )
 	wayland? ( dev-libs/wayland-protocols )
 "
 BDEPEND="

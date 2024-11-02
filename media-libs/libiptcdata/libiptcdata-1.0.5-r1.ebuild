@@ -16,7 +16,7 @@ SRC_URI="https://github.com/ianw/${PN}/releases/download/release_1_0_5/${P}.tar.
 
 LICENSE="LGPL-2"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~loong ~ppc ~ppc64 ~riscv ~sparc ~x86"
+KEYWORDS="~alpha amd64 ~arm arm64 ~loong ppc ppc64 ~riscv sparc x86"
 IUSE="doc examples nls python"
 
 RDEPEND="
@@ -41,6 +41,13 @@ src_prepare() {
 	eautoreconf
 	if use python; then
 		cd python || die
+		# Bug #936589: compiling from inside the 'python' sub-directory
+		# might set that as the top source directory, and not ${S}, but
+		# "${S}/libiptcdata" is required to find headers and libraries.
+		# Symbolic linking "../libiptcdata" is a possible fix.  Another
+		# way is adding in python/setup.py, under iptcdata's Extension,
+		# "include_dirs=['..']" and "library_dirs=['../libiptcdata']".
+		ln -s "../${PN}" . || die
 		distutils-r1_src_prepare
 	fi
 }

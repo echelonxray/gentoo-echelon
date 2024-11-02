@@ -30,7 +30,7 @@ else
 	MY_P="${P/_rc/RC}"
 	SRC_URI="https://grass.osgeo.org/${MY_PM}/source/${MY_P}.tar.gz"
 	if [[ ${PV} != *_rc* ]] ; then
-		KEYWORDS="~amd64 ~ppc ~x86"
+		KEYWORDS="amd64 ~ppc ~x86"
 	fi
 
 	S="${WORKDIR}/${MY_P}"
@@ -39,7 +39,8 @@ fi
 IUSE="blas bzip2 cxx fftw geos lapack las mysql netcdf nls odbc opencl opengl openmp pdal png postgres readline sqlite threads tiff truetype X zstd"
 REQUIRED_USE="
 	${PYTHON_REQUIRED_USE}
-	opengl? ( X )"
+	opengl? ( X )
+	pdal? ( cxx )"
 
 RDEPEND="
 	${PYTHON_DEPS}

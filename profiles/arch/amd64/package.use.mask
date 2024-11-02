@@ -17,6 +17,26 @@
 
 #--- END OF EXAMPLES ---
 
+# Sam James <sam@gentoo.org> (2024-10-29)
+# Only available on amd64 for now
+dev-libs/elfutils -stacktrace
+
+# Viorel Munteanu <ceamac@gentoo.org> (2024-10-23)
+# Dependency dev-python/asyncssh is keyworded here.
+net-misc/dropbear -test
+
+# Michał Górny <mgorny@gentoo.org> (2024-10-23)
+# Debug-enabled binary packages are built for a subset of architectures.
+sys-kernel/gentoo-kernel-bin -debug
+
+# Michal Privoznik <michal.privoznik@gmail.com> (2024-10-10)
+# virtualbox is available here
+app-emulation/libvirt -virtualbox
+
+# Patrick McLean <chutzpah@gentoo.org> (2024-09-23)
+# Only supported on x86/amd64 (bug #940014).
+net-misc/lldpd -seccomp
+
 # orbea <orbea@riseup.net> (2024-07-19)
 # Unmask the dynarec flag which has amd64 asm.
 games-emulation/rmg -dynarec
@@ -70,10 +90,6 @@ app-admin/syslog-ng -mqtt
 # Refind is only available on a subset of arches
 sys-kernel/installkernel -refind
 
-# Ionen Wolkens <ionen@gentoo.org> (2024-01-27)
-# dev-python/PyQt6 and dev-python/pyside6 are keyworded here
-dev-python/QtPy -pyqt6 -pyside6
-
 # Michal Privoznik <michal.privoznik@gmail.com> (2024-01-21)
 # virtiofsd is available here
 app-emulation/libvirt -virtiofsd
@@ -92,8 +108,8 @@ sys-kernel/gentoo-kernel -generic-uki
 sys-kernel/gentoo-kernel-bin -generic-uki
 
 # Ionen Wolkens <ionen@gentoo.org> (2023-12-02)
-# dev-qt/qtwebengine:6 is keyworded here.
-dev-python/PyQt6 -pdfium
+# dev-qt/qtwebengine:6 and dev-qt/qtremoteobjects:6 are keyworded here.
+dev-python/PyQt6 -pdfium -remoteobjects
 
 # Jimi Huotari <chiitoo@gentoo.org> (2023-11-22)
 # Unmask on amd64.
@@ -123,10 +139,6 @@ dev-qt/qtbase -renderdoc
 # Sam James <sam@gentoo.org> (2023-09-07)
 # media-libs/roc-toolkit is not keyworded in most places
 media-video/pipewire -roc
-
-# Matt Jolly <kangie@gentoo.org> (2023-08-10)
-# 'ssl' USE required for curl's nghttp3/quic support
-net-libs/ngtcp2 -ssl
 
 # Matt Jolly <kangie@gentoo.org> (2023-08-10)
 # nghttp3 has been tested to work on amd64
@@ -232,7 +244,6 @@ dev-util/diffoscope -haskell
 
 # Ionen Wolkens <ionen@gentoo.org> (2021-07-01)
 # gui-libs/egl-wayland with nvidia-drivers is supported on this arch.
-x11-base/xwayland -video_cards_nvidia
 x11-wm/mutter -video_cards_nvidia
 
 # Michael Orlitzky <mjo@gentoo.org> (2021-03-27)
@@ -257,7 +268,7 @@ sys-libs/compiler-rt-sanitizers -asan -dfsan -lsan -msan -hwasan -tsan
 sys-libs/compiler-rt-sanitizers -ubsan -safestack -cfi -scudo
 sys-libs/compiler-rt-sanitizers -gwp-asan
 sys-libs/compiler-rt-sanitizers -libfuzzer -memprof -orc -profile -xray
-sys-libs/compiler-rt-sanitizers -ctx-profile
+sys-libs/compiler-rt-sanitizers -ctx-profile -nsan -rtsan
 
 # Sam James <sam@gentoo.org> (2020-10-24)
 # asm redc is only available on amd64,

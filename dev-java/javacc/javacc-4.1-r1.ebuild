@@ -15,7 +15,7 @@ S="${WORKDIR}/javacc-release_${PV//./}"
 
 LICENSE="BSD-2"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~x86"
+KEYWORDS="amd64 arm64 ppc64"
 
 BDEPEND=">=dev-java/ant-1.10.14:0"
 
@@ -35,7 +35,7 @@ src_prepare() {
 	default #780585
 	java-pkg-2_src_prepare
 	java-pkg_clean ! -path "./bootstrap/*"
-	java-pkg_jar-from --into lib/junit3.8.1 junit
+	java-pkg_jar-from --build-only --into lib/junit3.8.1 junit
 }
 
 src_compile() {
