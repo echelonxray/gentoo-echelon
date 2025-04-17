@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit autotools pam tmpfiles toolchain-funcs
+inherit pam tmpfiles toolchain-funcs
 
 MY_P="${P/_/}"
 MY_P="${MY_P/beta/b}"
@@ -12,11 +12,11 @@ DESCRIPTION="Allows users or groups to run commands as other users"
 HOMEPAGE="https://www.sudo.ws/"
 
 if [[ ${PV} == 9999 ]] ; then
-	inherit mercurial
+	inherit autotools mercurial
 	EHG_REPO_URI="https://www.sudo.ws/repos/sudo"
 else
 	VERIFY_SIG_OPENPGP_KEY_PATH=/usr/share/openpgp-keys/sudo.ws.asc
-	inherit verify-sig
+	inherit libtool verify-sig
 
 	uri_prefix=
 	case ${P} in
@@ -25,10 +25,8 @@ else
 
 	SRC_URI="
 		https://www.sudo.ws/sudo/dist/${uri_prefix}${MY_P}.tar.gz
-		ftp://ftp.sudo.ws/pub/sudo/${uri_prefix}${MY_P}.tar.gz
 		verify-sig? (
 			https://www.sudo.ws/sudo/dist/${uri_prefix}${MY_P}.tar.gz.sig
-			ftp://ftp.sudo.ws/pub/sudo/${uri_prefix}${MY_P}.tar.gz.sig
 		)
 	"
 
@@ -63,7 +61,7 @@ DEPEND="
 	selinux? ( sys-libs/libselinux )
 	skey? ( >=sys-auth/skey-1.1.5-r1 )
 	ssl? ( dev-libs/openssl:= )
-	sssd? ( sys-auth/sssd[sudo] )
+	sssd? ( sys-auth/sssd[sudo(+)] )
 "
 RDEPEND="
 	${DEPEND}
@@ -86,16 +84,14 @@ REQUIRED_USE="
 
 MAKEOPTS+=" SAMPLES="
 
-PATCHES=(
-	"${FILESDIR}"/${PN}-1.9.16-allow-disabling-secure-path.patch
-)
-
 src_prepare() {
 	default
 
-	# eautoreconf temporarily for allow-disabling-secure-path patch
-	# in 1.9.16; revert to elibtoolize once that is gone.
-	eautoreconf
+	if [[ ${PV} == 9999 ]] ; then
+		eautoreconf
+	else
+		elibtoolize
+	fi
 }
 
 set_secure_path() {

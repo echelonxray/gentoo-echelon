@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # genkernel-9999        -> latest Git branch "master"
@@ -8,7 +8,7 @@ EAPI=8
 
 PYTHON_COMPAT=( python3_{10..12} )
 
-inherit bash-completion-r1 python-single-r1
+inherit bash-completion-r1 eapi9-ver python-single-r1
 
 # Whenever you bump a GKPKG, check if you have to move
 # or add new patches!
@@ -21,7 +21,7 @@ VERSION_COREUTILS="9.4"
 VERSION_CRYPTSETUP="2.6.1"
 VERSION_DMRAID="1.0.0.rc16-3"
 VERSION_DROPBEAR="2022.83"
-VERSION_EUDEV="3.2.10"
+VERSION_EUDEV="3.2.14"
 VERSION_EXPAT="2.5.0"
 VERSION_E2FSPROGS="1.47.0"
 VERSION_FUSE="2.9.9"
@@ -107,7 +107,7 @@ HOMEPAGE="https://wiki.gentoo.org/wiki/Genkernel https://gitweb.gentoo.org/proj/
 
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="ibm +firmware"
+IUSE="ibm +firmware systemd"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 # Note:
@@ -138,6 +138,7 @@ RDEPEND="${PYTHON_DEPS}
 "
 
 PATCHES=(
+	"${FILESDIR}"/genkernel-4.3.16-globbing-workaround.patch
 )
 
 src_unpack() {
@@ -197,6 +198,14 @@ src_install() {
 	insinto /usr/share/genkernel/distfiles
 	doins ${A/${P}.tar.xz/}
 	popd &>/dev/null || die
+
+	# Workaround for bug 944499, for now this patch will live in FILESDIR and is
+	# conditionally installed but we could add it to genkernel.git and conditionally
+	# remove it here instead.
+	if ! use systemd; then
+		insinto /usr/share/genkernel/patches/lvm/${VERSION_LVM}/
+		doins "${FILESDIR}"/lvm2-2.03.20-dm_lvm_rules_no_systemd_v2.patch
+	fi
 }
 
 pkg_postinst() {
@@ -208,21 +217,15 @@ pkg_postinst() {
 	#elog 'https://wiki.gentoo.org/wiki/Genkernel'
 	#echo
 
-	local replacing_version
-	for replacing_version in ${REPLACING_VERSIONS} ; do
-		if ver_test "${replacing_version}" -lt 4 ; then
-			# This is an upgrade which requires user review
+	if ver_replacing -lt 4 ; then
+		# This is an upgrade which requires user review
 
-			ewarn ""
-			ewarn "Genkernel v4.x is a new major release which touches"
-			ewarn "nearly everything. Be careful, read updated manpage"
-			ewarn "and pay special attention to program output regarding"
-			ewarn "changed kernel command-line parameters!"
-
-			# Show this elog only once
-			break
-		fi
-	done
+		ewarn ""
+		ewarn "Genkernel v4.x is a new major release which touches"
+		ewarn "nearly everything. Be careful, read updated manpage"
+		ewarn "and pay special attention to program output regarding"
+		ewarn "changed kernel command-line parameters!"
+	fi
 
 	if [[ $(find /boot -name 'kernel-genkernel-*' 2>/dev/null | wc -l) -gt 0 ]] ; then
 		ewarn ''

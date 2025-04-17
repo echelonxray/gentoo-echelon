@@ -1,4 +1,4 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -8,19 +8,19 @@ inherit cmake vala xdg readme.gentoo-r1
 DESCRIPTION="Modern Jabber/XMPP Client using GTK+/Vala"
 HOMEPAGE="https://dino.im"
 
-LICENSE="GPL-3"
-SLOT="0"
-IUSE="+gpg +http +omemo +notification-sound +rtp test"
-RESTRICT="!test? ( test )"
-
 MY_REPO_URI="https://github.com/dino/dino"
-if [[ ${PV} == "9999" ]]; then
+if [[ ${PV} == *9999* ]]; then
 	EGIT_REPO_URI="${MY_REPO_URI}.git"
 	inherit git-r3
 else
-	KEYWORDS="~amd64 ~arm64"
 	SRC_URI="${MY_REPO_URI}/releases/download/v${PV}/${P}.tar.gz"
+	KEYWORDS="~amd64 ~arm64"
 fi
+
+LICENSE="GPL-3"
+SLOT="0"
+IUSE="+gpg +http +notification-sound +omemo +rtp test"
+RESTRICT="!test? ( test )"
 
 RDEPEND="
 	dev-db/sqlite:3
@@ -32,15 +32,15 @@ RDEPEND="
 	media-libs/graphene
 	net-libs/glib-networking
 	net-libs/gnutls:=
-	>=net-libs/libnice-0.1.15
+	>=net-libs/libnice-0.1.22-r1
 	net-libs/libsignal-protocol-c
 	net-libs/libsrtp:2=
 	x11-libs/cairo
 	x11-libs/gdk-pixbuf:2
 	x11-libs/pango
 	gpg? ( app-crypt/gpgme:= )
-	http? ( net-libs/libsoup:2.4 )
-	notification-sound? ( media-libs/libcanberra:0[sound] )
+	http? ( net-libs/libsoup:3.0 )
+	notification-sound? ( media-libs/libcanberra:0[sound(+)] )
 	omemo? (
 		dev-libs/libgcrypt:=
 		media-gfx/qrencode:=
@@ -48,11 +48,10 @@ RDEPEND="
 	rtp? (
 		media-libs/gst-plugins-base:1.0
 		media-libs/gstreamer:1.0
-		media-libs/webrtc-audio-processing:0
+		media-libs/webrtc-audio-processing:1
 	)
 "
-DEPEND="
-	${RDEPEND}
+DEPEND="${RDEPEND}
 	media-libs/gst-plugins-base
 	media-libs/gstreamer
 "
@@ -77,7 +76,7 @@ src_configure() {
 		"-DENABLED_PLUGINS=$(local IFS=";"; echo "${enabled_plugins[*]}")"
 		"-DDISABLED_PLUGINS=$(local IFS=";"; echo "${disabled_plugins[*]}")"
 		"-DVALA_EXECUTABLE=${VALAC}"
-		"-DSOUP_VERSION=2"
+		"-DSOUP_VERSION=3" # fixed bug #948374
 		"-DBUILD_TESTS=$(usex test)"
 	)
 

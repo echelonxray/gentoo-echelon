@@ -1,5 +1,9 @@
-# Copyright 2023-2024 Gentoo Authors
+# Copyright 2023-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+# Nowa Ammerlaan <nowa@gentoo.org> (2025-02-03)
+# QtWebView is masked here
+dev-python/pyside webview
 
 # Michał Górny <mgorny@gentoo.org> (2024-06-05)
 # media-libs/exempi is seriously broken on big endian platforms.
@@ -13,6 +17,7 @@ media-libs/gexiv2 test
 # matoro <matoro_gentoo@matoro.tk> (2023-11-16)
 # media-libs/libvpx casualties (#700902)
 media-video/ffmpeg vpx
+media-video/ffmpeg-compat vpx
 www-client/firefox system-libvpx
 www-client/seamonkey system-libvpx
 media-video/vlc vpx
@@ -24,13 +29,15 @@ media-plugins/gst-plugins-meta vpx
 net-p2p/ktorrent rss webengine
 net-irc/quassel urlpreview
 kde-apps/kalarm pim
-dev-python/QtPy pyqt5
+dev-python/qtpy pyqt5
 gnome-base/gnome extras
+games-engines/scummvm vpx
 
 # matoro <matoro_gentoo@matoro.tk> (2023-11-16)
 # media-libs/libaom casualties
 # https://bugs.chromium.org/p/aomedia/issues/detail?id=3487
 media-video/ffmpeg libaom
+media-video/ffmpeg-compat libaom
 www-client/firefox system-av1
 www-client/seamonkey system-av1
 media-video/vlc aom
@@ -42,6 +49,7 @@ mail-client/thunderbird system-av1
 # dev-libs/weston casualties (#833010)
 # https://gitlab.freedesktop.org/wayland/weston/-/issues/739
 gui-libs/gtk wayland
+app-i18n/ibus wayland
 gnome-base/gnome-control-center wayland
 sys-apps/xdg-desktop-portal-gnome wayland
 net-libs/webkit-gtk:6 wayland

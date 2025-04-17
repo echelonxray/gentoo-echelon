@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # genkernel-9999        -> latest Git branch "master"
@@ -8,7 +8,7 @@ EAPI=8
 
 PYTHON_COMPAT=( python3_{10..12} )
 
-inherit bash-completion-r1 python-single-r1
+inherit bash-completion-r1 eapi9-ver python-single-r1
 
 # Whenever you bump a GKPKG, check if you have to move
 # or add new patches!
@@ -99,7 +99,7 @@ if [[ ${PV} == 9999* ]] ; then
 else
 	SRC_URI="https://dev.gentoo.org/~bkohler/dist/${P}.tar.xz
 		${COMMON_URI}"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+	KEYWORDS="~alpha amd64 arm arm64 hppa ~mips ppc ppc64 ~riscv ~s390 sparc x86"
 fi
 
 DESCRIPTION="Gentoo automatic kernel building scripts"
@@ -208,21 +208,15 @@ pkg_postinst() {
 	#elog 'https://wiki.gentoo.org/wiki/Genkernel'
 	#echo
 
-	local replacing_version
-	for replacing_version in ${REPLACING_VERSIONS} ; do
-		if ver_test "${replacing_version}" -lt 4 ; then
-			# This is an upgrade which requires user review
+	if ver_replacing -lt 4 ; then
+		# This is an upgrade which requires user review
 
-			ewarn ""
-			ewarn "Genkernel v4.x is a new major release which touches"
-			ewarn "nearly everything. Be careful, read updated manpage"
-			ewarn "and pay special attention to program output regarding"
-			ewarn "changed kernel command-line parameters!"
-
-			# Show this elog only once
-			break
-		fi
-	done
+		ewarn ""
+		ewarn "Genkernel v4.x is a new major release which touches"
+		ewarn "nearly everything. Be careful, read updated manpage"
+		ewarn "and pay special attention to program output regarding"
+		ewarn "changed kernel command-line parameters!"
+	fi
 
 	if [[ $(find /boot -name 'kernel-genkernel-*' 2>/dev/null | wc -l) -gt 0 ]] ; then
 		ewarn ''

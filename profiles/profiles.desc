@@ -1,4 +1,4 @@
-# Copyright 2003-2024 Gentoo Authors
+# Copyright 2003-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 #############################################
@@ -67,8 +67,8 @@ amd64		default/linux/amd64/23.0/no-multilib/prefix			exp
 amd64		default/linux/amd64/23.0/no-multilib/prefix/kernel-2.6.32+	exp
 amd64		default/linux/amd64/23.0/no-multilib/prefix/kernel-2.6.16+	exp
 amd64		default/linux/amd64/23.0/no-multilib/prefix/kernel-3.2+		exp
-amd64		default/linux/amd64/23.0/llvm					stable
-amd64		default/linux/amd64/23.0/llvm/systemd				stable
+amd64		default/linux/amd64/23.0/llvm					dev
+amd64		default/linux/amd64/23.0/llvm/systemd				dev
 amd64		default/linux/amd64/23.0/hardened				stable
 amd64		default/linux/amd64/23.0/hardened/systemd			stable
 amd64		default/linux/amd64/23.0/hardened/selinux			stable
@@ -85,7 +85,7 @@ amd64		default/linux/amd64/23.0/split-usr/no-multilib/prefix		exp
 amd64		default/linux/amd64/23.0/split-usr/no-multilib/prefix/kernel-2.6.32+	exp
 amd64		default/linux/amd64/23.0/split-usr/no-multilib/prefix/kernel-2.6.16+	exp
 amd64		default/linux/amd64/23.0/split-usr/no-multilib/prefix/kernel-3.2+	exp
-amd64		default/linux/amd64/23.0/split-usr/llvm				stable
+amd64		default/linux/amd64/23.0/split-usr/llvm				dev
 amd64		default/linux/amd64/23.0/split-usr/hardened			stable
 amd64		default/linux/amd64/23.0/split-usr/hardened/selinux		stable
 
@@ -226,6 +226,7 @@ arm64		default/linux/arm64/17.0/llvm					exp
 arm64		default/linux/arm64/17.0/systemd/llvm/merged-usr		exp
 arm64		default/linux/arm64/23.0					stable
 arm64		default/linux/arm64/23.0/hardened				dev
+arm64		default/linux/arm64/23.0/hardened/systemd			dev
 arm64		default/linux/arm64/23.0/hardened/selinux			dev
 arm64		default/linux/arm64/23.0/hardened/selinux/systemd		dev
 arm64		default/linux/arm64/23.0/desktop				stable
@@ -576,6 +577,21 @@ x86		default/linux/x86/23.0/i686/split-usr/prefix			exp
 x86		default/linux/x86/23.0/i686/split-usr/prefix/kernel-2.6.32+	exp
 x86		default/linux/x86/23.0/i686/split-usr/prefix/kernel-2.6.16+	exp
 x86		default/linux/x86/23.0/i686/split-usr/prefix/kernel-3.2+	exp
+x86		default/linux/x86/23.0/i686/time64				exp
+x86		default/linux/x86/23.0/i686/time64/systemd			exp
+x86		default/linux/x86/23.0/i686/time64/hardened			exp
+x86		default/linux/x86/23.0/i686/time64/hardened/selinux		exp
+x86		default/linux/x86/23.0/i686/time64/desktop			exp
+x86		default/linux/x86/23.0/i686/time64/desktop/gnome		exp
+x86		default/linux/x86/23.0/i686/time64/desktop/gnome/systemd	exp
+x86		default/linux/x86/23.0/i686/time64/desktop/plasma		exp
+x86		default/linux/x86/23.0/i686/time64/desktop/plasma/systemd	exp
+x86		default/linux/x86/23.0/i686/time64/split-usr			exp
+x86		default/linux/x86/23.0/i686/time64/split-usr/hardened		exp
+x86		default/linux/x86/23.0/i686/time64/split-usr/hardened/selinux	exp
+x86		default/linux/x86/23.0/i686/time64/split-usr/desktop		exp
+x86		default/linux/x86/23.0/i686/time64/split-usr/desktop/gnome	exp
+x86		default/linux/x86/23.0/i686/time64/split-usr/desktop/plasma	exp
 x86		default/linux/x86/23.0/i486					stable
 x86		default/linux/x86/23.0/i486/systemd				stable
 x86		default/linux/x86/23.0/i486/hardened				dev

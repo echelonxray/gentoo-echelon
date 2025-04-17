@@ -1,11 +1,11 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # please keep this ebuild at EAPI 8 -- sys-apps/portage dep
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..13} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
 PYTHON_REQ_USE="threads(+)"
 
 inherit distutils-r1 pypi
@@ -27,14 +27,14 @@ RDEPEND="
 	<dev-python/charset-normalizer-4[${PYTHON_USEDEP}]
 	<dev-python/idna-4[${PYTHON_USEDEP}]
 	<dev-python/urllib3-3[${PYTHON_USEDEP}]
-	socks5? ( >=dev-python/PySocks-1.5.6[${PYTHON_USEDEP}] )
+	socks5? ( >=dev-python/pysocks-1.5.6[${PYTHON_USEDEP}] )
 "
 
 BDEPEND="
 	test? (
 		>=dev-python/pytest-httpbin-2.0.0[${PYTHON_USEDEP}]
 		dev-python/pytest-mock[${PYTHON_USEDEP}]
-		>=dev-python/PySocks-1.5.6[${PYTHON_USEDEP}]
+		>=dev-python/pysocks-1.5.6[${PYTHON_USEDEP}]
 		test-rust? (
 			dev-python/trustme[${PYTHON_USEDEP}]
 		)

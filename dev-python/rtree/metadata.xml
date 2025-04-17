@@ -6,8 +6,8 @@
         <name>Gentoo 3D Printer Project</name>
     </maintainer>
     <maintainer type="person">
-        <email>andrewammerlaan@gentoo.org</email>
-        <name>Andrew Ammerlaan</name>
+        <email>nowa@gentoo.org</email>
+        <name>Nowa Ammerlaan</name>
     </maintainer>
     <maintainer type="project">
         <email>python@gentoo.org</email>
@@ -20,6 +20,6 @@
     <upstream>
         <bugs-to>https://github.com/Toblerity/rtree/issues</bugs-to>
         <remote-id type="github">Toblerity/rtree</remote-id>
-        <remote-id type="pypi">Rtree</remote-id>
+        <remote-id type="pypi">rtree</remote-id>
     </upstream>
 </pkgmetadata>

@@ -1,4 +1,4 @@
-# Copyright 2020-2024 Gentoo Authors
+# Copyright 2020-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -28,7 +28,7 @@ RDEPEND="
 	dev-qt/qtcore:5
 	dev-qt/qtgui:5
 	dev-qt/qtwidgets:5
-	net-libs/mbedtls:=
+	net-libs/mbedtls:0=
 	virtual/libusb:1
 "
 DEPEND="
@@ -50,6 +50,7 @@ CHECKREQS_DISK_BUILD="2G"
 
 src_prepare() {
 	default
+
 	rm -r dependencies/{httplib,hidapi,libusb,mdns,json,mbedtls}* \
 		|| die "Failed to remove unneded deps"
 }

@@ -1,5 +1,37 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+# Cristian Othón Martínez Vera <cfuga@cfuga.mx> (2025-04-09)
+# dev-db/tinycdb is not keyworded here
+mail-mta/sendmail tinycdb
+
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-04-02)
+# Needs kde-frameworks/breeze-icons which is not keyworded here.
+net-irc/quassel system-icons
+
+# NRK <nrk@disroot.org> (2025-03-17)
+# media-libs/libyuv is not keyworded
+media-libs/libavif libyuv
+
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-03-08)
+# Needs kde-frameworks/{kwallet,ki18n,kconfig} stable
+dev-vcs/subversion kwallet
+
+# Alfred Wingate <parona@protonmail.com> (2025-02-22)
+# media-libs/zint is not keyworded here
+media-libs/zxing-cpp experimental
+
+# Sam James <sam@gentoo.org> (2025-01-04)
+# kde-plasma/kde-cli-tools not keyworded here
+x11-misc/xdg-utils plasma
+
+# Sam James <sam@gentoo.org> (2024-12-17)
+# dev-lang/ada-bootstrap exists here
+>=sys-devel/gcc-11 -ada
+
+# Andreas Sturmlechner <asturm@gentoo.org> (2024-12-10)
+# Depends on kde-plasma/kdesu-gui which is not keyworded here.
+sys-block/gparted kde
 
 # Arthur Zamarin <arthurzam@gentoo.org> (2024-10-11)
 # depends on java packages, not keyworded on arm
@@ -10,7 +42,7 @@ media-libs/opencv java
 net-misc/plowshare javascript
 sci-libs/gdal java
 
-# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2024-10-08)
+# Nowa Ammerlaan <nowa@gentoo.org> (2024-10-08)
 # Not all required dependencies are keyworded here
 sys-kernel/dracut test
 
@@ -35,25 +67,20 @@ games-emulation/rmg -dynarec
 # Abandoned upstream, does not take bug reports, unsupported in Gentoo.
 # Only remaining use is as a requirement for dev-lang/go on arm{,64}.
 # See #934149, #934151, #936022, #936021
-sys-devel/binutils -gold
-
-# Andreas Sturmlechner <asturm@gentoo.org> (2024-07-01)
-# USE="kf6compat,kaccounts" depends on kde-frameworks/purpose:6[webengine]
-# which is package.use.mask'ed on these arches. We cannot mask the
-# combination specifically but in reality kaccounts is useless without
-# additional dev-qt/qtwebengine revdeps.
-kde-frameworks/purpose:5 kaccounts
+<sys-devel/binutils-2.44 -gold
 
 # Sam James <sam@gentoo.org> (2024-06-13)
 # Needs as-yet-unkeyworded KF6 (bug #934215)
 app-crypt/pinentry qt6
-app-office/libreoffice qt6
+<=app-office/libreoffice-24.2.7.2 qt6
+>=app-office/libreoffice-24.2.7.2-r1 kde
 
-# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2024-06-01)
-# qtnetworkauth not yet keyworded here
-dev-python/pyside6 network-auth
+# Nowa Ammerlaan <nowa@gentoo.org> (2024-06-01)
+# qtnetworkauth, qtremoteobjects and qthttpserver not yet keyworded here
+dev-python/pyside network-auth httpserver remoteobjects
+dev-python/qtpy remoteobjects
 
-# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2024-03-21)
+# Nowa Ammerlaan <nowa@gentoo.org> (2024-03-21)
 # virt-firmware is keyworded here
 sys-kernel/installkernel -efistub
 
@@ -81,17 +108,13 @@ media-libs/zita-resampler cpu_flags_arm_neon
 # No sys-block/nbdkit on arm, yet
 app-emulation/libvirt nbd
 
-# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2024-01-13)
+# Nowa Ammerlaan <nowa@gentoo.org> (2024-01-13)
 # Unmask only where grub is keyworded
 sys-kernel/installkernel -grub
 
 # Marek Szuba <marecki@gentoo.org> (2023-12-05)
 # Needs USE=video_cards_amdgpu, currently masked on this arch
 >=sys-apps/fwupd-1.9.10 amdgpu
-
-# Leonardo Hernández Hernández <leohdz172@proton.me> (2023-11-15)
-# media-libs/shaderc in not keyworded
-media-video/ffmpeg shaderc
 
 # Jon Janzen <jon@jonjanzen.com> (2023-09-11)
 # librttopo has not been tested on this arch
@@ -109,7 +132,7 @@ sys-block/tgt rbd
 # media-libs/openpgl and media-libs/embree only supports amd64 and arm64
 media-gfx/blender embree openpgl
 
-# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2023-03-07)
+# Nowa Ammerlaan <nowa@gentoo.org> (2023-03-07)
 # nbval/nbclassic docs require pandoc which is not keyworded here yet
 dev-python/nbval doc
 dev-python/nbclassic doc
@@ -120,7 +143,7 @@ dev-python/nbclassic doc
 app-i18n/fcitx-libpinyin dictionary-manager
 dev-lang/idris2 test-full
 dev-python/cloudscraper test
-dev-python/QtPy test
+dev-python/qtpy test
 games-util/lgogdownloader gui
 net-irc/quassel urlpreview
 net-misc/fatrat bittorrent
@@ -156,6 +179,7 @@ app-text/enchant nuspell
 # Adel Kara Slimane <adel.ks@zegrapher.com> (2022-03-14)
 # Untested useflag on other arches, needs keywording
 media-video/ffmpeg vmaf
+media-video/ffmpeg-compat vmaf
 
 # Sam James <sam@gentoo.org> (2022-03-10)
 # Boost has support for ARM32
@@ -218,10 +242,10 @@ app-text/enchant voikko
 
 # Michał Górny <mgorny@gentoo.org> (2020-12-21)
 # Sanitizers supported on this architecture.
-sys-libs/compiler-rt-sanitizers -asan -lsan
-sys-libs/compiler-rt-sanitizers -ubsan -cfi -scudo
-sys-libs/compiler-rt-sanitizers -profile -xray
->=sys-libs/compiler-rt-sanitizers-16 -gwp-asan -libfuzzer -orc
+llvm-runtimes/compiler-rt-sanitizers -asan -lsan
+llvm-runtimes/compiler-rt-sanitizers -ubsan -cfi -scudo
+llvm-runtimes/compiler-rt-sanitizers -profile -xray
+>=llvm-runtimes/compiler-rt-sanitizers-16 -gwp-asan -libfuzzer -orc
 
 # Rick Farina <zerochaos@gentoo.org> (2020-12-18)
 # net-wireless/libxtrx et all needs testing
@@ -379,10 +403,6 @@ net-print/hplip -scanner kde
 # Missing keywords
 >=media-plugins/grilo-plugins-0.2.16 upnp-av
 
-# Alexis Ballier <aballier@gentoo.org> (2015-11-14)
-# MMAL is available on the Raspberry Pi (armv6 & armv7 so far)
-media-video/ffmpeg -mmal
-
 # Alexis Ballier <aballier@gentoo.org> (2015-04-02)
 # Needs ilmbase (openexr), which does not build and is masked on arm.
 media-libs/freeimage tiff
@@ -430,10 +450,10 @@ mail-filter/opendkim opendbx stats
 
 # S. Suominen <ssuominen@g.o> (2014-04-17)
 # First GTK+-3.x version of EasyTAG!
-# Keyword as reqiuired, ~arch is enough for now:
+# Keyword as required, ~arch is enough for now:
 # media-libs/opusfile for USE opus
 # media-libs/opus for USE opus
-# app-text/apadata-tools for FEAATURES and USE test
+# app-text/apadata-tools for FEATURES and USE test
 # Do it! No reason to ask permission before!
 >=media-sound/easytag-2.2.0 opus test
 

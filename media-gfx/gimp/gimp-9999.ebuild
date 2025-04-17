@@ -1,13 +1,13 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 LUA_COMPAT=( luajit )
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{10..13} )
 VALA_USE_DEPEND=vapigen
 
-inherit git-r3 lua-single meson python-single-r1 toolchain-funcs vala xdg
+inherit git-r3 lua-single flag-o-matic meson python-single-r1 toolchain-funcs vala xdg
 
 DESCRIPTION="GNU Image Manipulation Program"
 HOMEPAGE="https://www.gimp.org/"
@@ -15,10 +15,12 @@ EGIT_REPO_URI="https://gitlab.gnome.org/GNOME/gimp.git"
 LICENSE="GPL-3+ LGPL-3+"
 SLOT="0/3"
 
-IUSE="X aalib alsa doc gnome heif javascript jpeg2k jpegxl lua mng openexr openmp postscript test udev unwind vala vector-icons webp wmf xpm"
+IUSE="X aalib alsa doc fits gnome heif javascript jpeg2k jpegxl lua mng openexr openmp postscript test udev unwind vala vector-icons webp wmf xpm"
 REQUIRED_USE="
 	${PYTHON_REQUIRED_USE}
 	lua? ( ${LUA_REQUIRED_USE} )
+	test? ( X )
+	xpm? ( X )
 "
 
 RESTRICT="!test? ( test )"
@@ -38,7 +40,7 @@ COMMON_DEPEND="
 	>=dev-libs/json-glib-1.4.4
 	dev-libs/libxml2:2
 	dev-libs/libxslt
-	>=gnome-base/librsvg-2.40.21:2
+	>=gnome-base/librsvg-2.57.3:2
 	>=media-gfx/mypaint-brushes-2.0.2:=
 	>=media-libs/babl-9999[introspection,lcms,vala?]
 	>=media-libs/fontconfig-2.12.6
@@ -53,13 +55,13 @@ COMMON_DEPEND="
 	>=media-libs/tiff-4.1.0:=
 	net-libs/glib-networking[ssl]
 	sys-libs/zlib
-	>=x11-libs/cairo-1.16.0
+	>=x11-libs/cairo-1.16.0[X=]
 	>=x11-libs/gdk-pixbuf-2.40.0:2[introspection]
-	>=x11-libs/gtk+-3.24.16:3[introspection]
-	>=x11-libs/pango-1.50.0
-	>=x11-libs/libXmu-1.1.4
+	>=x11-libs/gtk+-3.24.48:3[introspection,X=]
+	>=x11-libs/pango-1.50.0[X=]
 	aalib? ( media-libs/aalib )
 	alsa? ( >=media-libs/alsa-lib-1.0.0 )
+	fits? ( sci-libs/cfitsio )
 	heif? ( >=media-libs/libheif-1.13.0:= )
 	javascript? ( dev-libs/gjs )
 	jpeg2k? ( >=media-libs/openjpeg-2.3.1:2= )
@@ -76,8 +78,13 @@ COMMON_DEPEND="
 	udev? ( >=dev-libs/libgudev-167:= )
 	unwind? ( >=sys-libs/libunwind-1.1.0:= )
 	webp? ( >=media-libs/libwebp-0.6.0:= )
-	wmf? ( >=media-libs/libwmf-0.2.8 )
-	X? ( x11-libs/libXcursor )
+	wmf? ( >=media-libs/libwmf-0.2.8[X=] )
+	X? (
+		x11-libs/libX11
+		x11-libs/libXcursor
+		x11-libs/libXext
+		>=x11-libs/libXmu-1.1.4
+	)
 	xpm? ( x11-libs/libXpm )
 "
 
@@ -99,7 +106,6 @@ BDEPEND="
 	dev-util/gdbus-codegen
 	>=sys-devel/gettext-0.21
 	doc? (
-		app-text/yelp-tools
 		dev-libs/gobject-introspection[doctool]
 		dev-util/gi-docgen
 	)
@@ -135,7 +141,7 @@ src_prepare() {
 	# Fix pygimp.interp python implementation path.
 	# Meson @PYTHON_PATH@ use sandbox path e.g.:
 	# '/var/tmp/portage/media-gfx/gimp-2.99.12/temp/python3.10/bin/python3'
-	sed -i -e 's/@PYTHON_PATH@/'${EPYTHON}'/' plug-ins/python/pygimp.interp.in || die
+	sed -i -e 's/@PYTHON_EXE@/'${EPYTHON}'/' plug-ins/python/pygimp.interp.in || die
 
 	# Set proper intallation path of documentation logo
 	sed -i -e "s/'gimp-@0@'.format(gimp_app_version)/'gimp-${PVR}'/" gimp-data/images/logo/meson.build || die
@@ -158,20 +164,26 @@ _adjust_sandbox() {
 src_configure() {
 	_adjust_sandbox
 
+	# bug #944284 (https://gitlab.gnome.org/GNOME/gimp/-/issues/12843)
+	append-cflags -std=gnu17
+
 	use vala && vala_setup
 
 	local emesonargs=(
 		-Denable-default-bin=enabled
 
 		-Dcheck-update=no
+		-Ddebug-self-in-build=false
 		-Denable-multiproc=true
 		-Dappdata-test=disabled
 		-Dbug-report-url=https://bugs.gentoo.org/
+		-Dilbm=disabled
 		-Dlibbacktrace=false
 		-Dwebkit-unmaintained=false
 		$(meson_feature aalib aa)
 		$(meson_feature alsa)
 		$(meson_feature doc gi-docgen)
+		$(meson_feature fits)
 		$(meson_feature heif)
 		$(meson_feature javascript)
 		$(meson_feature jpeg2k jpeg2000)
@@ -187,7 +199,6 @@ src_configure() {
 		$(meson_feature wmf)
 		$(meson_feature X xcursor)
 		$(meson_feature xpm)
-		$(meson_use doc g-ir-doc)
 		$(meson_use lua)
 		$(meson_use unwind libunwind)
 		$(meson_use vector-icons)
@@ -229,21 +240,14 @@ src_install() {
 
 	python_optimize
 
-	# Workaround for bug #321111 to give GIMP the least
-	# precedence on PDF documents by default
-	mv "${ED}"/usr/share/applications/{,zzz-}gimp.desktop || die
-
 	find "${D}" -name '*.la' -type f -delete || die
 
-	# Prevent dead symlink gimp-console.1 from downstream man page compression (bug #433527)
-	mv "${ED}"/usr/share/man/man1/gimp-console{-*,}.1 || die
-
 	# Create symlinks for Gimp exec in /usr/bin
-	dosym "${ESYSROOT}"/usr/bin/gimp-2.99 /usr/bin/gimp
-	dosym "${ESYSROOT}"/usr/bin/gimp-console-2.99 /usr/bin/gimp-console
+	dosym "${ESYSROOT}"/usr/bin/gimp-3.0 /usr/bin/gimp
+	dosym "${ESYSROOT}"/usr/bin/gimp-console-3.0 /usr/bin/gimp-console
 	dosym "${ESYSROOT}"/usr/bin/gimp-script-fu-interpreter-3.0 /usr/bin/gimp-script-fu-interpreter
-	dosym "${ESYSROOT}"/usr/bin/gimp-test-clipboard-2.99 /usr/bin/gimp-test-clipboard
-	dosym "${ESYSROOT}"/usr/bin/gimptool-2.99 /usr/bin/gimptool
+	dosym "${ESYSROOT}"/usr/bin/gimp-test-clipboard-3.0 /usr/bin/gimp-test-clipboard
+	dosym "${ESYSROOT}"/usr/bin/gimptool-3.0 /usr/bin/gimptool
 
 	_rename_plugins || die
 }

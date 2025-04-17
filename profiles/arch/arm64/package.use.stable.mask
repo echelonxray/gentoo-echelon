@@ -1,5 +1,14 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+# Ionen Wolkens <ionen@gentoo.org> (2025-03-12)
+# dev-util/nvidia-cuda-toolkit may never be stabilized
+media-video/ffmpeg npp
+media-video/ffmpeg-compat npp
+
+# Eli Schwartz <eschwartz@gentoo.org> (2025-01-27)
+# Dependencies e.g. pypy not stable here.
+dev-build/meson test-full
 
 # Eray Aslan <eras@gentoo.org> (2024-06-17)
 # mongodb needed for tests which is not stable keyworded for arm64
@@ -9,18 +18,13 @@ dev-libs/mongo-c-driver test
 # dev-libs/capstone hasn't been stabilized yet
 app-emulation/qemu capstone
 
-# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2024-03-21)
+# Nowa Ammerlaan <nowa@gentoo.org> (2024-03-21)
 # Experimental, virt-firmware is keyworded only unstable
 sys-kernel/installkernel efistub
 
 # Ionen Wolkens <ionen@gentoo.org> (2024-01-27)
-# dev-python/pyside6 is not stable here yet
-dev-python/QtPy pyside6
-
-# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2023-12-18)
-# This is still experimental, prebuilt images may not boot on all systems.
-sys-kernel/gentoo-kernel generic-uki
-sys-kernel/gentoo-kernel-bin generic-uki
+# dev-python/pyside is not stable here yet
+dev-python/qtpy pyside6
 
 # Michał Górny <mgorny@gentoo.org> (2023-04-22)
 # Needs unkeyworded dev-python/sympy
@@ -42,6 +46,7 @@ sys-cluster/openmpi openmpi_rm_pbs
 # Don't apply stable masks to python-exec since we're forcing every
 # impl there anyway. Please keep this in sync with use.stable.mask.
 dev-lang/python-exec -python_targets_pypy3
+dev-lang/python-exec -python_targets_pypy3_11
 
 # Sam James <sam@gentoo.org> (2021-10-25)
 # Has unstable dependencies we don't want to drag in yet
@@ -121,10 +126,6 @@ dev-libs/boost mpi
 media-plugins/gst-plugins-meta aac dts dv lame libvisual taglib vcd wavpack
 x11-wm/i3 test
 dev-python/ipython nbconvert
-
-# Mikle Kolyada <zlogene@gentoo,org> (2020-03-19)
-# deps not yet stable
-kde-apps/umbrello php
 
 # Luke Dashjr <luke-jr+gentoobugs@utopios.org> (2019-09-21)
 # iasl is keyworded ~arm64

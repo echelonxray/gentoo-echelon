@@ -1,4 +1,4 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -24,7 +24,7 @@ HOMEPAGE="https://quassel-irc.org/"
 
 LICENSE="GPL-3"
 SLOT="0"
-IUSE="bundled-icons crypt +dbus gui kde ldap monolithic oxygen postgres +server spell syslog test urlpreview"
+IUSE="crypt +dbus gui kde ldap monolithic oxygen postgres +server spell syslog +system-icons test"
 
 REQUIRED_USE="
 	|| ( gui server monolithic )
@@ -54,10 +54,6 @@ GUI_DEPEND="
 	dev-qt/qtgui:5
 	dev-qt/qtmultimedia:5
 	dev-qt/qtwidgets:5
-	!bundled-icons? (
-		kde-frameworks/breeze-icons:*
-		oxygen? ( kde-frameworks/oxygen-icons:* )
-	)
 	dbus? (
 		>=dev-libs/libdbusmenu-qt-0.9.3_pre20140619
 		dev-qt/qtdbus:5
@@ -72,7 +68,10 @@ GUI_DEPEND="
 		kde-frameworks/kxmlgui:5
 	)
 	spell? ( kde-frameworks/sonnet:5 )
-	urlpreview? ( dev-qt/qtwebengine:5[widgets] )
+	system-icons? (
+		kde-frameworks/breeze-icons:*
+		oxygen? ( kde-frameworks/oxygen-icons:* )
+	)
 "
 RDEPEND="
 	dev-libs/boost:=
@@ -108,7 +107,7 @@ src_configure() {
 		-DCMAKE_SKIP_RPATH=ON
 		-DEMBED_DATA=OFF
 		-DWITH_WEBKIT=OFF
-		-DWITH_BUNDLED_ICONS=$(usex bundled-icons)
+		-DWITH_BUNDLED_ICONS=$(usex !system-icons)
 		-DWANT_QTCLIENT=$(usex gui)
 		-DWITH_KDE=$(usex kde)
 		-DWITH_LDAP=$(usex ldap)
@@ -116,7 +115,7 @@ src_configure() {
 		-DWITH_OXYGEN_ICONS=$(usex oxygen)
 		-DWANT_CORE=$(usex server)
 		-DBUILD_TESTING=$(usex test)
-		-DWITH_WEBENGINE=$(usex urlpreview)
+		-DWITH_WEBENGINE=OFF # bug 925723
 	)
 
 	# bug #830708

@@ -1,10 +1,10 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=hatchling
-PYTHON_COMPAT=( pypy3 python3_{10..13} )
+PYTHON_COMPAT=( pypy3 pypy3_11 python3_{10..13} )
 inherit bash-completion-r1 distutils-r1 git-r3 optfeature wrapper
 
 DESCRIPTION="youtube-dl fork with additional features and fixes"
@@ -17,22 +17,12 @@ IUSE="man"
 
 RDEPEND="
 	dev-python/pycryptodome[${PYTHON_USEDEP}]
-	!net-misc/youtube-dl[-yt-dlp(-)]
 "
 BDEPEND="
 	man? ( virtual/pandoc )
 "
 
 distutils_enable_tests pytest
-
-src_prepare() {
-	distutils-r1_src_prepare
-
-	# adjust pycryptodome and drop optional dependencies (bug #828466)
-	sed -Ei pyproject.toml \
-		-e 's/("pycryptodome)x/\1/' \
-		-e '/"(brotli.*|certifi|mutagen|requests|urllib3|websockets)/d' || die
-}
 
 python_compile() {
 	# generate missing files in live, not in compile_all nor prepare
@@ -50,6 +40,10 @@ python_test() {
 		test/test_networking.py::TestHTTPRequestHandler::test_connect_timeout
 		# fails with FEATURES=distcc, bug #915614
 		test/test_networking.py::TestYoutubeDLNetworking::test_proxy\[None-expected2\]
+		# websockets tests break easily depending on dev-python/websockets
+		# version and, as far as I know, most users do not use/need it --
+		# thus being neither in RDEPEND nor optfeature (bug #940630,#950030)
+		test/test_websockets.py
 	)
 
 	epytest -m 'not download'

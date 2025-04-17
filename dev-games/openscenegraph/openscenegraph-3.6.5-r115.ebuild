@@ -18,7 +18,7 @@ S="${WORKDIR}/${MY_PN}-${MY_P}"
 
 LICENSE="wxWinLL-3 LGPL-2.1"
 SLOT="0/161" # NOTE: CHECK WHEN BUMPING! Subslot is SOVERSION
-KEYWORDS="~amd64 ~arm64 ~hppa ~ppc64 ~x86"
+KEYWORDS="amd64 ~arm64 ~hppa ppc64 x86"
 IUSE="
 	collada curl dicom debug doc egl examples ffmpeg fltk fox gdal
 	gif glut gstreamer jpeg las lua openexr openinventor osgapps pdf png
@@ -49,7 +49,7 @@ RDEPEND="
 	collada? ( dev-libs/collada-dom:= )
 	curl? ( net-misc/curl )
 	examples? (
-		fltk? ( x11-libs/fltk:1[opengl] )
+		fltk? ( x11-libs/fltk:1=[opengl] )
 		fox? ( x11-libs/fox:1.6[opengl] )
 		glut? ( media-libs/freeglut )
 		sdl2? ( media-libs/libsdl2 )

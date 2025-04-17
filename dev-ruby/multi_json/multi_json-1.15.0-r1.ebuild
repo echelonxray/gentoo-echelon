@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-USE_RUBY="ruby31 ruby32 ruby33"
+USE_RUBY="ruby31 ruby32 ruby33 ruby34"
 
 RUBY_FAKEGEM_RECIPE_TEST="rspec3"
 RUBY_FAKEGEM_TASK_DOC="yard"
@@ -43,6 +43,8 @@ all_ruby_prepare() {
 		-e '/with Oj.default_settings/,/^    end/ s:^:#:' \
 		-e '/using one-shot parser/,/^  end/ s:^:#:' \
 		-e '/jrjackson/askip "unpackaged"' \
+		-e '/\(when JSON pure is already loaded\|can set adapter for a block\)/askip "JSON pure no longer exists"' \
+		-e '/require.*pure/ s:^:#:' \
 		spec/multi_json_spec.rb
 
 	# Avoid simplecov which only works with ruby 1.9
@@ -52,7 +54,7 @@ all_ruby_prepare() {
 	sed -i -e '/coveralls/d' spec/spec_helper.rb || die
 
 	# Avoid testing unpackaged adapters
-	rm spec/{gson,nsjsonserialization,jr_jackson,oj}_adapter_spec.rb || die
+	rm spec/{gson,nsjsonserialization,jr_jackson,json_pure,oj}_adapter_spec.rb || die
 
 	# Fix expectations confused by ruby30 kwargs
 	sed -e "/expect/ s/:foo => 'bar', :fizz => 'buzz'/{:foo => 'bar', :fizz => 'buzz'}/" \

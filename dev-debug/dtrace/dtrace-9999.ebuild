@@ -1,4 +1,4 @@
-# Copyright 2024 Gentoo Authors
+# Copyright 2024-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -33,7 +33,7 @@ DEPEND="
 	dev-libs/libpfm:=
 	net-analyzer/wireshark[dumpcap]
 	net-libs/libpcap
-	>=sys-fs/fuse-3.2.0:3
+	>=sys-fs/fuse-3.2.0:3=
 	>=sys-libs/binutils-libs-2.42:=
 	sys-libs/zlib
 "
@@ -214,7 +214,7 @@ pkg_postinst() {
 			eend $?
 
 			ebegin "Starting DTrace 'dtprobed' service"
-			rc-service start dtprobed
+			rc-service dtprobed start
 			eend $?
 		fi
 	fi

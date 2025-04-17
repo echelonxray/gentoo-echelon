@@ -1,4 +1,4 @@
-# Copyright 2022-2024 Gentoo Authors
+# Copyright 2022-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -12,10 +12,10 @@ WINE_GECKO=2.47.3
 WINE_MONO=8.1.0
 WINE_PV=$(ver_rs 2 -)
 
-if [[ ${PV} == *9999 ]]; then
+if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/ValveSoftware/wine.git"
-	EGIT_BRANCH="experimental_$(ver_cut 1-2)"
+	EGIT_BRANCH="bleeding-edge"
 else
 	SRC_URI="https://github.com/ValveSoftware/wine/archive/refs/tags/proton-wine-${WINE_PV}.tar.gz"
 	S="${WORKDIR}/${PN}-wine-${WINE_PV}"
@@ -28,10 +28,10 @@ HOMEPAGE="https://github.com/ValveSoftware/wine/"
 LICENSE="LGPL-2.1+ BSD-2 IJG MIT OPENLDAP ZLIB gsm libpng2 libtiff"
 SLOT="${PV}"
 IUSE="
-	+abi_x86_32 +abi_x86_64 +alsa crossdev-mingw custom-cflags
-	+fontconfig +gecko +gstreamer llvm-libunwind +mono nls osmesa
-	perl pulseaudio +sdl selinux +ssl +strip udev udisks +unwind
-	usb v4l video_cards_amdgpu +xcomposite xinerama
+	+abi_x86_32 +abi_x86_64 +alsa crossdev-mingw custom-cflags +dbus
+	+fontconfig +gecko +gstreamer llvm-libunwind +mono nls perl
+	pulseaudio +sdl selinux +ssl +strip udev +unwind usb v4l
+	video_cards_amdgpu +xcomposite xinerama
 "
 
 # tests are non-trivial to run, can hang easily, don't play well with
@@ -50,22 +50,19 @@ WINE_DLOPEN_DEPEND="
 	x11-libs/libXrandr[${MULTILIB_USEDEP}]
 	x11-libs/libXrender[${MULTILIB_USEDEP}]
 	x11-libs/libXxf86vm[${MULTILIB_USEDEP}]
+	dbus? ( sys-apps/dbus[${MULTILIB_USEDEP}] )
 	fontconfig? ( media-libs/fontconfig[${MULTILIB_USEDEP}] )
-	osmesa? ( media-libs/mesa[osmesa,${MULTILIB_USEDEP}] )
 	sdl? ( media-libs/libsdl2[haptic,joystick,${MULTILIB_USEDEP}] )
 	ssl? (
 		dev-libs/gmp:=[${MULTILIB_USEDEP}]
 		net-libs/gnutls:=[${MULTILIB_USEDEP}]
 	)
-	udisks? ( sys-apps/dbus[${MULTILIB_USEDEP}] )
 	v4l? ( media-libs/libv4l[${MULTILIB_USEDEP}] )
 	xcomposite? ( x11-libs/libXcomposite[${MULTILIB_USEDEP}] )
 	xinerama? ( x11-libs/libXinerama[${MULTILIB_USEDEP}] )
 "
-# gcc: for -latomic with clang
 WINE_COMMON_DEPEND="
 	${WINE_DLOPEN_DEPEND}
-	sys-devel/gcc:*
 	x11-libs/libX11[${MULTILIB_USEDEP}]
 	x11-libs/libXext[${MULTILIB_USEDEP}]
 	x11-libs/libdrm[video_cards_amdgpu?,${MULTILIB_USEDEP}]
@@ -78,7 +75,7 @@ WINE_COMMON_DEPEND="
 	pulseaudio? ( media-libs/libpulse[${MULTILIB_USEDEP}] )
 	udev? ( virtual/libudev:=[${MULTILIB_USEDEP}] )
 	unwind? (
-		llvm-libunwind? ( sys-libs/llvm-libunwind[${MULTILIB_USEDEP}] )
+		llvm-libunwind? ( llvm-runtimes/libunwind[${MULTILIB_USEDEP}] )
 		!llvm-libunwind? ( sys-libs/libunwind:=[${MULTILIB_USEDEP}] )
 	)
 	usb? ( dev-libs/libusb:1[${MULTILIB_USEDEP}] )
@@ -94,10 +91,13 @@ RDEPEND="
 		dev-perl/XML-LibXML
 	)
 	selinux? ( sec-policy/selinux-wine )
-	udisks? ( sys-fs/udisks:2 )
 "
 DEPEND="
 	${WINE_COMMON_DEPEND}
+	|| (
+		sys-devel/gcc:*
+		llvm-runtimes/compiler-rt:*[atomic-builtins(-)]
+	)
 	sys-kernel/linux-headers
 	x11-base/xorg-proto
 "
@@ -125,6 +125,7 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-8.0.1c-unwind.patch
 	"${FILESDIR}"/${PN}-8.0.4-restore-menubuilder.patch
 	"${FILESDIR}"/${PN}-8.0.5c-vulkan-libm.patch
+	"${FILESDIR}"/${PN}-9.0.4-binutils2.44.patch
 )
 
 pkg_pretend() {
@@ -165,9 +166,16 @@ src_prepare() {
 		# drop as a quick fix for now which hopefully should be safe
 		sed -i '/MSVCRTFLAGS=/s/-mabi=ms//' configure.ac || die
 
-		# needed by Valve's fsync patches if using clang (undef atomic_load_8)
-		sed -e '/^UNIX_LIBS.*=/s/$/ -latomic/' \
-			-i dlls/{ntdll,winevulkan}/Makefile.in || die
+		# note: this is kind-of best effort and ignores llvm slots, rather
+		# than do LLVM_SLOT it may(?) be better to force atomic-builtins
+		# then could drop this altogether in the future
+		if [[ $(tc-get-c-rtlib) == compiler-rt ]] &&
+			has_version 'llvm-runtimes/compiler-rt[-atomic-builtins(-)]'
+		then
+			# needed by Valve's fsync patches if using compiler-rt w/o atomics
+			sed -e '/^UNIX_LIBS.*=/s/$/ -latomic/' \
+				-i dlls/{ntdll,winevulkan}/Makefile.in || die
+		fi
 	fi
 
 	# ensure .desktop calls this variant + slot
@@ -228,16 +236,16 @@ src_configure() {
 		$(use_enable video_cards_amdgpu amd_ags_x64)
 		--disable-tests
 		$(use_with alsa)
+		$(use_with dbus)
 		$(use_with fontconfig)
 		$(use_with gstreamer)
 		$(use_with nls gettext)
-		$(use_with osmesa)
+		--without-osmesa # media-libs/mesa no longer supports this
 		--without-oss # media-sound/oss is not packaged (OSSv4)
 		$(use_with pulseaudio pulse)
 		$(use_with sdl)
 		$(use_with ssl gnutls)
 		$(use_with udev)
-		$(use_with udisks dbus) # dbus is only used for udisks
 		$(use_with unwind)
 		$(use_with usb)
 		$(use_with v4l v4l2)
@@ -250,6 +258,9 @@ src_configure() {
 	filter-flags -Wl,--gc-sections # runtime issues (bug #931329)
 	use custom-cflags || strip-flags # can break in obscure ways at runtime
 	use crossdev-mingw || PATH=${BROOT}/usr/lib/mingw64-toolchain/bin:${PATH}
+
+	# broken with gcc-15's c23 default (TODO: try w/o occasionally, bug #943849)
+	append-cflags -std=gnu17
 
 	# temporary workaround for tc-ld-force-bfd not yet enforcing with mold
 	# https://github.com/gentoo/gentoo/pull/28355
@@ -389,9 +400,18 @@ pkg_postinst() {
 		fi
 	fi
 
+	ewarn
+	ewarn "Warning: please consider ${PN} provided as-is without real"
+	ewarn "support. Upstream does not want bug reports unless can reproduce"
+	ewarn "with real Steam+Proton, and Gentoo is largely unable to help"
+	ewarn "unless it is a build/packaging issue. So, if need support, try"
+	ewarn "normal Wine or Proton instead."
+
 	eselect wine update --if-unset || die
 }
 
 pkg_postrm() {
-	eselect wine update --if-unset || die
+	if has_version -b app-eselect/eselect-wine; then
+		eselect wine update --if-unset || die
+	fi
 }

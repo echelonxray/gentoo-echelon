@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -17,7 +17,7 @@ if [[ ${PV} == *9999* || -n "${EGIT_COMMIT}" ]] ; then
 	inherit git-r3
 else
 	SRC_URI="https://www.seabios.org/downloads/${P}.tar.gz"
-	KEYWORDS="~alpha ~amd64 ~arm64 ~loong ~m68k ~mips ~ppc ~ppc64 ~x86"
+	KEYWORDS="~alpha amd64 arm64 ~loong ~m68k ~mips ppc ppc64 x86"
 fi
 
 DESCRIPTION="Open Source implementation of a 16-bit x86 BIOS"
@@ -28,6 +28,7 @@ SLOT="0"
 IUSE="debug +seavgabios"
 
 BDEPEND="
+	sys-devel/gcc:*
 	>=sys-power/iasl-20060912
 	${PYTHON_DEPS}"
 RDEPEND="!sys-firmware/seabios-bin"
@@ -71,6 +72,15 @@ src_prepare() {
 
 	# Ensure precompiled iasl files are never used
 	find "${WORKDIR}" -name '*.hex' -delete || die
+
+	# Force gcc because build failed with clang, #887115
+	if ! tc-is-gcc ; then
+		ewarn "seabios can be built with gcc only."
+		ewarn "Ignoring CC=$(tc-getCC) and forcing ${CHOST}-gcc"
+		export CC=${CHOST}-gcc
+		export CXX=${CHOST}-g++
+		tc-is-gcc || die "tc-is-gcc failed in spite of CC=${CC}"
+	fi
 }
 
 src_configure() {

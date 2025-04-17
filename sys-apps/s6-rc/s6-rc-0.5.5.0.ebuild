@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit optfeature toolchain-funcs
+inherit eapi9-ver optfeature toolchain-funcs
 
 DESCRIPTION="Service manager for the s6 supervision suite"
 HOMEPAGE="https://www.skarnet.org/software/s6-rc/"
@@ -11,7 +11,7 @@ SRC_URI="https://www.skarnet.org/software/${PN}/${P}.tar.gz"
 
 LICENSE="ISC"
 SLOT="0/$(ver_cut 1-2)"
-KEYWORDS="~amd64 ~arm ~x86"
+KEYWORDS="amd64 ~arm x86"
 
 RDEPEND="
 	dev-lang/execline:=
@@ -54,14 +54,12 @@ src_configure() {
 }
 
 pkg_postinst() {
-	for ver in ${REPLACING_VERSIONS}; do
-		if ver_test "${ver}" -lt "0.5.4.0"; then
-			elog "Location of helper utilities was changed from /usr/libexec to /lib/s6 in"
-			elog "version 0.5.4.0. It is necessary to recompile and update s6-rc database and"
-			elog "restart s6rc-oneshot-runner service because you are upgrading from older"
-			elog "version."
-		fi
-	done
+	if ver_replacing -lt "0.5.4.0"; then
+		elog "Location of helper utilities was changed from /usr/libexec to /lib/s6 in"
+		elog "version 0.5.4.0. It is necessary to recompile and update s6-rc database and"
+		elog "restart s6rc-oneshot-runner service because you are upgrading from older"
+		elog "version."
+	fi
 
 	optfeature "man pages" app-doc/s6-rc-man-pages
 }

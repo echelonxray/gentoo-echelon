@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -7,7 +7,7 @@ inherit toolchain-funcs flag-o-matic multilib
 
 DESCRIPTION="The extensible self-documenting text editor"
 HOMEPAGE="https://www.gnu.org/software/emacs/"
-SRC_URI="ftp://ftp.gnu.org/old-gnu/emacs/${P}.tar.gz
+SRC_URI="https://ftp.gnu.org/old-gnu/emacs/${P}.tar.gz
 	https://dev.gentoo.org/~ulm/emacs/${P}-patches-15.tar.xz"
 
 LICENSE="GPL-1+ GPL-2+ BSD HPND"
@@ -80,8 +80,8 @@ src_configure() {
 	# all those missing prototypes.
 	strip-flags
 	filter-flags -finline-functions -fpie -flto
-	append-flags -fno-strict-aliasing -Wno-implicit -Wno-return-type \
-		-Wno-return-mismatch
+	append-flags -std=gnu17 -fno-strict-aliasing -Wno-implicit \
+		-Wno-return-type -Wno-return-mismatch
 	append-ldflags $(test-flags -no-pie)	#639562
 	replace-flags -O[3-9] -O2
 }
@@ -154,9 +154,9 @@ pkg_preinst() {
 }
 
 pkg_postinst() {
-	eselect emacs update ifunset
+	eselect --root="${ROOT}" emacs update ifunset
 }
 
 pkg_postrm() {
-	eselect emacs update ifunset
+	eselect --root="${ROOT}" emacs update ifunset
 }

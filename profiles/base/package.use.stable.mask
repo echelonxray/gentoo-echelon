@@ -1,20 +1,24 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-# This file requires eapi 5 or later. New entries go on top.
-# Please use the same syntax as in package.use.mask
+# New entries go on top.
+# Please use the same syntax as in package.use.mask.
 
-# Michał Górny <mgorny@gentoo.org> (2024-10-26)
-# Unblock the support in python-exec while the target is masked.
-dev-lang/python-exec -python_targets_python3_13
+# Sam James <sam@gentoo.org> (2025-03-07)
+# Gradually unmask for newer Rust to avoid making users recompile for
+# the change. See bug #735154.
+<dev-lang/rust-1.86 system-llvm
 
-# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2024-10-11)
-# No suitable version of dev-libs/protobuf available.
-=dev-java/protobuf-java-4.28.1 system-protoc
+# Arthur Zamarin <arthurzam@gentoo.org> (2025-02-03)
+# Requires dev-util/shelltestrunner
+app-arch/mt-st test
+
+# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2025-01-04)
+# dev-libs/protobuf-28.3 is not yet marked stable.
+>=dev-java/protobuf-java-4.28.3 system-protoc
 
 # Andreas Sturmlechner <asturm@gentoo.org> (2024-08-29)
 # Pin down kf6compat mask to currently stable versions.
-<kde-apps/kio-extras-24.02.2-r2 kf6compat
 <kde-frameworks/kglobalaccel-5.116.0-r1 kf6compat
 <kde-frameworks/kguiaddons-5.116.0-r1 kf6compat
 <kde-frameworks/kwallet-5.116.0-r1 kf6compat
@@ -46,6 +50,8 @@ sci-physics/lammps hip
 # Sam James <sam@gentoo.org> (2022-12-07)
 # Needs unstable media-libs/libvpl
 media-video/ffmpeg qsv
+media-video/ffmpeg-compat qsv
+media-video/handbrake qsv
 
 # Guillermo Joandet <gjoandet@gmail.com> (2022-11-22)
 # app-text/pandoc is not stable
@@ -90,14 +96,6 @@ x11-wm/xpra doc
 # all of which are not stable anywhere.
 sys-cluster/ceph pmdk rbd-rwl
 
-# Andreas K. Hüttel <dilfridge@gentoo.org> (2021-05-30)
-# dev-perl/Net-Netmask-2.0.100 needs ... and ... which ends
-# up pulling in a Test-Simple version newer than 5.32.
-# Not something we want to add to all stable users' Perl.
-# Stable-masking the test useflag until Perl 5.34 goes stable too.
-# Bug 779163
-dev-perl/Net-Netmask test
-
 # Mart Raudsepp <leio@gentoo.org> (2021-02-21)
 # Enabling sysprof causes consumers to include sysprof-capture-4
 # headers, but we still have stable consumers that themselves want
@@ -138,16 +136,11 @@ app-emulation/winetricks test
 # Georgy Yakovlev <gyakovlev@gentoo.org> (2019-12-21)
 # For bleeding edge features and testing, not generally suitable
 # for stable systems
-dev-lang/rust nightly system-bootstrap
+dev-lang/rust nightly
 
 # Andreas Sturmlechner <asturm@gentoo.org> (2019-12-09)
 # Declared experimental, and dev-cpp/websocketpp not stable yet
 sci-libs/indilib websocket
-
-# Kent Fredric <kentnl@gentoo.org> (2019-08-29)
-# Support for DBD-mysql to use mariadb is sketchy. Use DBD-MariaDB
-# instead if you can.
-dev-perl/DBD-mysql mariadb
 
 # Kent Fredric <kentnl@gentoo.org> (2019-07-30)
 # These features require dev-perl/GD, which currently can't be
@@ -158,12 +151,6 @@ dev-perl/Business-ISBN barcode
 dev-perl/Template-Toolkit gd
 media-fonts/unifont utils fontforge
 media-video/vdrsync dvdr
-
-# Georgy Yakovlev <gyakovlev@gentoo.org> (2019-05-10)
-# needs llvm slots which are not stable #678908
-# also prone to weird compilation failures
-# masking this for now, will readjust as situation changes
->=dev-lang/rust-1.34 system-llvm
 
 # Mart Raudsepp <leio@gentoo.org> (2019-04-14)
 # Needs media-plugins/gst-plugins-chromaprint, which is not stable

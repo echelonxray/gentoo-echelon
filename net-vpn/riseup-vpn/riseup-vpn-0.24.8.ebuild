@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..13} pypy3 )
+PYTHON_COMPAT=( pypy3 pypy3_11 python3_{10..13} )
 
 inherit desktop python-single-r1 go-module qmake-utils virtualx xdg
 
@@ -11,7 +11,7 @@ DESCRIPTION="Anonymous encrypted VPN client powered by Bitmask"
 HOMEPAGE="https://riseup.net/en/vpn https://0xacab.org/leap/bitmask-vpn https://bitmask.net"
 SRC_URI="
 	https://0xacab.org/leap/bitmask-vpn/-/archive/${PV}/bitmask-vpn-${PV}.tar.gz -> ${P}.tar.gz
-	https://dev.gentoo.org/~andrewammerlaan/${P}-deps.tar.xz
+	https://dev.gentoo.org/~nowa/${P}-deps.tar.xz
 "
 S="${WORKDIR}/bitmask-vpn-${PV}"
 

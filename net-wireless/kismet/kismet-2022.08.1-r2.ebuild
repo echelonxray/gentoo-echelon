@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{9..12} )
+PYTHON_COMPAT=( python3_{10..12} )
 
 inherit autotools flag-o-matic python-single-r1 udev systemd
 
@@ -54,7 +54,7 @@ CDEPEND="
 	dev-libs/protobuf-c:=
 	dev-libs/protobuf:=
 	$(python_gen_cond_dep '
-		dev-python/protobuf-python[${PYTHON_USEDEP}]
+		dev-python/protobuf[${PYTHON_USEDEP}]
 		dev-python/websockets[${PYTHON_USEDEP}]
 	')
 	lm-sensors? ( sys-apps/lm-sensors:= )
@@ -110,7 +110,7 @@ src_prepare() {
 	#	log_tools/kismetdb_to_wiglecsv.cc trackedcomponent.h \
 	#	trackedelement.h trackedelement_workers.h
 
-	eapply_user
+	default
 
 	if [ "${PV}" = "9999" ]; then
 		eautoreconf

@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -113,7 +113,7 @@ BDEPEND="
 	>=dev-util/gperf-3.0.1
 	dev-util/unifdef
 	>=sys-devel/bison-2.4.3
-	|| ( >=sys-devel/gcc-7.3 >=sys-devel/clang-5 )
+	|| ( >=sys-devel/gcc-7.3 >=llvm-core/clang-5 )
 	sys-devel/gettext
 	virtual/pkgconfig
 
@@ -158,6 +158,12 @@ src_prepare() {
 
 	# Fix USE=-jumbo-build on all arches
 	eapply "${FILESDIR}"/2.44.1-non-unified-build-fixes.patch
+
+	# https://bugs.gentoo.org/943213
+	eapply "${FILESDIR}"/2.44.4-fix-icu76.1.patch
+
+	# We don't want -Werror for gobject-introspection (bug #947761)
+	sed -i -e "s:--warn-error::" Source/cmake/FindGI.cmake || die
 }
 
 src_configure() {

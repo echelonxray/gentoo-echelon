@@ -1,18 +1,19 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 CMAKE_REMOVE_MODULES_LIST=( FindFreetype )
 LUA_COMPAT=( luajit )
+# For the time being upstream supports up to Python 3.12 only.
+# Any issues found with 3.13 should be reported as a Gentoo bug.
 PYTHON_COMPAT=( python3_{10..13} )
 
 inherit cmake flag-o-matic lua-single optfeature python-single-r1 xdg
 
-CEF_DIR="cef_binary_5060_linux_x86_64"
-CEF_REVISION="_v3"
-OBS_BROWSER_COMMIT="be9f1b646406d2250b402581b043f1558042d7f0"
-OBS_WEBSOCKET_COMMIT="0548c7798a323fe5296c150e13b898a5ee62fc1e"
+CEF_VERSION="cef_binary_6533_linux"
+OBS_BROWSER_COMMIT="b56fd78936761891475458447c1cc9058bb9c2d4"
+OBS_WEBSOCKET_COMMIT="c542622d7b6d41ce5875f54efdab1d4ac2967ef4"
 
 DESCRIPTION="Software for Recording and Streaming Live Video Content"
 HOMEPAGE="https://obsproject.com"
@@ -36,7 +37,12 @@ else
 	KEYWORDS="~amd64 ~arm64 ~ppc64 ~x86"
 fi
 
-SRC_URI+=" browser? ( https://cdn-fastly.obsproject.com/downloads/${CEF_DIR}${CEF_REVISION}.tar.xz )"
+SRC_URI+="
+	browser? (
+		amd64? ( https://cdn-fastly.obsproject.com/downloads/${CEF_VERSION}_x86_64.tar.xz )
+		arm64? ( https://cdn-fastly.obsproject.com/downloads/${CEF_VERSION}_aarch64.tar.xz )
+	)
+"
 
 LICENSE="Boost-1.0 GPL-2+ MIT Unlicense"
 SLOT="0"
@@ -55,6 +61,8 @@ BDEPEND="
 	python? ( dev-lang/swig )
 "
 # media-video/ffmpeg[opus] required due to bug 909566
+# The websocket plug-in fails to build with 'dev-cpp/asio-1.34.0':
+#   https://github.com/obsproject/obs-websocket/issues/1291
 DEPEND="
 	dev-cpp/nlohmann_json
 	dev-libs/glib:2
@@ -66,9 +74,9 @@ DEPEND="
 	media-libs/libva
 	media-libs/rnnoise
 	media-libs/x264:=
-	media-video/ffmpeg:=[nvenc?,opus,x264]
+	>=media-video/ffmpeg-6.1:=[nvenc?,opus,x264]
 	net-misc/curl
-	net-libs/mbedtls:=
+	net-libs/mbedtls:0=
 	sys-apps/dbus
 	sys-apps/pciutils
 	sys-apps/util-linux
@@ -135,14 +143,12 @@ DEPEND="
 		x11-libs/libxkbcommon
 	)
 	websocket? (
-		dev-cpp/asio
+		<dev-cpp/asio-1.34.0
 		dev-cpp/websocketpp
 		dev-libs/qr-code-generator
 	)
 "
-RDEPEND="${DEPEND}
-	qsv? ( media-libs/intel-mediasdk )
-"
+RDEPEND="${DEPEND}"
 
 QA_PREBUILT="
 	usr/lib*/obs-plugins/chrome-sandbox
@@ -183,16 +189,11 @@ src_prepare() {
 	use wayland && filter-lto
 
 	cmake_src_prepare
-
-	pushd deps/json11 &> /dev/null || die
-		eapply "${FILESDIR}/json11-1.0.0-include-cstdint.patch"
-	popd &> /dev/null || die
 }
 
 src_configure() {
 	local libdir=$(get_libdir)
 	local mycmakeargs=(
-		$(usev browser -DCEF_ROOT_DIR=../${CEF_DIR})
 		-DENABLE_ALSA=$(usex alsa)
 		-DENABLE_AJA=OFF
 		-DENABLE_BROWSER=$(usex browser)
@@ -236,6 +237,8 @@ src_configure() {
 	fi
 
 	if use browser; then
+		use amd64 && mycmakeargs+=( -DCEF_ROOT_DIR=../${CEF_VERSION}_x86_64 )
+		use arm64 && mycmakeargs+=( -DCEF_ROOT_DIR=../${CEF_VERSION}_aarch64 )
 		mycmakeargs+=( -DENABLE_WHATSNEW=ON )
 	else
 		mycmakeargs+=( -DENABLE_WHATSNEW=OFF )
@@ -248,8 +251,8 @@ src_install() {
 	cmake_src_install
 
 	# external plugins may need some things not installed by default, install them here
-	insinto /usr/include/obs/UI/obs-frontend-api
-	doins UI/obs-frontend-api/obs-frontend-api.h
+	insinto /usr/include/obs/frontend/api
+	doins frontend/api/obs-frontend-api.h
 }
 
 pkg_postinst() {

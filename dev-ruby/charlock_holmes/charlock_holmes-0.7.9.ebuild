@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-USE_RUBY="ruby31 ruby32 ruby33"
+USE_RUBY="ruby31 ruby32 ruby33 ruby34"
 
 RUBY_FAKEGEM_EXTRADOC="README.md"
 
@@ -35,6 +35,10 @@ all_ruby_prepare() {
 
 	# Avoid dependency on rake-compiler
 	sed -i -e '/rake-compiler/,$ s:^:#:' Rakefile || die
+
+	# Avoid using `which`, and we know make exists.
+	sed -e '/which make/,/^end/ s:^:#:' \
+		-i ext/charlock_holmes/extconf.rb || die
 
 	sed -e 's/git ls-files/find/' -i ${RUBY_FAKEGEM_GEMSPEC} || die
 }

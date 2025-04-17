@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{10..13} )
 PYTHON_REQ_USE="sqlite"  # bug 572440
 
 inherit desktop flag-o-matic python-single-r1 toolchain-funcs xdg
@@ -102,7 +102,13 @@ BDEPEND="
 	virtual/pkgconfig
 	X? ( dev-lang/swig )"
 
+pkg_pretend() {
+	[[ ${MERGE_TYPE} != binary ]] && use openmp && tc-check-openmp
+}
+
 pkg_setup() {
+	[[ ${MERGE_TYPE} != binary ]] && use openmp && tc-check-openmp
+
 	if use lapack; then
 		local mylapack=$(eselect lapack show)
 		if [[ -z "${mylapack/.*reference.*/}" ]] && \
@@ -145,17 +151,27 @@ src_prepare() {
 	eend $?
 
 	# For testsuite, see https://bugs.gentoo.org/show_bug.cgi?id=500580#c3
+	local ati_cards mesa_cards nvidia_cards render_cards
+	local prev_shopt=$(shopt -p nullglob)
 	shopt -s nullglob
-	local mesa_cards=$(echo -n /dev/dri/card* /dev/dri/render* | sed 's/ /:/g')
-	if test -n "${mesa_cards}"; then
-		addpredict "${mesa_cards}"
-	fi
-	local ati_cards=$(echo -n /dev/ati/card* | sed 's/ /:/g')
-	if test -n "${ati_cards}"; then
-		addpredict "${ati_cards}"
-	fi
-	shopt -u nullglob
+	ati_cards=$(echo -n /dev/ati/card*)
+	for card in ${ati_cards[@]}; do
+		addpredict "${card}"
+	done
+	mesa_cards=$(echo -n /dev/dri/card*)
+	for card in ${mesa_cards[@]}; do
+		addpredict "${card}"
+	done
+	nvidia_cards=$(echo -n /dev/nvidia*)
+	for card in ${nvidia_cards[@]}; do
+		addpredict "${card}"
+	done
+	render_cards=$(echo -n /dev/dri/renderD128*)
+	for card in ${render_cards[@]}; do
+		addpredict "${card}"
+	done
 	addpredict /dev/nvidiactl
+	${prev_shopt}
 }
 
 src_configure() {

@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -33,7 +33,7 @@ IUSE="androiddump bcg729 brotli +capinfos +captype ciscodump +dftest doc dpauxmo
 IUSE+=" +dumpcap +editcap +gui http2 http3 ilbc kerberos libxml2 lua lz4 maxminddb"
 IUSE+=" +mergecap +minizip +netlink opus +plugins +pcap +randpkt"
 IUSE+=" +randpktdump +reordercap sbc selinux +sharkd smi snappy spandsp sshdump ssl"
-IUSE+=" sdjournal test +text2pcap tfshark +tshark +udpdump wifi zlib +zstd"
+IUSE+=" sdjournal test +text2pcap +tshark +udpdump wifi zlib +zstd"
 
 REQUIRED_USE="
 	lua? ( ${LUA_REQUIRED_USE} )
@@ -86,8 +86,6 @@ RDEPEND="
 DEPEND="
 	${RDEPEND}
 "
-# TODO: 4.0.0_rc1 release notes say:
-# "Perl is no longer required to build Wireshark, but may be required to build some source code files and run code analysis checks."
 BDEPEND="
 	${PYTHON_DEPS}
 	dev-lang/perl
@@ -154,19 +152,6 @@ src_configure() {
 
 	python_setup
 
-	# Workaround bug #213705. If krb5-config --libs has -lcrypto then pass
-	# --with-ssl to ./configure. (Mimics code from acinclude.m4).
-	if use kerberos ; then
-		case $(krb5-config --libs) in
-			*-lcrypto*)
-				ewarn "Kerberos was built with ssl support: linkage with openssl is enabled."
-				ewarn "Note there are annoying license incompatibilities between the OpenSSL"
-				ewarn "license and the GPL, so do your check before distributing such package."
-				mycmakeargs+=( -DENABLE_GNUTLS=$(usex ssl) )
-				;;
-		esac
-	fi
-
 	if use gui ; then
 		append-cxxflags -fPIC -DPIC
 	fi
@@ -209,7 +194,7 @@ src_configure() {
 		-DBUILD_sharkd=$(usex sharkd)
 		-DBUILD_sshdump=$(usex sshdump)
 		-DBUILD_text2pcap=$(usex text2pcap)
-		-DBUILD_tfshark=$(usex tfshark)
+		-DBUILD_tfshark=OFF
 		-DBUILD_tshark=$(usex tshark)
 		-DBUILD_udpdump=$(usex udpdump)
 
@@ -230,6 +215,7 @@ src_configure() {
 		-DLUA_FIND_VERSIONS="${ELUA#lua}"
 		-DENABLE_LZ4=$(usex lz4)
 		-DENABLE_MINIZIP=$(usex minizip)
+		-DENABLE_MINIZIPNG=OFF
 		-DENABLE_NETLINK=$(usex netlink)
 		-DENABLE_NGHTTP2=$(usex http2)
 		-DENABLE_NGHTTP3=$(usex http3)
@@ -243,6 +229,7 @@ src_configure() {
 		-DENABLE_SPANDSP=$(usex spandsp)
 		-DBUILD_wifidump=$(usex wifi)
 		-DENABLE_ZLIB=$(usex zlib)
+		-DENABLE_ZLIBNG=OFF
 		-DENABLE_ZSTD=$(usex zstd)
 	)
 

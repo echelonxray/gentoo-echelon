@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="8"
@@ -87,6 +87,7 @@ src_configure() {
 		$(use_with libevent)
 		$(use_with ssl)
 
+		--with-cookiesecretsfile="${EPREFIX}${NSD_DBDIR}/cookiesecrets.txt"
 		--with-dbfile="${EPREFIX}${NSD_DBDIR}/nsd.db"
 		--with-logfile="${EPREFIX}/var/log/nsd.log"
 		--with-pidfile="${EPREFIX}/run/nsd.pid"

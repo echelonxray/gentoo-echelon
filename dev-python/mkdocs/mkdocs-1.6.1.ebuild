@@ -1,10 +1,10 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=hatchling
-PYTHON_COMPAT=( python3_{10..13} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
 
 inherit distutils-r1
 
@@ -37,9 +37,9 @@ KEYWORDS="amd64 ~arm arm64 ~ppc ~ppc64 ~riscv x86"
 # 	)
 # "
 RDEPEND="
-	>=dev-python/Babel-2.9.0[${PYTHON_USEDEP}]
+	>=dev-python/babel-2.9.0[${PYTHON_USEDEP}]
 	>=dev-python/click-7.0[${PYTHON_USEDEP}]
-	>=dev-python/jinja-2.11.1[${PYTHON_USEDEP}]
+	>=dev-python/jinja2-2.11.1[${PYTHON_USEDEP}]
 	>=dev-python/markdown-3.3.6[${PYTHON_USEDEP}]
 	>=dev-python/markupsafe-2.0.1[${PYTHON_USEDEP}]
 	>=dev-python/pyyaml-5.1[${PYTHON_USEDEP}]

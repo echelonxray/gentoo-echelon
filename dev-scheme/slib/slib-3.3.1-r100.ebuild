@@ -17,7 +17,7 @@ S="${WORKDIR}"/${PN}
 
 LICENSE="public-domain BSD"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos"
+KEYWORDS="~alpha amd64 ppc ~ppc64 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos"
 IUSE="gambit scm"
 RESTRICT="mirror"
 REQUIRED_USE="${GUILE_REQUIRED_USE}"
@@ -62,9 +62,11 @@ _new_catalog() {
 
 guile_generate_catalog() {
 	# FIXME(arsen): we need to also compile the .go files..
-	local gpath="${ED}/$(${GUILE} -c '(display (%library-dir))')"
+	local gpath
+	gpath="${ED}/$(${GUILE} -c '(display (%library-dir))')" \
+		 || die "Could not determine the library directory"
 	local -x GUILE_IMPLEMENTATION_PATH="${gpath}"
-	assert "Could not determine the library directory"
+
 	mkdir -p "${gpath}" || die
 	ln -sr "${ED}/usr/share/slib" "${GUILE_IMPLEMENTATION_PATH}/slib" \
 		|| die
@@ -73,8 +75,7 @@ guile_generate_catalog() {
 			   -c "
 		(use-modules (ice-9 slib))
 		(require 'new-catalog)
-	"
-	assert "Failed to generate catalogs for Guile"
+	" || die "Failed to generate catalogs for Guile"
 }
 
 src_install() {

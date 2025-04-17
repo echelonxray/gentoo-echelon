@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 #
 # System-wide defaults for the Portage system
@@ -149,7 +149,7 @@ TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE="1"
 
 # Aaron W. Swenson <titanofold@gentoo.org> (2017-07-09)
 # Default target(s) for postgres{,-multi}.eclass
-POSTGRES_TARGETS="postgres16"
+POSTGRES_TARGETS="postgres17"
 
 # Michael Orlitzky <mjo@gentoo.org> (2017-11-17)
 #
@@ -166,10 +166,10 @@ POSTGRES_TARGETS="postgres16"
 #
 PHP_TARGETS="php8-2"
 
-# Alfredo Tupone <tupone@gentoo.org> (2024-03-15)
+# Sam James <sam@gentoo.org> (2025-02-19)
 #
 # Default ADA target
-ADA_TARGET="gcc_12"
+ADA_TARGET="gcc_14"
 
 # Marek Szuba <marecki@gentoo.org> (2020-10-15)
 # Default targets for lua{,-single}.eclass

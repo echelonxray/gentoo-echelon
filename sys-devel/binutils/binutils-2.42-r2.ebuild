@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -177,6 +177,8 @@ src_configure() {
 	use cet && filter-flags -mindirect-branch -mindirect-branch=*
 	use elibc_musl && append-ldflags -Wl,-z,stack-size=2097152
 
+	# https://sourceware.org/PR32372
+	append-cflags $(test-flags-CC -std=gnu17)
 	append-ldflags $(test-flags-CCLD -Wl,--undefined-version)
 
 	local x
@@ -307,7 +309,7 @@ src_configure() {
 
 			if use hardened ; then
 				myconf+=(
-					# TOOD: breaks glibc test suite
+					# TODO: breaks glibc test suite
 					#--enable-error-execstack=yes
 					#--enable-error-rwx-segments=yes
 					--enable-default-execstack=no

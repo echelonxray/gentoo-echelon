@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{9..12} )
+PYTHON_COMPAT=( python3_{10..12} )
 DOCS_BUILDER="doxygen"
 inherit cmake flag-o-matic desktop docs python-single-r1 qmake-utils toolchain-funcs xdg
 
@@ -72,7 +72,7 @@ RDEPEND="
 			dev-python/twisted[${PYTHON_USEDEP}]
 			dev-python/zope-interface[${PYTHON_USEDEP}]
 			mpi? ( dev-python/mpi4py )
-			qt6? ( dev-python/PyQt6[opengl,${PYTHON_USEDEP}] )
+			qt6? ( dev-python/pyqt6[opengl,${PYTHON_USEDEP}] )
 		')
 	)
 	qt6? (
@@ -100,6 +100,7 @@ BDEPEND="
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-5.5.0-allow_custom_build_type.patch
+	"${FILESDIR}"/${P}-cmake-3.31-compat.patch
 )
 
 # false positive when checking for available HDF5 interface, bug #904731

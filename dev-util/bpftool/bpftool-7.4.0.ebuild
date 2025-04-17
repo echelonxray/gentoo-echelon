@@ -7,7 +7,7 @@ LLVM_COMPAT=( {15..19} )
 LLVM_OPTIONAL=1
 PYTHON_COMPAT=( python3_{10..13} )
 
-inherit bash-completion-r1 linux-info llvm-r1 optfeature python-any-r1 toolchain-funcs
+inherit bash-completion-r1 linux-info llvm-r1 python-any-r1 toolchain-funcs
 
 DESCRIPTION="Tool for inspection and simple manipulation of eBPF programs and maps"
 HOMEPAGE="https://github.com/libbpf/bpftool"
@@ -36,7 +36,7 @@ else
 		S="${WORKDIR}/bpftool-libbpf-v${PV}-sources"
 	fi
 
-	KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc ~ppc64 ~riscv ~x86"
+	KEYWORDS="amd64 ~arm ~arm64 ~loong ~ppc ~ppc64 ~riscv ~x86"
 fi
 
 LICENSE="|| ( GPL-2 BSD-2 )"
@@ -46,7 +46,7 @@ REQUIRED_USE="llvm? ( ${LLVM_REQUIRED_USE} )"
 
 RDEPEND="
 	caps? ( sys-libs/libcap:= )
-	llvm? ( $(llvm_gen_dep 'sys-devel/llvm:${LLVM_SLOT}') )
+	llvm? ( $(llvm_gen_dep 'llvm-core/llvm:${LLVM_SLOT}') )
 	!llvm? ( sys-libs/binutils-libs:= )
 	sys-libs/zlib:=
 	virtual/libelf:=
@@ -59,6 +59,7 @@ BDEPEND="
 	${PYTHON_DEPS}
 	app-arch/tar
 	dev-python/docutils
+	$(llvm_gen_dep 'llvm-core/clang:${LLVM_SLOT}[llvm_targets_BPF]')
 "
 
 CONFIG_CHECK="~DEBUG_INFO_BTF"
@@ -106,6 +107,7 @@ bpftool_make() {
 
 	emake \
 		ARCH="$(tc-arch-kernel)" \
+		CLANG="$(get_llvm_prefix -b)/bin/clang" \
 		HOSTAR="$(tc-getBUILD_AR)" \
 		HOSTCC="$(tc-getBUILD_CC)" \
 		HOSTLD="$(tc-getBUILD_LD)" \
@@ -125,8 +127,4 @@ src_compile() {
 src_install() {
 	bpftool_make DESTDIR="${D}" -C src install
 	bpftool_make mandir="${ED}"/usr/share/man -C docs install
-}
-
-pkg_postinst() {
-	optfeature "clang-bpf-co-re support" sys-devel/clang[llvm_targets_BPF]
 }

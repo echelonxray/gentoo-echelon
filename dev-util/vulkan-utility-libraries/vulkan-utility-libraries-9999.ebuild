@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -31,7 +31,6 @@ DEPEND="~dev-util/vulkan-headers-${PV}
 		dev-cpp/gtest
 		>=dev-cpp/magic_enum-0.9.2
 	)"
-RDEPEND="!<media-libs/vulkan-layers-1.3.268"
 BDEPEND="${PYTHON_DEPS}"
 
 multilib_src_configure() {

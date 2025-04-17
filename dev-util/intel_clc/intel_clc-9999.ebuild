@@ -1,9 +1,9 @@
-# Copyright 2023-2024 Gentoo Authors
+# Copyright 2023-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-LLVM_COMPAT=( {16..18} )
+LLVM_COMPAT=( {16..19} )
 PYTHON_COMPAT=( python3_{10..13} )
 
 inherit llvm-r1 meson python-any-r1
@@ -28,14 +28,14 @@ SLOT="0"
 IUSE="debug"
 
 RDEPEND="
-	dev-libs/libclc
 	dev-util/spirv-tools
 	>=sys-libs/zlib-1.2.8:=
 	x11-libs/libdrm
 	$(llvm_gen_dep '
 		dev-util/spirv-llvm-translator:${LLVM_SLOT}
-		sys-devel/clang:${LLVM_SLOT}=
-		sys-devel/llvm:${LLVM_SLOT}=
+		llvm-core/clang:${LLVM_SLOT}=
+		=llvm-core/libclc-${LLVM_SLOT}*
+		llvm-core/llvm:${LLVM_SLOT}=
 	')
 "
 DEPEND="${RDEPEND}

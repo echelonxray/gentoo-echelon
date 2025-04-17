@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -72,12 +72,16 @@ src_unpack() {
 		if [[ ${PV} != 9999 ]] ; then
 			EGIT_BRANCH=binutils-$(ver_cut 1)_$(ver_cut 2)-branch
 		fi
-		EGIT_REPO_URI="https://sourceware.org/git/binutils-gdb.git"
+		EGIT_REPO_URI="
+			https://sourceware.org/git/binutils-gdb.git
+			https://git.sr.ht/~sourceware/binutils-gdb
+			https://gitlab.com/x86-binutils/binutils-gdb.git
+		"
 		S=${WORKDIR}/binutils
 		EGIT_CHECKOUT_DIR=${S}
 		git-r3_src_unpack
 	else
-		unpack ${P/-hppa64/}.tar.xz
+		unpack ${MY_P}.tar.xz
 
 		cd "${WORKDIR}" || die
 		unpack binutils-${PATCH_BINUTILS_VER}-patches-${PATCH_VER}.tar.xz
@@ -127,10 +131,6 @@ pkgversion() {
 multilib_src_configure() {
 	filter-lto
 
-	# Workaround for lld-17 (bug #914640)
-	# Should be able to drop this w/ >=binutils-2.43
-	append-ldflags $(test-flags-CCLD -Wl,--undefined-version)
-
 	local myconf=(
 		# portage's econf() does not detect presence of --d-d-t
 		# because it greps only top-level ./configure. But not
@@ -156,9 +156,9 @@ multilib_src_configure() {
 		--without-zlib
 		--with-system-zlib
 		# We only care about the libs, so disable programs. #528088
-		--disable-{binutils,etc,ld,gas,gold,gprof,gprofng}
+		--disable-{binutils,etc,ld,gas,gprof,gprofng}
 		# Disable modules that are in a combined binutils/gdb tree. #490566
-		--disable-{gdb,gdbserver,libdecnumber,readline,sim}
+		--disable-{gdb,gdbserver,libbacktrace,libdecnumber,readline,sim}
 		# Strip out broken static link flags.
 		# https://gcc.gnu.org/PR56750
 		--without-stage1-ldflags
@@ -209,6 +209,11 @@ multilib_src_configure() {
 
 multilib_src_install() {
 	emake DESTDIR="${D}" install
+
+	# Provided by dev-debug/gdb instead
+	if [[ ${PV} != 9999 ]] ; then
+		rm "${ED}"/usr/share/info/sframe-spec.info || die
+	fi
 
 	# Provide libiberty.h directly.
 	dosym libiberty/libiberty.h /usr/include/libiberty.h

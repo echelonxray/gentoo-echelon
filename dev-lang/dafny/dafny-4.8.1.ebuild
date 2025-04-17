@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -373,7 +373,7 @@ else
 	SRC_URI="https://github.com/dafny-lang/${PN}/archive/v${PV}.tar.gz
 		-> ${P}.tar.gz"
 
-	KEYWORDS="~amd64"
+	KEYWORDS="amd64"
 fi
 
 SRC_URI+="
@@ -404,7 +404,7 @@ BDEPEND="
 		>=dev-lang/boogie-3.1.6
 		dev-go/go-tools
 		dev-lang/go
-		dev-python/OutputCheck
+		dev-python/outputcheck
 		dev-python/lit
 		dev-python/psutil
 		net-libs/nodejs[npm]
@@ -668,5 +668,5 @@ src_install() {
 
 pkg_postinst() {
 	optfeature "Dafny GO language backend" dev-go/go-tools
-	optfeature "Dafny Rust language backend" virtual/rust
+	optfeature "Dafny Rust language backend" dev-lang/rust dev-lang/rust-bin
 }

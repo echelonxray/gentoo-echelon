@@ -88,6 +88,8 @@ kde-apps
 kde-frameworks
 kde-misc
 kde-plasma
+llvm-core
+llvm-runtimes
 lxde-base
 lxqt-base
 mail-client
@@ -133,6 +135,7 @@ sci-geosciences
 sci-libs
 sci-mathematics
 sci-misc
+sci-ml
 sci-physics
 sci-visualization
 sec-keys

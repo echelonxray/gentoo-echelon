@@ -19,7 +19,7 @@ SRC_URI="https://github.com/${PN}/${PN}/archive/v${PV}.tar.gz -> net-ssh-git-${P
 
 LICENSE="GPL-2"
 SLOT="$(ver_cut 1)"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc ~ppc64 ~x86"
+KEYWORDS="amd64 ~arm ~arm64 ppc ppc64 x86"
 IUSE="chacha20 ed25519 test"
 RESTRICT="!test? ( test )"
 
@@ -29,7 +29,7 @@ ruby_add_rdepend "
 	ed25519? ( >=dev-ruby/ed25519-1.2:1 dev-ruby/x25519 dev-ruby/bcrypt_pbkdf:1 )
 "
 
-ruby_add_bdepend "test? ( dev-ruby/base64 dev-ruby/test-unit:2 >=dev-ruby/mocha-0.13 )"
+ruby_add_bdepend "test? ( dev-ruby/base64 dev-ruby/test-unit:2 <dev-ruby/mocha-2.7.0:2 )"
 
 all_ruby_prepare() {
 	# Avoid bundler dependency

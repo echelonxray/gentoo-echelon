@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{11..12} )
 
 inherit autotools optfeature python-single-r1
 
@@ -55,6 +55,8 @@ DEPEND="
 
 src_prepare() {
 	default
+	# Remove -W from SPHINXOPTS to prevent failure due to warnings
+	sed -i 's#^SPHINXOPTS .*=.*#SPHINXOPTS =#' doc/Makefile.am || die "Makefile patching failed"
 	eautoreconf
 }
 

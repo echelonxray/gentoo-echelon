@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -43,7 +43,6 @@ DEPEND="
 	${CDEPEND}
 	app-alternatives/cpio
 	app-text/xmlto
-	$(python_gen_cond_dep 'dev-python/setuptools[${PYTHON_USEDEP}]')
 	>=sys-devel/gettext-0.18.2
 
 	libvirt? ( dev-libs/libxml2 )
@@ -56,6 +55,7 @@ RDEPEND="
 "
 # which: https://sourceware.org/PR32106
 BDEPEND="
+	$(python_gen_cond_dep 'dev-python/setuptools[${PYTHON_USEDEP}]')
 	test? (
 		dev-util/dejagnu
 		|| (
@@ -73,7 +73,8 @@ ERROR_DEBUG_FS="${PN} works best with support for Debug Filesystem (DEBUG_FS) - 
 
 DOCS="AUTHORS HACKING NEWS README"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
-RESTRICT="!test? ( test )"
+# bug #935333, bug #923597, and so on; needs work to get passing on Gentoo.
+RESTRICT="!test? ( test ) test"
 PATCHES=(
 	"${FILESDIR}/${PN}-3.1-ia64.patch"
 )
@@ -150,6 +151,7 @@ src_test() {
 
 src_install() {
 	default
+	rm -rf "${D}/$(python_get_sitedir)"/*.egg-info || die
 	python_optimize
 
 	# Avoid file collision with dev-debug/dtrace

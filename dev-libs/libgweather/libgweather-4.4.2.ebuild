@@ -1,13 +1,13 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{10..13} )
 
 inherit gnome.org gnome2-utils meson python-any-r1 vala xdg
 
 DESCRIPTION="Location and timezone database and weather-lookup library"
-HOMEPAGE="https://wiki.gnome.org/Projects/LibGWeather"
+HOMEPAGE="https://gitlab.gnome.org/GNOME/libgweather"
 
 LICENSE="GPL-2+"
 SLOT="4/4-0" # subslot = 4-(libgweather-4 soname suffix)
@@ -59,14 +59,26 @@ src_prepare() {
 }
 
 src_configure() {
+	local native_file="${T}"/meson.ini.local
+	# We don't want to run pylint tests. They're only for style.
+	cat >> ${native_file} <<-EOF || die
+	[binaries]
+	pylint='pylint-falseified'
+	EOF
+
 	local emesonargs=(
 		$(meson_use vala enable_vala)
 		$(meson_use gtk-doc gtk_doc)
 		$(meson_use introspection)
 		$(meson_use test tests)
 		-Dsoup2=false
-		)
+		--native-file "${native_file}"
+	)
 	meson_src_configure
+}
+
+src_test() {
+	meson_src_test --no-suite style
 }
 
 src_install() {

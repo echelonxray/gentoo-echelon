@@ -3,11 +3,11 @@
 
 EAPI=8
 
-LLVM_COMPAT=( {15..19} )
+LLVM_COMPAT=( {15..20} )
 LLVM_OPTIONAL=1
 PYTHON_COMPAT=( python3_{10..13} )
 
-inherit bash-completion-r1 linux-info llvm-r1 optfeature python-any-r1 toolchain-funcs
+inherit bash-completion-r1 linux-info llvm-r1 python-any-r1 toolchain-funcs
 
 DESCRIPTION="Tool for inspection and simple manipulation of eBPF programs and maps"
 HOMEPAGE="https://github.com/libbpf/bpftool"
@@ -41,12 +41,12 @@ fi
 
 LICENSE="|| ( GPL-2 BSD-2 )"
 SLOT="0"
-IUSE="caps llvm"
+IUSE="caps +clang llvm"
 REQUIRED_USE="llvm? ( ${LLVM_REQUIRED_USE} )"
 
 RDEPEND="
 	caps? ( sys-libs/libcap:= )
-	llvm? ( $(llvm_gen_dep 'sys-devel/llvm:${LLVM_SLOT}') )
+	llvm? ( $(llvm_gen_dep 'llvm-core/llvm:${LLVM_SLOT}') )
 	!llvm? ( sys-libs/binutils-libs:= )
 	sys-libs/zlib:=
 	virtual/libelf:=
@@ -59,6 +59,8 @@ BDEPEND="
 	${PYTHON_DEPS}
 	app-arch/tar
 	dev-python/docutils
+	clang? ( $(llvm_gen_dep 'llvm-core/clang:${LLVM_SLOT}[llvm_targets_BPF]') )
+	!clang? ( sys-devel/bpf-toolchain )
 "
 
 CONFIG_CHECK="~DEBUG_INFO_BTF"
@@ -86,11 +88,29 @@ src_prepare() {
 	# remove hardcoded/unhelpful flags from bpftool
 	sed -i -e '/CFLAGS += -O2/d' -e 's/-W //g' -e 's/-Wextra //g' src/Makefile || die
 
+	if ! use clang; then
+		# remove bpf target & add assembly annotations to fix CO-RE feature detection
+		sed -i -e 's/-target bpf/-dA/' src/Makefile.feature || die
+
+		# remove bpf target from skeleton build
+		sed -i -e 's/--target=bpf//g' src/Makefile || die
+	fi
+
 	# Use rst2man or rst2man.py depending on which one exists (#930076)
 	type -P rst2man >/dev/null || sed -i -e 's/rst2man/rst2man.py/g' docs/Makefile || die
 }
 
 bpftool_make() {
+	# which BPF compiler should we use?
+	if use clang; then
+		export CLANG="$(get_llvm_prefix -b)/bin/clang"
+		export LLVM_STRIP="$(get_llvm_prefix -b)/bin/llvm-strip"
+	else
+		# use bpf-toolchain
+		export CLANG="bpf-unknown-none-gcc"
+		export LLVM_STRIP="bpf-unknown-none-strip"
+	fi
+
 	tc-export AR CC LD
 
 	emake \
@@ -114,8 +134,4 @@ src_compile() {
 src_install() {
 	bpftool_make DESTDIR="${D}" -C src install
 	bpftool_make mandir="${ED}"/usr/share/man -C docs install
-}
-
-pkg_postinst() {
-	optfeature "clang-bpf-co-re support" sys-devel/clang[llvm_targets_BPF]
 }

@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -27,10 +27,11 @@ RESTRICT="!test? ( test )"
 IUSE="debug test"
 
 DEPEND="
-	>=dev-util/rocminfo-5
-	sys-devel/clang:${LLVM_MAX_SLOT}
+	=dev-util/rocminfo-5*
+	llvm-core/clang:${LLVM_MAX_SLOT}
 	dev-libs/rocm-comgr:${SLOT}
 	>=dev-libs/rocr-runtime-5.6
+	<dev-libs/rocr-runtime-6
 	x11-base/xorg-proto
 	virtual/opengl
 "
@@ -38,7 +39,7 @@ BDEPEND="test? ( =dev-util/hipcc-5* )"
 RDEPEND="${DEPEND}
 	=dev-util/hipcc-5*
 	dev-perl/URI-Encode
-	sys-devel/clang-runtime:=
+	llvm-core/clang-runtime:=
 	>=dev-libs/roct-thunk-interface-5"
 
 PATCHES=(

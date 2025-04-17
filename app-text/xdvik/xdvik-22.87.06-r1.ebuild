@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -43,8 +43,14 @@ BDEPEND="app-alternatives/lex
 	app-alternatives/yacc
 	virtual/pkgconfig"
 
+# https://bugs.gentoo.org/900537
+# Windows-exclusive function
+QA_CONFIG_IMPL_DECL_SKIP=(memicmp)
+
 PATCHES=(
 	"${FILESDIR}"/${PN}-22.87.06-configure-clang16.patch
+	"${FILESDIR}"/${PN}-22.87.06-squeeze-c23.patch
+	"${FILESDIR}"/${PN}-22.87.06-c23.patch
 )
 
 src_prepare() {

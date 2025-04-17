@@ -1,4 +1,4 @@
-# Copyright 2008-2024 Gentoo Authors
+# Copyright 2008-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -14,29 +14,28 @@ ABSEIL_MIN_VER="${ABSEIL_MIN_VER//_/}"
 if [[ "${PV}" == *9999 ]]; then
 	EGIT_REPO_URI="https://github.com/protocolbuffers/protobuf.git"
 	EGIT_SUBMODULES=( '-*' )
-	MY_SLOT="28.0"
+	SLOT="0/9999"
 
 	inherit git-r3
 else
 	SRC_URI="https://github.com/protocolbuffers/protobuf/releases/download/v${PV}/${P}.tar.gz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~loong ~mips ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~arm64-macos ~x64-macos"
-	MY_SLOT=$(ver_cut 1-2)
+	KEYWORDS="~alpha amd64 arm arm64 ~loong ~mips ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~arm64-macos ~x64-macos"
+	SLOT="0/$(ver_cut 1-2).0"
 fi
 
 DESCRIPTION="Google's Protocol Buffers - Extensible mechanism for serializing structured data"
 HOMEPAGE="https://protobuf.dev/"
 
 LICENSE="BSD"
-SLOT="0/${MY_SLOT}.0"
 IUSE="conformance debug emacs examples +libprotoc libupb +protobuf +protoc test zlib"
 
+# Require protobuf for the time being
 REQUIRED_USE="
-	|| (
-		libprotoc
-		libupb
-		protobuf
-		protoc
-	)
+	protobuf
+	protobuf? ( protoc )
+	examples? ( protobuf )
+	libprotoc? ( protobuf )
+	libupb? ( protobuf )
 "
 
 RESTRICT="!test? ( test )"
@@ -126,6 +125,14 @@ src_test() {
 	}
 
 	multilib_foreach_abi setup_test_env
+
+	# Do headstands for LTO # 942985
+	local -x GTEST_FILTER
+	GTEST_FILTER="-FileDescriptorSetSource/EncodeDecodeTest*"
+
+	cmake-multilib_src_test
+
+	GTEST_FILTER="${GTEST_FILTER//-/}"
 
 	cmake-multilib_src_test
 }

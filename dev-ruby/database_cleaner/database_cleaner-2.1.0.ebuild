@@ -3,7 +3,7 @@
 
 EAPI=8
 
-USE_RUBY="ruby31 ruby32"
+USE_RUBY="ruby31 ruby32 ruby33"
 
 # There are specs and features but they all require configured databases.
 RUBY_FAKEGEM_RECIPE_TEST="none"
@@ -17,4 +17,4 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~arm ~x86"
 
-ruby_add_rdepend "|| ( dev-ruby/database_cleaner-active_record:2.2 dev-ruby/database_cleaner-active_record:2.1 )"
+ruby_add_rdepend "dev-ruby/database_cleaner-active_record:2.2"

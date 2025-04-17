@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -24,12 +24,12 @@ if [[ ${GAWK_IS_BETA} == yes || ${PV} == *_beta* ]] ; then
 	SRC_URI="https://www.skeeve.com/gawk/${MY_P}.tar.gz"
 else
 	VERIFY_SIG_OPENPGP_KEY_PATH=/usr/share/openpgp-keys/gawk.asc
-	inherit verify-sig
+	inherit verify-sig flag-o-matic
 
 	SRC_URI="mirror://gnu/gawk/${P}.tar.xz"
 	SRC_URI+=" verify-sig? ( mirror://gnu/gawk/${P}.tar.xz.sig )"
 
-	KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
+	KEYWORDS="~alpha amd64 arm arm64 hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
 fi
 
 LICENSE="GPL-3+"
@@ -59,6 +59,8 @@ fi
 
 src_prepare() {
 	default
+
+	use elibc_musl && append-cppflags -D__GNU_LIBRARY__
 
 	# Use symlinks rather than hardlinks, and disable version links
 	sed -i \
@@ -106,31 +108,4 @@ src_install() {
 	insinto /usr/include/awk
 	doins *.h
 	rm "${ED}"/usr/include/awk/config.h || die
-}
-
-pkg_postinst() {
-	# Symlink creation here as the links do not belong to gawk, but to any awk
-	if has_version app-admin/eselect && has_version app-eselect/eselect-awk ; then
-		eselect awk update ifunset
-	else
-		local l
-		for l in "${EROOT}"/usr/share/man/man1/gawk.1* "${EROOT}"/usr/bin/gawk ; do
-			if [[ -e ${l} ]] && ! [[ -e ${l/gawk/awk} ]] ; then
-				ln -s "${l##*/}" "${l/gawk/awk}" || die
-			fi
-		done
-
-		if ! [[ -e ${EROOT}/bin/awk ]] ; then
-			# /bin might not exist yet (stage1)
-			[[ -d "${EROOT}/bin" ]] || mkdir "${EROOT}/bin" || die
-
-			ln -s "../usr/bin/gawk" "${EROOT}/bin/awk" || die
-		fi
-	fi
-}
-
-pkg_postrm() {
-	if has_version app-admin/eselect && has_version app-eselect/eselect-awk ; then
-		eselect awk update ifunset
-	fi
 }

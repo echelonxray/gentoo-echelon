@@ -1,8 +1,8 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-USE_RUBY="ruby31 ruby32"
+USE_RUBY="ruby31 ruby32 ruby33"
 
 RUBY_FAKEGEM_TASK_DOC=""
 RUBY_FAKEGEM_RECIPE_TEST="rspec3"
@@ -24,7 +24,16 @@ SLOT="0"
 KEYWORDS="~amd64 ~riscv ~x86"
 IUSE="test"
 
-ruby_add_depend "test? ( dev-ruby/bson dev-ruby/ox dev-ruby/rantly dev-ruby/sqlite3 dev-ruby/tokyocabinet )"
+ruby_add_depend "test? (
+	dev-ruby/bson
+	dev-ruby/dalli
+	dev-ruby/ox
+	dev-ruby/rack-cache
+	dev-ruby/rantly
+	dev-ruby/sqlite3
+	dev-ruby/timecop
+	dev-ruby/tokyocabinet
+)"
 
 all_ruby_prepare() {
 	sed -e "s/__dir__/'.'/" \

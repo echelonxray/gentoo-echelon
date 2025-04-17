@@ -14,7 +14,7 @@ SRC_URI="https://github.com/hughsie/libjcat/releases/download/${PV}/${P}.tar.xz"
 
 LICENSE="LGPL-2.1+"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc64 ~riscv ~x86"
+KEYWORDS="amd64 ~arm ~arm64 ~loong ppc64 ~riscv x86"
 IUSE="+ed25519 +gpg gtk-doc +introspection +man +pkcs7 test vala"
 
 RDEPEND="
@@ -43,6 +43,10 @@ BDEPEND="
 "
 
 RESTRICT="!test? ( test )"
+
+PATCHES=(
+	"${FILESDIR}"/${P}-tests.patch
+)
 
 python_check_deps() {
 	python_has_version -b "dev-python/setuptools[${PYTHON_USEDEP}]"

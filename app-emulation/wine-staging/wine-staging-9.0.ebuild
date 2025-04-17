@@ -1,4 +1,4 @@
-# Copyright 2022-2024 Gentoo Authors
+# Copyright 2022-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -35,12 +35,12 @@ S="${WORKDIR}/${WINE_P}"
 LICENSE="LGPL-2.1+ BSD-2 IJG MIT OPENLDAP ZLIB gsm libpng2 libtiff"
 SLOT="${PV}"
 IUSE="
-	+X +abi_x86_32 +abi_x86_64 +alsa capi crossdev-mingw cups dos
+	+X +abi_x86_32 +abi_x86_64 +alsa capi crossdev-mingw cups +dbus dos
 	llvm-libunwind custom-cflags +fontconfig +gecko gphoto2 +gstreamer
-	kerberos +mingw +mono netapi nls opencl +opengl osmesa pcap perl
+	kerberos +mingw +mono netapi nls opencl +opengl pcap perl
 	pulseaudio samba scanner +sdl selinux smartcard +ssl +strip
-	+truetype udev udisks +unwind usb v4l +vulkan wayland wow64
-	+xcomposite xinerama
+	+truetype udev +unwind usb v4l +vulkan wayland wow64 +xcomposite
+	xinerama
 "
 # bug #551124 for truetype
 # TODO: wow64 can be done without mingw if using clang (needs bug #912237)
@@ -63,21 +63,18 @@ WINE_DLOPEN_DEPEND="
 		x11-libs/libXrandr[${MULTILIB_USEDEP}]
 		x11-libs/libXrender[${MULTILIB_USEDEP}]
 		x11-libs/libXxf86vm[${MULTILIB_USEDEP}]
-		opengl? (
-			media-libs/libglvnd[X,${MULTILIB_USEDEP}]
-			osmesa? ( media-libs/mesa[osmesa,${MULTILIB_USEDEP}] )
-		)
+		opengl? ( media-libs/libglvnd[X,${MULTILIB_USEDEP}] )
 		xcomposite? ( x11-libs/libXcomposite[${MULTILIB_USEDEP}] )
 		xinerama? ( x11-libs/libXinerama[${MULTILIB_USEDEP}] )
 	)
 	cups? ( net-print/cups[${MULTILIB_USEDEP}] )
+	dbus? ( sys-apps/dbus[${MULTILIB_USEDEP}] )
 	fontconfig? ( media-libs/fontconfig[${MULTILIB_USEDEP}] )
 	kerberos? ( virtual/krb5[${MULTILIB_USEDEP}] )
 	netapi? ( net-fs/samba[${MULTILIB_USEDEP}] )
 	sdl? ( media-libs/libsdl2[haptic,joystick,${MULTILIB_USEDEP}] )
 	ssl? ( net-libs/gnutls:=[${MULTILIB_USEDEP}] )
 	truetype? ( media-libs/freetype[${MULTILIB_USEDEP}] )
-	udisks? ( sys-apps/dbus[${MULTILIB_USEDEP}] )
 	v4l? ( media-libs/libv4l[${MULTILIB_USEDEP}] )
 	vulkan? ( media-libs/vulkan-loader[X?,${MULTILIB_USEDEP}] )
 "
@@ -102,7 +99,7 @@ WINE_COMMON_DEPEND="
 	smartcard? ( sys-apps/pcsc-lite[${MULTILIB_USEDEP}] )
 	udev? ( virtual/libudev:=[${MULTILIB_USEDEP}] )
 	unwind? (
-		llvm-libunwind? ( sys-libs/llvm-libunwind[${MULTILIB_USEDEP}] )
+		llvm-libunwind? ( llvm-runtimes/libunwind[${MULTILIB_USEDEP}] )
 		!llvm-libunwind? ( sys-libs/libunwind:=[${MULTILIB_USEDEP}] )
 	)
 	usb? ( dev-libs/libusb:1[${MULTILIB_USEDEP}] )
@@ -132,7 +129,6 @@ RDEPEND="
 	)
 	samba? ( net-fs/samba[winbind] )
 	selinux? ( sec-policy/selinux-wine )
-	udisks? ( sys-fs/udisks:2 )
 "
 DEPEND="
 	${WINE_COMMON_DEPEND}
@@ -151,7 +147,7 @@ BDEPEND="
 	)
 	|| (
 		sys-devel/binutils
-		sys-devel/lld
+		llvm-core/lld
 	)
 	dev-lang/perl
 	sys-devel/bison
@@ -177,6 +173,7 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-7.17-noexecstack.patch
 	"${FILESDIR}"/${PN}-7.20-unwind.patch
 	"${FILESDIR}"/${PN}-8.13-rpath.patch
+	"${FILESDIR}"/${PN}-10.0-binutils2.44.patch
 )
 
 pkg_pretend() {
@@ -294,6 +291,7 @@ src_configure() {
 		$(use_with alsa)
 		$(use_with capi)
 		$(use_with cups)
+		$(use_with dbus)
 		$(use_with fontconfig)
 		$(use_with gphoto2 gphoto)
 		$(use_with gstreamer)
@@ -304,7 +302,7 @@ src_configure() {
 		$(use_with nls gettext)
 		$(use_with opencl)
 		$(use_with opengl)
-		$(use_with osmesa)
+		--without-osmesa # media-libs/mesa no longer supports this
 		--without-oss # media-sound/oss is not packaged (OSSv4)
 		$(use_with pcap)
 		$(use_with pulseaudio pulse)
@@ -314,7 +312,6 @@ src_configure() {
 		$(use_with ssl gnutls)
 		$(use_with truetype freetype)
 		$(use_with udev)
-		$(use_with udisks dbus) # dbus is only used for udisks
 		$(use_with unwind)
 		$(use_with usb)
 		$(use_with v4l v4l2)
@@ -327,6 +324,9 @@ src_configure() {
 	filter-lto # build failure
 	filter-flags -Wl,--gc-sections # runtime issues (bug #931329)
 	use custom-cflags || strip-flags # can break in obscure ways at runtime
+
+	# broken with gcc-15's c23 default (TODO: try w/o occasionally, bug #943849)
+	append-cflags -std=gnu17
 
 	# wine uses linker tricks unlikely to work with non-bfd/lld (bug #867097)
 	# (do self test until https://github.com/gentoo/gentoo/pull/28355)
@@ -364,6 +364,10 @@ src_configure() {
 				# strip-unsupported-flags miss these during compile-only tests
 				# (primarily done for 23.0 profiles' -z, not full coverage)
 				filter-flags '-Wl,-z,*'
+
+				# -mavx with mingw-gcc has a history of issues and still see
+				# users have problems despite -mpreferred-stack-boundary=2
+				append-cflags -mno-avx
 
 				CC=${mingwcc} test-flags-CC ${CFLAGS:--O2}
 			)}"
@@ -484,5 +488,7 @@ pkg_postinst() {
 }
 
 pkg_postrm() {
-	eselect wine update --if-unset || die
+	if has_version -b app-eselect/eselect-wine; then
+		eselect wine update --if-unset || die
+	fi
 }

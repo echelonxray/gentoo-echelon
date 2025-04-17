@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -6,12 +6,12 @@ inherit gnustep-base
 
 DESCRIPTION="Default X11 back-end component for the GNUstep GUI Library"
 HOMEPAGE="https://gnustep.github.io"
-SRC_URI="ftp://ftp.gnustep.org/pub/gnustep/core/gnustep-back-${PV}.tar.gz"
+SRC_URI="https://ftp.gnustep.org/pub/gnustep/core/gnustep-back-${PV}.tar.gz"
 S="${WORKDIR}/gnustep-back-${PV}"
 
 LICENSE="LGPL-2.1+"
 SLOT="0"
-KEYWORDS="amd64 ~ppc ~sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 ppc ~sparc x86 ~amd64-linux ~x86-linux"
 IUSE="opengl xim"
 
 RDEPEND="${GNUSTEP_CORE_DEPEND}

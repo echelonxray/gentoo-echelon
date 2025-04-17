@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -17,7 +17,7 @@ else
 		https://netfilter.org/projects/${PN}/files/${P}.tar.xz
 		verify-sig? ( https://netfilter.org/projects/${PN}/files/${P}.tar.xz.sig )
 	"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+	KEYWORDS="~alpha amd64 arm arm64 hppa ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86"
 
 	BDEPEND+="verify-sig? ( sec-keys/openpgp-keys-netfilter )"
 fi
@@ -34,6 +34,10 @@ BDEPEND+="
 	virtual/pkgconfig
 "
 DEPEND="${RDEPEND}"
+
+PATCHES=(
+	"${FILESDIR}"/${P}-valgrind-tests.patch
+)
 
 pkg_setup() {
 	if kernel_is ge 3 13; then

@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -21,12 +21,12 @@ RESTRICT="!test? ( test ) test"
 CLANG_DEPS="
 	$(llvm_gen_dep '
 		!cuda? (
-			sys-devel/clang:${LLVM_SLOT}=
-			sys-devel/llvm:${LLVM_SLOT}=
+			llvm-core/clang:${LLVM_SLOT}=
+			llvm-core/llvm:${LLVM_SLOT}=
 		)
 		cuda? (
-			sys-devel/clang:${LLVM_SLOT}=[llvm_targets_NVPTX]
-			sys-devel/llvm:${LLVM_SLOT}=[llvm_targets_NVPTX]
+			llvm-core/clang:${LLVM_SLOT}=[llvm_targets_NVPTX]
+			llvm-core/llvm:${LLVM_SLOT}=[llvm_targets_NVPTX]
 		)
 	')
 "
@@ -43,6 +43,10 @@ BDEPEND="
 	${CLANG_DEPS}
 	virtual/pkgconfig
 "
+
+PATCHES=(
+	"${FILESDIR}"/${P}-gcc15.patch
+)
 
 src_prepare() {
 	use cuda && cuda_src_prepare
@@ -88,6 +92,7 @@ src_configure() {
 		-DHARDENING_ENABLE=$(usex hardening)
 		-DPOCL_DEBUG_MESSAGES=$(usex debug)
 		-DUSE_POCL_MEMMANAGER=$(usex memmanager)
+		-DENABLE_EXAMPLES=$(usex examples)
 		-DENABLE_TESTS=$(usex test)
 	)
 

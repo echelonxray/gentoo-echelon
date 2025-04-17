@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -18,7 +18,7 @@ elif [[ $(ver_cut 3) -ge 90 || $(ver_cut 4) -ge 90 ]] ; then
 else
 	SRC_URI="mirror://gnu/make/${P}.tar.lz"
 	SRC_URI+=" verify-sig? ( mirror://gnu/make/${P}.tar.lz.sig )"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
+	KEYWORDS="~alpha amd64 arm arm64 hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
 fi
 
 LICENSE="GPL-3+"
@@ -93,7 +93,7 @@ src_compile() {
 }
 
 src_install() {
-	use doc && HTML_DOCS=( doc/make.html/. ) DOCS="$DOCS doc/make.pdf"
+	use doc && HTML_DOCS=( doc/make.html/. ) DOCS="${DOCS} doc/make.pdf"
 	default
 
 	dosym gmake /usr/bin/make

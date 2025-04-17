@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -14,7 +14,7 @@ else
 	SRC_URI="https://sourceware.org/ftp/dwz/releases/${P}.tar.xz"
 	S="${WORKDIR}/${PN}"
 
-	KEYWORDS="~amd64 ~arm ~arm64 ~ppc ~ppc64 ~riscv ~sparc ~x86"
+	KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~loong ~ppc ~ppc64 ~riscv ~sparc ~x86"
 fi
 
 LICENSE="GPL-2+ GPL-3+"
@@ -25,6 +25,10 @@ RESTRICT="!test? ( test )"
 RDEPEND="
 	dev-libs/elfutils
 	dev-libs/xxhash
+	elibc_musl? (
+		>=sys-libs/error-standalone-2.0
+		sys-libs/obstack-standalone
+	)
 "
 DEPEND="${RDEPEND}"
 BDEPEND="
@@ -33,6 +37,7 @@ BDEPEND="
 		dev-libs/elfutils[utils]
 		dev-util/dejagnu
 	)
+	virtual/pkgconfig
 "
 
 src_prepare() {
@@ -41,13 +46,23 @@ src_prepare() {
 }
 
 src_compile() {
-	emake CFLAGS="${CFLAGS}" srcdir="${S}"
+	export LANG=C LC_ALL=C  # grep find nothing for non-ascii locales
+
+	tc-export PKG_CONFIG
+
+	export LIBS="-lelf"
+	if use elibc_musl; then
+		export CFLAGS="${CFLAGS} $(${PKG_CONFIG} --cflags obstack-standalone error-standalone)"
+		export LIBS="${LIBS} $(${PKG_CONFIG} --libs obstack-standalone error-standalone)"
+	fi
+
+	emake CFLAGS="${CFLAGS}" LIBS="${LIBS}" srcdir="${S}"
 }
 
 src_test() {
-	emake CFLAGS="${CFLAGS}" srcdir="${S}" check
+	emake CFLAGS="${CFLAGS}" LIBS="${LIBS}" srcdir="${S}" check
 }
 
 src_install() {
-	emake DESTDIR="${D}" CFLAGS="${CFLAGS}" srcdir="${S}" install
+	emake DESTDIR="${D}" CFLAGS="${CFLAGS}" LIBS="${LIBS}" srcdir="${S}" install
 }

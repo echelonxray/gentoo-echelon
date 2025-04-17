@@ -1,4 +1,4 @@
-# Copyright 2021-2024 Gentoo Authors
+# Copyright 2021-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -21,7 +21,8 @@ fi
 #  - siphash ( MIT CC0-1.0 )
 LICENSE="MIT BSD-2 CC0-1.0"
 SLOT="0"
-IUSE="debug"
+IUSE="debug test"
+RESTRICT="!test? ( test )"
 
 RDEPEND="
 	app-arch/zstd:=
@@ -33,10 +34,6 @@ RDEPEND="
 	)
 "
 DEPEND="${RDEPEND}"
-
-PATCHES=(
-	"${FILESDIR}"/${PN}-2.34.1-linux-6.11.patch
-)
 
 pkg_pretend() {
 	# Requires a c++20 compiler, see #831473
@@ -64,6 +61,9 @@ src_prepare() {
 	sed -i 's|`pwd`/mold-wrapper.so|"& ${LD_PRELOAD}"|' \
 		test/mold-wrapper{,2}.sh || die
 
+	# Fails if binutils errors out on textrels by default
+	rm test/textrel.sh test/textrel2.sh || die
+
 	# static-pie tests require glibc built with static-pie support
 	if ! has_version -d 'sys-libs/glibc[static-pie(+)]'; then
 		rm test/{,ifunc-}static-pie.sh || die
@@ -74,13 +74,26 @@ src_configure() {
 	use debug || append-cppflags "-DNDEBUG"
 
 	local mycmakeargs=(
-		-DMOLD_ENABLE_QEMU_TESTS=OFF
+		-DBUILD_TESTING=$(usex test)
 		-DMOLD_LTO=OFF # Should be up to the user to decide this with CXXFLAGS.
 		-DMOLD_USE_MIMALLOC=$(usex !kernel_Darwin)
 		-DMOLD_USE_SYSTEM_MIMALLOC=ON
 		-DMOLD_USE_SYSTEM_TBB=ON
 	)
+
+	if use test ; then
+		mycmakeargs+=(
+			-DMOLD_ENABLE_QEMU_TESTS=OFF
+		)
+	fi
+
 	cmake_src_configure
+}
+
+src_test() {
+	export TEST_CC="$(tc-getCC)" TEST_GCC="$(tc-getCC)" \
+		TEST_CXX="$(tc-getCXX)" TEST_GXX="$(tc-getCXX)"
+	cmake_src_test
 }
 
 src_install() {
@@ -96,12 +109,4 @@ src_install() {
 	dosym ${PN} /usr/bin/ld.${PN}
 	dosym ${PN} /usr/bin/ld64.${PN}
 	dosym -r /usr/bin/${PN} /usr/libexec/${PN}/ld
-}
-
-src_test() {
-	export TEST_CC="$(tc-getCC)" \
-		   TEST_GCC="$(tc-getCC)" \
-		   TEST_CXX="$(tc-getCXX)" \
-		   TEST_GXX="$(tc-getCXX)"
-	cmake_src_test
 }

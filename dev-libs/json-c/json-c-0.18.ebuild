@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -14,14 +14,15 @@ if [[ ${PV} == 9999 ]] ; then
 else
 	SRC_URI="https://s3.amazonaws.com/json-c_releases/releases/${P}.tar.gz"
 
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos"
+	KEYWORDS="~alpha amd64 arm arm64 hppa ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos"
 fi
 
 LICENSE="MIT"
 # .1 is a fudge factor for 0.18 fixing compat w/ 0.16, drop on next
 # SONAME change.
 SLOT="0/5.1"
-IUSE="cpu_flags_x86_rdrand doc static-libs threads"
+IUSE="cpu_flags_x86_rdrand doc static-libs test threads"
+RESTRICT="!test? ( test )"
 
 BDEPEND="doc? ( >=app-text/doxygen-1.8.13 )"
 
@@ -42,6 +43,7 @@ multilib_src_configure() {
 		-DDISABLE_WERROR=ON
 		-DENABLE_RDRAND=$(usex cpu_flags_x86_rdrand)
 		-DENABLE_THREADING=$(usex threads)
+		-DBUILD_TESTING=$(usex test)
 	)
 
 	cmake_src_configure

@@ -6,10 +6,10 @@
     <name>Alexander Puck Neuwirth</name>
   </maintainer>
   <maintainer type="person" proxied="proxy">
-    <email>andrewammerlaan@gentoo.org</email>
-    <name>Andrew Ammerlaan</name>
+    <email>nowa@gentoo.org</email>
+    <name>Nowa Ammerlaan</name>
   </maintainer>
-  <maintainer type="project">
+  <maintainer type="project" proxied="proxy">
     <email>sci-physics@gentoo.org</email>
     <name>Gentoo Physics Project</name>
   </maintainer>
@@ -22,6 +22,7 @@
   </longdescription>
   <use>
     <flag name="root">Adds support for <pkg>sci-physics/root</pkg></flag>
+    <flag name="highfive">Build with <pkg>sci-libs/HighFive</pkg> and <pkg>sci-libs/hdf5</pkg></flag>
   </use>
   <upstream>
     <remote-id type="gitlab">hepcedar/yoda</remote-id>

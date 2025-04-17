@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -11,7 +11,7 @@ SRC_URI="https://github.com/phaag/nfdump/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0/${PV}"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 IUSE="debug doc jnat ftconv nfpcapd nfprofile nftrack nsel readpcap sflow zstd"
 
 REQUIRED_USE="?? ( jnat nsel )"
@@ -45,6 +45,9 @@ QA_CONFIG_IMPL_DECL_SKIP=(
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-1.6.19-libft.patch
+	"${FILESDIR}"/${PN}-1.7.2-musl.patch
+	"${FILESDIR}"/${PN}-1.7.2-nfreplay-gcc14.patch
+	"${FILESDIR}"/${PN}-1.7.4-rrdtool-gcc14.patch
 )
 
 DOCS=( AUTHORS ChangeLog README.md )
@@ -67,7 +70,7 @@ src_configure() {
 
 	# --without-ftconf is not handled well, bug #322201
 	local myeconfargs=(
-		$(usex ftconv "--enable-ftconv --with-ftpath=/usr")
+		$(usex ftconv "--enable-ftconv --with-ftpath=${EPREFIX}/usr")
 		$(usex nfpcapd --enable-nfpcapd)
 		$(usex nfprofile --enable-nfprofile)
 		$(usex nftrack --enable-nftrack)
@@ -76,7 +79,7 @@ src_configure() {
 		$(use_enable nsel)
 		$(use_enable readpcap)
 		$(use_enable sflow)
-		$(use_with zstd zstdpath)
+		$(use_with zstd "zstdpath" "${EPREFIX}/usr")
 	)
 	econf "${myeconfargs[@]}"
 }

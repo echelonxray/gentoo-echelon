@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -12,7 +12,7 @@ CODENAME="Piers"
 LIBDVDCSS_VERSION="1.4.3-Next-Nexus-Alpha2-2"
 LIBDVDREAD_VERSION="6.1.3-Next-Nexus-Alpha2-2"
 LIBDVDNAV_VERSION="6.1.1-Next-Nexus-Alpha2-2"
-FFMPEG_VERSION="6.0.1"
+FFMPEG_VERSION="7.1"
 
 # Java bundles from xbmc/interfaces/swig/CMakeLists.txt
 GROOVY_VERSION="4.0.16"
@@ -26,7 +26,7 @@ JAVA_PKG_WANT_SOURCE="21"
 JAVA_PKG_WANT_TARGET="21"
 
 PYTHON_REQ_USE="sqlite,ssl"
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{10..13} )
 
 # See cmake/scripts/common/ArchSetup.cmake for available options
 CPU_FLAGS="cpu_flags_x86_sse cpu_flags_x86_sse2 cpu_flags_x86_sse3 cpu_flags_x86_sse4_1 cpu_flags_x86_sse4_2 cpu_flags_x86_avx cpu_flags_x86_avx2 cpu_flags_arm_neon"
@@ -129,8 +129,8 @@ COMMON_TARGET_DEPEND="${PYTHON_DEPS}
 	>=media-libs/freetype-2.10.1
 	media-libs/harfbuzz:=
 	>=media-libs/libass-0.15.0:=
-	media-libs/mesa[egl(+),gbm(+)?,wayland?,X?]
-	>=media-libs/taglib-1.9.0
+	media-libs/mesa[opengl,wayland?,X?]
+	media-libs/taglib:=
 	virtual/libiconv
 	virtual/ttf-fonts
 	x11-libs/libdrm
@@ -165,12 +165,6 @@ COMMON_TARGET_DEPEND="${PYTHON_DEPS}
 		media-libs/libdisplay-info:=
 		x11-libs/libxkbcommon
 	)
-	gles? (
-		|| (
-			>=media-libs/mesa-24.1.0_rc1[opengl]
-			<media-libs/mesa-24.1.0_rc1[gles2]
-		)
-	)
 	!gles? (
 		media-libs/glu
 	)
@@ -202,7 +196,7 @@ COMMON_TARGET_DEPEND="${PYTHON_DEPS}
 		>=net-fs/samba-3.4.6[smbclient(+)]
 	)
 	system-ffmpeg? (
-		=media-video/ffmpeg-6*:=[encode,soc(-)?,postproc,vaapi?,vdpau?,X?]
+		=media-video/ffmpeg-7*:=[encode(+),soc(-)?,postproc,vaapi?,vdpau?,X?]
 	)
 	!system-ffmpeg? (
 		app-arch/bzip2
@@ -229,7 +223,7 @@ COMMON_TARGET_DEPEND="${PYTHON_DEPS}
 		>=x11-libs/libxkbcommon-0.4.1[wayland]
 	)
 	webserver? (
-		>=net-libs/libmicrohttpd-0.9.77:=[messages(+)]
+		>=net-libs/libmicrohttpd-0.9.77:=
 	)
 	X? (
 		x11-libs/libX11
@@ -277,7 +271,7 @@ BDEPEND="
 
 PATCHES=(
 	"${FILESDIR}"/kodi-21-optional-ffmpeg-libx11.patch
-	"${FILESDIR}"/kodi-21.1-silence-libdvdread-git.patch
+	"${FILESDIR}"/kodi-22-silence-libdvdread-git.patch
 )
 
 # bug #544020
@@ -361,7 +355,6 @@ src_configure() {
 		-DENABLE_GOLD=OFF
 		-DENABLE_LLD=OFF
 		-DENABLE_MOLD=OFF
-		-DUSE_LTO=OFF
 
 		# Features
 		-DENABLE_AIRTUNES=$(usex airplay)
@@ -445,9 +438,11 @@ src_configure() {
 		append-cxxflags -DNDEBUG
 	fi
 
-	# Violates ODR (bug #860984) and USE_LTO does spooky stuff
-	# https://github.com/xbmc/xbmc/commit/cb72a22d54a91845b1092c295f84eeb48328921e
-	filter-lto
+	if tc-is-lto ; then
+		mycmakeargs+=( -DUSE_LTO=ON )
+	else
+		mycmakeargs+=( -DUSE_LTO=OFF )
+	fi
 
 	if tc-is-cross-compiler; then
 		for t in "${NATIVE_TOOLS[@]}" ; do

@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -9,7 +9,7 @@ HOMEPAGE="https://gitlab.gnome.org/GNOME/gnome-panel/"
 
 LICENSE="GPL-2+ FDL-1.1 LGPL-2.1+"
 SLOT="0"
-KEYWORDS="~amd64 ~riscv"
+KEYWORDS="amd64 ~riscv"
 IUSE="eds elogind systemd"
 REQUIRED_USE="^^ ( elogind systemd )"
 
@@ -77,7 +77,7 @@ src_configure() {
 			LAUNCHER_CFLAGS="$(${pkgconfig} --cflags ${launcher_modules})"
 			LAUNCHER_LIBS="$(${pkgconfig} --libs ${launcher_modules})"
 			MENU_CFLAGS="$(${pkgconfig} --cflags ${menu_modules})"
-			MENU_LIBS="$(${pkgconfig} --libs ${modules_modules})"
+			MENU_LIBS="$(${pkgconfig} --libs ${menu_modules})"
 		)
 	fi
 

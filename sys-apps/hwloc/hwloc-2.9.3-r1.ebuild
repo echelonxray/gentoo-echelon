@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -15,7 +15,7 @@ SRC_URI="
 
 LICENSE="BSD"
 SLOT="0/15"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~m68k ~mips ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
 IUSE="cairo +cpuid cuda debug doc l0 nvml +pci rocm static-libs svg udev valgrind xml X video_cards_nvidia"
 
 # opencl: opencl support dropped with x11-drivers/ati-drivers being removed (bug #582406).
@@ -53,6 +53,11 @@ DOCS=( AUTHORS NEWS README VERSION )
 
 src_prepare() {
 	default
+
+	# bug #934428 #949986
+	if tc-is-gcc; then
+		eapply "${FILESDIR}/${PN}-2.11.2-fix-enable-gl.patch"
+	fi
 
 	eautoreconf
 }

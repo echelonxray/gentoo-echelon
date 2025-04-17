@@ -1,4 +1,4 @@
-# Copyright 2022-2024 Gentoo Authors
+# Copyright 2022-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -6,7 +6,7 @@ EAPI=8
 PYTHON_COMPAT=( python3_{10..13} )
 MULTILIB_ABIS="amd64 x86" # allow usage on /no-multilib/
 MULTILIB_COMPAT=( abi_x86_{32,64} )
-inherit flag-o-matic meson-multilib python-any-r1
+inherit eapi9-ver flag-o-matic meson-multilib python-any-r1
 
 if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
@@ -101,10 +101,8 @@ src_configure() {
 	# performance, GPU does the actual work)
 	filter-lto
 
-	# -mavx with mingw-gcc has a history of obscure issues and
-	# disabling is seen as safer, e.g. `WINEARCH=win32 winecfg`
-	# crashes with -march=skylake >=wine-8.10, similar issues with
-	# znver4: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110273
+	# -mavx and mingw-gcc do not mix safely here
+	# https://github.com/doitsujin/dxvk/issues/4746#issuecomment-2708869202
 	append-flags -mno-avx
 
 	if [[ ${CHOST} != *-mingw* ]]; then
@@ -180,9 +178,7 @@ pkg_postinst() {
 		elog "it. See ${EROOT}/usr/share/doc/${PF}/README.md* for handling configs."
 	fi
 
-	if [[ ! ${REPLACING_VERSIONS##* } ]] ||
-		ver_test ${REPLACING_VERSIONS##* } -lt 2.0
-	then
+	if ver_replacing -lt 2.0; then
 		elog
 		elog ">=${PN}-2.0 requires drivers and Wine to support vulkan-1.3, meaning:"
 		elog ">=wine-*-7.1 (or >=wine-proton-7.0), and >=mesa-22.0 (or >=nvidia-drivers-510)"

@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit cmake desktop fcaps flag-o-matic optfeature toolchain-funcs
+inherit cmake desktop eapi9-ver fcaps flag-o-matic optfeature toolchain-funcs
 
 if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
@@ -34,11 +34,12 @@ COMMON_DEPEND="
 	app-arch/zstd:=
 	dev-qt/qtbase:6[concurrent,gui,widgets]
 	dev-qt/qtsvg:6
+	gui-libs/kddockwidgets:=
 	media-libs/freetype
 	media-libs/libglvnd[X]
 	media-libs/libjpeg-turbo:=
 	media-libs/libpng:=
-	media-libs/libsdl2[haptic,joystick]
+	media-libs/libsdl3
 	media-libs/libwebp:=
 	media-video/ffmpeg:=
 	net-libs/libpcap
@@ -46,6 +47,8 @@ COMMON_DEPEND="
 	sys-apps/dbus
 	sys-libs/zlib:=
 	virtual/libudev:=
+	x11-libs/libX11
+	x11-libs/libXi
 	x11-libs/libXrandr
 	alsa? ( media-libs/alsa-lib )
 	jack? ( virtual/jack )
@@ -69,7 +72,7 @@ DEPEND="
 "
 BDEPEND="
 	dev-qt/qttools:6[linguist]
-	clang? ( sys-devel/clang:* )
+	clang? ( llvm-core/clang:* )
 	wayland? (
 		dev-util/wayland-scanner
 		kde-frameworks/extra-cmake-modules
@@ -79,7 +82,6 @@ BDEPEND="
 PATCHES=(
 	"${FILESDIR}"/${PN}-1.7.4667-flags.patch
 	"${FILESDIR}"/${PN}-1.7.5232-cubeb-automagic.patch
-	"${FILESDIR}"/${PN}-1.7.5835-vanilla-shaderc.patch
 	"${FILESDIR}"/${PN}-1.7.5835-musl-header.patch
 	"${FILESDIR}"/${PN}-1.7.5913-musl-cache.patch
 	"${FILESDIR}"/${PN}-2.2.0-missing-header.patch
@@ -96,7 +98,7 @@ src_prepare() {
 	# relax Qt6 and SDL2 version requirements which often get restricted
 	# without a specific need, please report a bug to Gentoo (not upstream)
 	# if a still-available older version is really causing issues
-	sed -e '/find_package(\(Qt6\|SDL2\)/s/ [0-9.]*//' \
+	sed -e '/find_package(\(Qt6\|SDL3\)/s/ [0-9.]*//' \
 		-i cmake/SearchForStuff.cmake || die
 }
 
@@ -109,10 +111,6 @@ src_configure() {
 		strip-unsupported-flags
 	fi
 
-	# pthread_attr_setaffinity_np is not supported on musl, may be possible
-	# to remove if bundled lzma code is updated like 7zip did (bug #935298)
-	use elibc_musl && append-cppflags -DZ7_AFFINITY_DISABLE
-
 	local mycmakeargs=(
 		-DBUILD_SHARED_LIBS=no
 		-DDISABLE_ADVANCE_SIMD=yes
@@ -122,9 +120,6 @@ src_configure() {
 		-DUSE_LINKED_FFMPEG=yes
 		-DUSE_VTUNE=no # not packaged
 		-DUSE_VULKAN=$(usex vulkan)
-
-		# note that upstream hardly support native wayland, may or may not work
-		# https://github.com/PCSX2/pcsx2/pull/10179
 		-DWAYLAND_API=$(usex wayland)
 		# not optional given libX11 is hard-required either way and upstream
 		# seemingly has no intention to drop the requirement at the moment
@@ -149,7 +144,7 @@ src_test() {
 src_install() {
 	cmake_src_install
 
-	newicon bin/resources/icons/AppIconLarge.png pcsx2-qt.png
+	newicon bin/resources/icons/AppIconLarge.png pcsx2.png
 	make_desktop_entry pcsx2-qt PCSX2
 
 	dodoc README.md bin/docs/{Debugger.pdf,GameIndex.pdf,debugger.txt}
@@ -164,9 +159,7 @@ pkg_postinst() {
 		media-sound/alsa-utils \
 		media-libs/gst-plugins-base:1.0
 
-	if [[ ${REPLACING_VERSIONS##* } ]] &&
-		ver_test ${REPLACING_VERSIONS##* } -lt 2.2.0
-	then
+	if ver_replacing -lt 2.2.0; then
 		elog
 		elog "Note that the 'pcsx2' executable was renamed to 'pcsx2-qt' with this version."
 	fi

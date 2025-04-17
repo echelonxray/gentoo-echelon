@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -35,7 +35,7 @@ LICENSE="GPL-3+ cycles? ( Apache-2.0 )"
 SLOT="${PV%.*}"
 IUSE="
 	alembic +bullet collada +color-management cuda +cycles +cycles-bin-kernels
-	debug doc +embree experimental +ffmpeg +fftw +fluid +gmp gnome hip jack
+	debug doc +embree +ffmpeg +fftw +fluid +gmp gnome hip jack
 	jemalloc jpeg2k man +nanovdb ndof nls +oidn oneapi openal +openexr +openmp +openpgl
 	+opensubdiv +openvdb optix osl +otf +pdf +potrace +pugixml pulseaudio
 	renderdoc sdl +sndfile +tbb test +tiff valgrind vulkan wayland +webp X
@@ -81,18 +81,11 @@ RDEPEND="${PYTHON_DEPS}
 	color-management? ( media-libs/opencolorio:= )
 	cuda? ( dev-util/nvidia-cuda-toolkit:= )
 	embree? ( media-libs/embree:=[raymask] )
-	ffmpeg? ( media-video/ffmpeg:=[x264,mp3,encode,theora,jpeg2k?,vpx,vorbis,opus,xvid] )
+	ffmpeg? ( media-video/ffmpeg:=[encode(+),lame(-),jpeg2k?,opus,theora,vorbis,vpx,x264,xvid] )
 	fftw? ( sci-libs/fftw:3.0= )
 	gmp? ( dev-libs/gmp[cxx] )
 	gnome? ( gui-libs/libdecor )
-	hip? (
-		llvm_slot_17? (
-			dev-util/hip:0/5.7
-		)
-		llvm_slot_18? (
-			>=dev-util/hip-6.1:=[llvm_slot_18(-)]
-		)
-	)
+	hip? ( >=dev-util/hip-5.7 )
 	jack? ( virtual/jack )
 	jemalloc? ( dev-libs/jemalloc:= )
 	jpeg2k? ( media-libs/openjpeg:2= )
@@ -102,8 +95,12 @@ RDEPEND="${PYTHON_DEPS}
 	)
 	nls? ( virtual/libiconv )
 	openal? ( media-libs/openal )
-	oidn? ( >=media-libs/oidn-2.1.0[${LLVM_USEDEP}] )
-	oneapi? ( dev-libs/intel-compute-runtime[l0] )
+	oidn? ( >=media-libs/oidn-2.1.0 )
+	oneapi? ( || (
+			dev-libs/intel-compute-runtime:0[l0]
+			dev-libs/intel-compute-runtime:legacy[l0]
+		)
+	)
 	openexr? (
 		>=dev-libs/imath-3.1.7:=
 		>=media-libs/openexr-3.2.1:0=
@@ -339,8 +336,7 @@ src_configure() {
 		-DWITH_CYCLES_STANDALONE_GUI=no
 
 		-DWITH_DOC_MANPAGE=$(usex man)
-		-DWITH_DRACO="no" # TODO: Package Draco
-		-DWITH_EXPERIMENTAL_FEATURES="$(usex experimental)"
+		-DWITH_DRACO="yes" # TODO: Package Draco
 		-DWITH_FFTW3=$(usex fftw)
 		-DWITH_GHOST_WAYLAND=$(usex wayland)
 		-DWITH_GHOST_WAYLAND_DYNLOAD="no"
@@ -480,15 +476,16 @@ src_test() {
 	DESTDIR="${T}" cmake_build install
 
 	blender_get_version
-	# Define custom blender data/script file paths not be able to find them otherwise during testing.
-	# (Because the data is in the image directory and it will default to look in /usr/share)
-	export BLENDER_SYSTEM_SCRIPTS="${T}/usr/share/blender/${BV}/scripts"
-	export BLENDER_SYSTEM_DATAFILES="${T}/usr/share/blender/${BV}/datafiles"
+	# By default, blender will look for system scripts and data in
+	# /usr/share/, but until this is installed, they are not necessarily
+	# available there.  Use this to have blender search the intermediate
+	# install directory instead.
+	export BLENDER_SYSTEM_RESOURCES="${T}/usr/share/blender/${BV}"
 
-	# Sanity check that the script and datafile path is valid.
-	# If they are not vaild, blender will fallback to the default path which is not what we want.
-	[ -d "$BLENDER_SYSTEM_SCRIPTS" ] || die "The custom script path is invalid, fix the ebuild!"
-	[ -d "$BLENDER_SYSTEM_DATAFILES" ] || die "The custom datafiles path is invalid, fix the ebuild!"
+	# Brake check:  Make sure the above path is valid.
+	# If not, blender will fallback to the default path which is not what
+	# we want.
+	[ -d "$BLENDER_SYSTEM_RESOURCES" ] || die "The custom script path is invalid, fix the ebuild!"
 
 	if use cuda; then
 		cuda_add_sandbox -w
@@ -522,10 +519,16 @@ src_install() {
 	fi
 
 	if use doc; then
-		# Define custom blender data/script file paths. Otherwise Blender will not be able to find them during doc building.
-		# (Because the data is in the image directory and it will default to look in /usr/share)
-		export BLENDER_SYSTEM_SCRIPTS=${ED}/usr/share/blender/${BV}/scripts
-		export BLENDER_SYSTEM_DATAFILES=${ED}/usr/share/blender/${BV}/datafiles
+		# By default, blender will look for system scripts and data in
+		# /usr/share/, but until this is installed, they are not necessarily
+		# available there.  Use this to have blender search the intermediate
+		# install directory instead.
+		export BLENDER_SYSTEM_RESOURCES="${ED}/usr/share/blender/${BV}"
+
+		# Brake check:  Make sure the above path is valid.
+		# If not, blender will fallback to the default path which is not what
+		# we want.
+		[ -d "$BLENDER_SYSTEM_RESOURCES" ] || die "The custom script path is invalid, fix the ebuild!"
 
 		# Workaround for binary drivers.
 		addpredict /dev/ati

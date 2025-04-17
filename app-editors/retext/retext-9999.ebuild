@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -30,9 +30,10 @@ RDEPEND="
 	$(python_gen_cond_dep '
 		dev-python/docutils[${PYTHON_USEDEP}]
 		dev-python/markdown[${PYTHON_USEDEP}]
-		>=dev-python/markups-3.1.1[${PYTHON_USEDEP}]
+		>=dev-python/markups-4.0.0[${PYTHON_USEDEP}]
 		dev-python/pygments[${PYTHON_USEDEP}]
-		dev-python/PyQt6[dbus,gui,printsupport,widgets,${PYTHON_USEDEP}]
+		dev-python/pyqt6[dbus,gui,printsupport,widgets,${PYTHON_USEDEP}]
+		dev-python/python-markdown-math[${PYTHON_USEDEP}]
 	')
 "
 # qmake6 from qtbase is used to find lrelease
@@ -42,7 +43,7 @@ BDEPEND="
 	test? (
 		${RDEPEND}
 		$(python_gen_cond_dep '
-			dev-python/PyQt6[testlib,${PYTHON_USEDEP}]
+			dev-python/pyqt6[testlib,${PYTHON_USEDEP}]
 		')
 	)
 "
@@ -65,5 +66,5 @@ pkg_postinst() {
 	optfeature "a local copy of the MathJax JavaScript library" dev-libs/mathjax
 	optfeature "encoding detection" dev-python/chardet
 	optfeature "dictionary support" dev-python/pyenchant
-	optfeature "JavaScript support in preview" dev-python/PyQt6-WebEngine
+	optfeature "JavaScript support in preview" dev-python/pyqt6-webengine
 }

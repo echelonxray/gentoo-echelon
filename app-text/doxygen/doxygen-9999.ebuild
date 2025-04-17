@@ -1,9 +1,10 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-LLVM_COMPAT=( 18 )
+LLVM_COMPAT=( 18 19 )
+LLVM_OPTIONAL=1
 PYTHON_COMPAT=( python3_{10..13} )
 PYTHON_REQ_USE="xml(+)"
 
@@ -29,7 +30,7 @@ IUSE="clang debug doc dot doxysearch gui test"
 # - We keep the odd construct of noop USE=test because of
 #   the special relationship b/t RESTRICT & USE for tests.
 #   Also, it's a hint which avoids tests being silently skipped during arch testing.
-REQUIRED_USE="test? ( doc )"
+REQUIRED_USE="clang? ( ${LLVM_REQUIRED_USE} ) test? ( doc )"
 RESTRICT="!test? ( test )"
 
 BDEPEND="
@@ -46,8 +47,8 @@ RDEPEND="
 	virtual/libiconv
 	clang? (
 		$(llvm_gen_dep '
-			sys-devel/clang:${LLVM_SLOT}=
-			sys-devel/llvm:${LLVM_SLOT}=
+			llvm-core/clang:${LLVM_SLOT}=
+			llvm-core/llvm:${LLVM_SLOT}=
 		')
 	)
 	dot? (
@@ -62,12 +63,7 @@ RDEPEND="
 		dev-texlive/texlive-plaingeneric
 	)
 	doxysearch? ( dev-libs/xapian:= )
-	gui? (
-		dev-qt/qtcore:5
-		dev-qt/qtgui:5
-		dev-qt/qtwidgets:5
-		dev-qt/qtxml:5
-	)
+	gui? ( dev-qt/qtbase:6[gui,widgets,xml] )
 "
 DEPEND="${RDEPEND}"
 
@@ -116,6 +112,7 @@ src_configure() {
 		-Dbuild_doc=$(usex doc)
 		-Dbuild_search=$(usex doxysearch)
 		-Dbuild_wizard=$(usex gui)
+		-Dforce_qt=Qt6
 		-Duse_sys_spdlog=ON
 		-Duse_sys_sqlite3=ON
 		-DBUILD_SHARED_LIBS=OFF

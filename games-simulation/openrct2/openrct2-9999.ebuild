@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -15,8 +15,8 @@ MY_PN_RPL="replays"
 MY_PN_SFX="opensound"
 MY_PN_TS="title-sequences"
 MY_PV_MSX="1.6"
-MY_PV_OBJ="1.4.8"
-MY_PV_RPL="0.0.80"
+MY_PV_OBJ="1.6.1"
+MY_PV_RPL="0.0.86"
 MY_PV_SFX="1.0.5"
 MY_PV_TS="0.4.14"
 
@@ -79,7 +79,7 @@ RESTRICT="!test? ( test )"
 
 PATCHES=(
 	"${FILESDIR}/${PN}-0.4.1-gtest-1.10.patch"
-	"${FILESDIR}/${PN}-0.4.5-include-additional-paths.patch"
+	"${FILESDIR}/${PN}-0.4.6-include-additional-paths.patch"
 )
 
 src_unpack() {
@@ -125,6 +125,7 @@ src_configure() {
 		-DDISABLE_NETWORK=OFF
 		$(usex !dedicated "-DDISABLE_OPENGL=$(usex !opengl)" "")
 		-DDISABLE_TTF=$(usex !truetype)
+		-DDISABLE_VERSION_CHECKER=OFF
 		$(usex !dedicated "-DDISABLE_VORBIS=$(usex !vorbis)" "")
 		-DDOWNLOAD_OBJECTS=OFF
 		-DDOWNLOAD_OPENMSX=OFF

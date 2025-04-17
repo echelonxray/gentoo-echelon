@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -17,7 +17,7 @@ SRC_URI="https://github.com/excon/excon/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64"
+KEYWORDS="amd64 ~arm64"
 IUSE="test"
 RESTRICT="!test? ( test )"
 
@@ -27,7 +27,8 @@ ruby_add_bdepend "
 		dev-ruby/activesupport
 		>=dev-ruby/json-1.8.5
 		dev-ruby/open4
-		>=dev-ruby/rack-2.2.7-r1:2.2
+		>=dev-ruby/rack-2.2.7-r1
+		dev-ruby/rackup
 		dev-ruby/rdoc
 		dev-ruby/sinatra
 		dev-ruby/webrick

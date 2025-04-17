@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # When you add an entry to the top of this file, add your name, the date, and
@@ -17,6 +17,11 @@
 
 #--- END OF EXAMPLES ---
 
+# Andreas Sturmlechner <asturm@gentoo.org> (2024-12-16)
+# Destabilising app-emulation/qemu on ppc
+sys-boot/grub test grub_platforms_qemu
+sys-boot/grub test
+
 # Arthur Zamarin <arthurzam@gentoo.org> (2023-06-02)
 # Destabilizing ppc keywords on sci-*/* packages
 dev-perl/PDL gsl
@@ -33,11 +38,12 @@ dev-ruby/kramdown unicode
 
 # Sam James <sam@gentoo.org> (2022-11-19)
 # Deps not stable on ppc
-sys-devel/clang-common default-lld
-sys-devel/llvm binutils-plugin z3 xar
+llvm-core/clang-common default-lld
+llvm-core/clang-runtime default-lld
+llvm-core/llvm binutils-plugin z3 xar
 
 # Sam James <sam@gentoo.org> (2022-07-27)
-# sys-devel/lld is not marked stable on ppc
+# llvm-core/lld is not marked stable on ppc
 >=dev-lang/spidermonkey-78 lto
 
 # Sam James <sam@gentoo.org> (2022-05-11)
@@ -48,10 +54,11 @@ net-fs/nfs-utils nfsv4
 net-fs/samba client
 gnome-base/gvfs samba
 media-video/ffmpeg samba
+media-video/ffmpeg-compat samba
 media-video/vlc samba
 
 # Sam James <sam@gentoo.org> (2022-03-03)
-# net-nds/openldap / dev-libs/cyrus-sasl not stable here
+# net-nds/openldap not stable here
 dev-lang/php ldap-sasl
 mail-mta/postfix ldap-bind
 

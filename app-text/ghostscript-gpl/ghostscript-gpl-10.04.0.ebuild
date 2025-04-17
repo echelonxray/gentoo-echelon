@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -24,8 +24,8 @@ S="${WORKDIR}/${MY_P}"
 
 LICENSE="AGPL-3 CPL-1.0"
 SLOT="0/$(ver_cut 1-2)"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
-IUSE="cups dbus gtk l10n_de static-libs unicode X"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
+IUSE="cups cpu_flags_arm_neon dbus gtk l10n_de static-libs unicode X"
 
 LANGS="ja ko zh-CN zh-TW"
 for X in ${LANGS} ; do
@@ -126,6 +126,11 @@ src_configure() {
 	# Unsupported upstream, bug #884841
 	filter-lto
 
+	# bug #943857
+	# Build system passes CFLAGS to C++ compiler (bug #945826)
+	tc-export CC
+	CC+=" -std=gnu17"
+
 	# bug #899952
 	append-lfs-flags
 
@@ -158,6 +163,7 @@ src_configure() {
 		$(use_enable cups) \
 		$(use_enable dbus) \
 		$(use_enable gtk) \
+		$(use_enable cpu_flags_arm_neon neon) \
 		$(use_with cups pdftoraster) \
 		$(use_with unicode libidn) \
 		$(use_with X x) \

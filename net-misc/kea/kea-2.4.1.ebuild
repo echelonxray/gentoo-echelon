@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -10,7 +10,7 @@ MY_P="${PN}-${MY_PV}"
 DESCRIPTION="High-performance production grade DHCPv4 & DHCPv6 server"
 HOMEPAGE="https://www.isc.org/kea/"
 
-PYTHON_COMPAT=( python3_{8..12} )
+PYTHON_COMPAT=( python3_{11..12} )
 
 inherit autotools fcaps flag-o-matic python-single-r1 systemd tmpfiles
 
@@ -18,8 +18,8 @@ if [[ ${PV} = 9999* ]] ; then
 	inherit git-r3
 	EGIT_REPO_URI="https://gitlab.isc.org/isc-projects/kea.git"
 else
-	SRC_URI="ftp://ftp.isc.org/isc/kea/${MY_P}.tar.gz
-		ftp://ftp.isc.org/isc/kea/${MY_PV}/${MY_P}.tar.gz"
+	SRC_URI="https://downloads.isc.org/isc/kea/${MY_P}.tar.gz
+		https://downloads.isc.org/isc/kea/${MY_PV}/${MY_P}.tar.gz"
 	# odd minor version = development release
 	if [[ $(( $(ver_cut 2) % 2 )) -ne 1 ]] ; then
 		if ! [[ "${PV}" == *_beta* || "${PV}" == *_rc* ]] ; then

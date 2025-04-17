@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -6,7 +6,7 @@ EAPI=8
 CARGO_OPTIONAL=1
 DISTUTILS_USE_PEP517="setuptools"
 DISTUTILS_EXT=1
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{10..13} )
 PYTHON_REQ_USE="threads(+)"
 
 inherit bash-completion-r1 cargo elisp-common distutils-r1 mercurial flag-o-matic multiprocessing
@@ -37,6 +37,10 @@ DEPEND="emacs? ( >=app-editors/emacs-23.1:* )
 SITEFILE="70${PN}-gentoo.el"
 
 RESTRICT="!test? ( test )"
+
+pkg_setup() {
+	use rust && rust_pkg_setup
+}
 
 src_unpack() {
 	mercurial_src_unpack

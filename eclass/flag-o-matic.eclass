@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: flag-o-matic.eclass
@@ -24,7 +24,7 @@ inherit toolchain-funcs
 # @DESCRIPTION:
 # Return all the flag variables that our high level functions operate on.
 all-flag-vars() {
-	echo {ADA,C,CPP,CXX,CCAS,F,FC,LD}FLAGS
+	echo {ADA,C,CPP,CXX,CCAS,F,FC,GDC,LD}FLAGS
 }
 
 # @FUNCTION: setup-allowed-flags
@@ -77,7 +77,7 @@ _setup-allowed-flags() {
 		-ggdb '-ggdb[0-9]'
 		-gdwarf '-gdwarf-*'
 		-gstabs -gstabs+
-		-gz
+		-gz '-gz=*'
 		-glldb
 		'-fdebug-default-version=*'
 
@@ -201,7 +201,7 @@ _filter-hardened() {
 					continue
 				fi
 
-				is-flagq -fno-stack-protector-all || append-flags $(test-flags -fno-stack-protector-all)
+				is-flagq -fno-stack-protector || append-flags $(test-flags -fno-stack-protector)
 				;;
 			-fno-strict-overflow)
 				gcc-specs-nostrict || continue

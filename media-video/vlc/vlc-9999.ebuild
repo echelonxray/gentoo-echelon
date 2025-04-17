@@ -1,4 +1,4 @@
-# Copyright 2000-2024 Gentoo Authors
+# Copyright 2000-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -57,12 +57,14 @@ REQUIRED_USE="
 "
 BDEPEND="
 	>=sys-devel/gettext-0.19.8
+	sys-devel/flex
 	virtual/pkgconfig
 	lua? ( ${LUA_DEPS} )
 	amd64? ( dev-lang/yasm )
 	wayland? ( dev-util/wayland-scanner )
 	x86? ( dev-lang/yasm )
 "
+# <media-plugins/live-2024.11.28: https://github.com/gentoo/gentoo/pull/40610#issuecomment-2664870395
 RDEPEND="
 	media-libs/libvorbis
 	net-dns/libidn:=
@@ -147,7 +149,7 @@ RDEPEND="
 	libtiger? ( media-libs/libtiger )
 	linsys? ( media-libs/zvbi )
 	lirc? ( app-misc/lirc )
-	live? ( media-plugins/live:= )
+	live? ( <media-plugins/live-2024.11.28:= )
 	loudness? ( >=media-libs/libebur128-1.2.4:= )
 	lua? ( ${LUA_DEPS} )
 	mad? ( media-libs/libmad )
@@ -192,7 +194,7 @@ RDEPEND="
 		gnome-base/librsvg:2
 		x11-libs/cairo
 	)
-	taglib? ( >=media-libs/taglib-1.9 )
+	taglib? ( media-libs/taglib:= )
 	theora? ( media-libs/libtheora )
 	tremor? ( media-libs/tremor )
 	truetype? (
@@ -282,9 +284,13 @@ src_prepare() {
 }
 
 src_configure() {
+	# bug #944778
+	unset LEX
+
 	local -x BUILDCC="$(tc-getBUILD_CC)"
 
 	local myeconfargs=(
+		--disable-amf-frc # DirectX specific
 		--disable-optimizations
 		--disable-rpath
 		--disable-update-check

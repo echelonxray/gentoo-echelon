@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 ####################################################################
@@ -33,241 +33,471 @@
 
 #--- END OF EXAMPLES ---
 
-# Hans de Graaff <graaff@gentoo.org> (2024-11-01)
-# Does not work with current versions of dependencies. ruby32-only
-# because of it. No release in two years. No reverse
-# dependencies. Removal on 2024-12-01.
-dev-ruby/typhoeus
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-04-14)
+# Package destabilisation mask after prolongued time w/o maintainer.
+# Bug #949838
+~app-emulation/q4wine-1.3.13
 
-# Hans de Graaff <graaff@gentoo.org> (2024-11-01)
-# No longer compiles with modern C compilers, bug 881245. Last upstream
-# release 6 years ago. No reverse dependencies. Removal on 2024-12-01.
-dev-ruby/ruby-opengl
+# Hans de Graaff <graaff@gentoo.org> (2025-04-14)
+# Obsolete slot that fails tests, bug 933189. EAPI 7.  Use the newer
+# slot instead. Masked for removal on 2025-05-14.
+dev-ruby/childprocess:2
 
-# Michał Górny <mgorny@gentoo.org> (2024-10-29)
-# Unmaintained in Gentoo.  The latter is multiple versions behind.
-# Ebuilds without working tests.  The only revdep has its "doc" flag
-# masked for over a year.
-# Removal on 2024-11-28.  Bug #942445.
-dev-python/mkdocs-ansible
-dev-python/mkdocs-macros-plugin
+# Ionen Wolkens <ionen@gentoo.org> (2025-04-12)
+# >=31 breaks www-client/qutebrowser's tests
+# https://github.com/cucumber/gherkin/issues/373
+# https://github.com/qutebrowser/qutebrowser/commit/12e683826783
+>=dev-python/gherkin-official-31
 
-# Marc Schiffbauer <mschiff@gentoo.org> (2024-10-28)
-# New style opencpn plugins depend on specific snapshots of
-# "opencpn-libs", a collection of bundled 3rd party libs or
-# forks thereof.
-# This makes it virtually impossible to package opencpn and
-# its plugins in a sane way.
-# Use the flatpak version instead.
-# removal on 2024-11-28.
-# Bug #928960, #933606
-sci-geosciences/opencpn
-sci-geosciences/opencpn-plugin-aisradar
-sci-geosciences/opencpn-plugin-climatology
-sci-geosciences/opencpn-plugin-dr
-sci-geosciences/opencpn-plugin-findit
-sci-geosciences/opencpn-plugin-gxradar
-sci-geosciences/opencpn-plugin-iacfleet
-sci-geosciences/opencpn-plugin-launcher
-sci-geosciences/opencpn-plugin-logbookkonni
-sci-geosciences/opencpn-plugin-objsearch
-sci-geosciences/opencpn-plugin-ocpn_draw
-sci-geosciences/opencpn-plugin-ocpndebugger
-sci-geosciences/opencpn-plugin-oesenc
-sci-geosciences/opencpn-plugin-otcurrent
-sci-geosciences/opencpn-plugin-polar
-sci-geosciences/opencpn-plugin-radar
-sci-geosciences/opencpn-plugin-route
-sci-geosciences/opencpn-plugin-squiddio
-sci-geosciences/opencpn-plugin-statusbar
-sci-geosciences/opencpn-plugin-watchdog
-sci-geosciences/opencpn-plugin-weather_routing
-sci-geosciences/opencpn-plugin-weatherfax
-sci-geosciences/opencpn-plugins-meta
+# Michał Górny <mgorny@gentoo.org> (2025-04-09)
+# Still uses legacy distutils-r1 mode, and lacks Python 3.13 target.
+# No reply from the maintainer for a year now.
+# Removal on 2025-05-09.  Bug #909900.
+app-text/nfoview
 
-# Hans de Graaff <graaff@gentoo.org> (2024-10-27)
-# Obsolete slots without reverse dependencies. dev-util/cucumber will
-# use other slots when installed. Removal on 2024-11-27.
-dev-util/cucumber-gherkin:26
-dev-util/cucumber-messages:17
-dev-util/cucumber-messages:20
+# Matt Turner <mattst88@gentoo.org> (2025-04-04)
+# Package is dead (last release in 1999).
+# Not relevant today: purpose is to not overload a very slow system with
+# multiple X11 clients starting at the same time. SRC_URI is long dead.
+# Removal on 2025-05-04.  Bug #953120.
+x11-misc/xtoolwait
 
-# Arthur Zamarin <arthurzam@gentoo.org> (2024-10-23)
-# Doesn't support latest Rust/Cargo ebuild format and standard. Confuses
-# developers who tries to use it, and then see pkgcheck warnings on the
-# result.
-# Superior replacement is app-portage/pycargoebuild, which is maintained,
-# and supports more features.
-# Removal on 2024-11-22.  Bugs #942026, #934381, #724162, #930011.
-dev-util/cargo-ebuild
+# Matt Turner <mattst88@gentoo.org> (2025-04-04)
+# Package is dead and has a pile of patches to make it compile.
+# SRC_URI is long gone. Many alternative image viewers.
+# Removal on 2025-05-04.  Bug #953119.
+media-gfx/xloadimage
 
-# Arthur Zamarin <arthurzam@gentoo.org> (2024-10-20)
-# Maintainer-needed, no reverse dependencies, EAPI=7, many modern C
-# bugs. Many other IRC clients can be replacement. Awaits version
-# bump.
-# Removal on 2024-11-19.  Bugs #941899, #900078, #934184, #874669, #834035, #745762.
-net-irc/epic5
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-04-02)
+# Depends on Qt5WebEngine, and upstream seem to be having a hard time
+# porting to Qt6 with an unknown ETA likely well beyond the time we want
+# to keep dev-qt/qtwebengine:5 in ::gentoo.
+# Removal on 2025-04-30. Bug #926666
+media-video/jellyfin-media-player
+
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-04-02)
+# No release since 2021, no commit in 3 years, depends on Qt5WebEngine.
+# Use app-text/uchmviewer instead. Removal on 2025-04-30. Bug #823008
+app-text/kchmviewer
+
+# Ionen Wolkens <ionen@gentoo.org> (2025-04-02)
+# Masked for testing the new .0 version and leave time for packages
+# to catch up on support if needed. May or may keep masked until 6.9.1
+# depending on issues. If wanted, feel free to add `dev-qt/*:6/6.9.0`
+# to package.unmask and report issues.
+=dev-python/pyqt6-6.9*
+=dev-python/pyqt6-webengine-6.9*
+=dev-python/pyside-6.9.0*
+=dev-qt/qt-docs-6.9.0*
+=dev-qt/qt3d-6.9.0*
+=dev-qt/qt5compat-6.9.0*
+=dev-qt/qtbase-6.9.0*
+=dev-qt/qtcharts-6.9.0*
+=dev-qt/qtconnectivity-6.9.0*
+=dev-qt/qtdeclarative-6.9.0*
+=dev-qt/qthttpserver-6.9.0*
+=dev-qt/qtimageformats-6.9.0*
+=dev-qt/qtlanguageserver-6.9.0*
+=dev-qt/qtlocation-6.9.0*
+=dev-qt/qtmultimedia-6.9.0*
+=dev-qt/qtnetworkauth-6.9.0*
+=dev-qt/qtpositioning-6.9.0*
+=dev-qt/qtquick3d-6.9.0*
+=dev-qt/qtquicktimeline-6.9.0*
+=dev-qt/qtremoteobjects-6.9.0*
+=dev-qt/qtscxml-6.9.0*
+=dev-qt/qtsensors-6.9.0*
+=dev-qt/qtserialbus-6.9.0*
+=dev-qt/qtserialport-6.9.0*
+=dev-qt/qtshadertools-6.9.0*
+=dev-qt/qtspeech-6.9.0*
+=dev-qt/qtsvg-6.9.0*
+=dev-qt/qttools-6.9.0*
+=dev-qt/qttranslations-6.9.0*
+=dev-qt/qtvirtualkeyboard-6.9.0*
+=dev-qt/qtwayland-6.9.0*
+=dev-qt/qtwebchannel-6.9.0*
+=dev-qt/qtwebengine-6.9.0*
+=dev-qt/qtwebsockets-6.9.0*
+=dev-qt/qtwebview-6.9.0*
+
+# Matt Turner <mattst88@gentoo.org> (2025-04-01)
+# Very dead. Last release in 2007. Many open bugs (#712894, #882169, #894620,
+# #907400, #920478, #932284, #943891).
+# Removal on 2025-05-01.  Bug #949960.
+x11-terms/aterm
+
+# Norbert Norbiros <norbiros@protonmail.com> (2025-04-01)
+# Screen v5.0.0 has a lot of regressions
+# https://lists.gnu.org/archive/html/screen-devel/2024-10/msg00007.html
+# Unmask it after it is properly tested & fixed
+=app-misc/screen-5*
+
+# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2025-03-31)
+# Depends on broken dev-java/rxtx, bugs #761103, #867409, #874444, #898170
+# #927898.
+# Depends on dev-java/jgoodies-{common,looks} which are no longer available
+# "at no charge". https://www.jgoodies.com/downloads/libraries/#post-63
+# Removal on 2025-04-30.
+sci-geosciences/bt747
+dev-java/rxtx
+dev-java/swingx
+dev-java/swingx-beaninfo
+dev-java/swingx-ws
+dev-java/jchart2d
+dev-java/jcalendar
+dev-java/jgoodies-looks
+dev-java/jgoodies-common
+
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-03-30)
+# Depends on dev-python/python-poppler-qt5, stuck on py3.12, new 0.7.0
+# release available w/ PyQt6 support would require packaging new pymupdf
+# dependency (bug #949686). Use media-gfx/inkscape or app-text/pdfarranger
+# alternatively. Removal on 2025-04-29. Bugs #947726, #952250
+app-text/krop
+
+# Conrad Kostecki <conikost@gentoo.org> (2025-03-28)
+# Upstream is dead and broken. All 'whatsapp' deps
+# will be last-rited on 2025-04-28.
+# Bug #952588 #952589
+net-im/transwhat
+net-im/yowsup
+
+# Sam James <sam@gentoo.org> (2025-03-27)
+# Large-scale breakage (bug #951350).
+=dev-build/cmake-4*
+
+# Viorel Munteanu <ceamac@gentoo.org> (2025-03-26)
+# Segfaults with no clear error message when trying to start a VM with 3D
+# acceleration enabled.
+# Bug #951833.
+=app-emulation/virtualbox-7.1.6a
+=app-emulation/virtualbox-extpack-oracle-7.1.6
+=app-emulation/virtualbox-additions-7.1.6
+=app-emulation/virtualbox-modules-7.1.6
+=app-emulation/virtualbox-guest-additions-7.1.6-r1
+
+# Maciej Barć <xgqt@gentoo.org> (2025-03-25)
+# It is possible Gentoo could be hit by "legal" action when having this package.
+# Very unstable development, switches upstream to avoid "legal" trouble.
+# See also: bug #948196 bug #927392
+# Removal on 2025-04-25.
+games-emulation/ryujinx
+
+# Hans de Graaff <graaff@gentoo.org> (2025-03-20)
+# Rails 6.1 is no longer supported upstream. Use a newer Rails version
+# instead. Packages depending exclusively on Rails 6.1 will also be
+# removed. Removal on 2025-04-20.
+dev-ruby/rails:6.1
+dev-ruby/actiontext:6.1
+dev-ruby/actionmailbox:6.1
+dev-ruby/activestorage:6.1
+dev-ruby/actionmailer:6.1
+dev-ruby/actioncable:6.1
+dev-ruby/railties:6.1
+dev-ruby/activejob:6.1
+dev-ruby/actionpack:6.1
+dev-ruby/actionview:6.1
+dev-ruby/activerecord:6.1
+dev-ruby/activemodel:6.1
+dev-ruby/activesupport:6.1
+dev-ruby/actionpack-action_caching
+dev-ruby/will_paginate:3
+=www-apps/redmine-5*
+
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-03-23)
+# No revdeps after net-im/psi treecleaning. Depends on Qt5.
+# Removal on 2025-04-22. Bug #951936
+dev-build/qconf
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-23)
+# dev-python/pip-run is a NIH package with significant number of NIH
+# deps.  New versions require "coherent" build system that's designed
+# to be completely incompatible with downstream packaging.
+# No revdeps left.
+#
+# Includes a number of NIH dependencies, some of them abandoned.
+#
+# Removal on 2025-04-22.  Bug #951933.
+dev-python/autocommand
+dev-python/jaraco-env
+dev-python/pip-run
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2025-03-22)
+# EAPI=7, uses legacy distutils non-PEP517 build, no reverse
+# dependencies, missing python compat bumps. Unmaintained in
+# Gentoo for more than 3 years.
+# Removal on 2025-04-21.  Bugs #951854, #909910, #929427.
+dev-libs/pigpio
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-22)
+# Depends on deprecated notmuch bindings.  The migration to new bindings
+# have not been finished in 5 years already.  Still uses legacy
+# distutils-r1.eclass mode.
+# Removal on 2025-04-21.  Bug #751541.
+mail-filter/afew
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-22)
+# Stuck on Python 3.10, no reply from maintainer.  No revdeps.
+# Removal on 2025-04-21.  Bug #896608.
+app-office/gtg
+
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-03-20)
+# Upstream have made clear that they are not going to port to Qt6 and
+# recommend sys-apps/qdirstat (from original k4dirstat author) instead.
+# Alternatively, there is kde-apps/filelight available.
+# Bug #951138. Removal on 2025-04-19.
+kde-misc/kdirstat
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-18)
+# Last release in 2019, no tests, no reverse dependencies.
+# Removal on 2025-04-17.  Bug #951540.
+dev-python/pysvg-py3
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-17)
+# Unmaintained.  Last release in 2015, missing tests in sdist and not
+# tagged on GitHub.  Not marked for py3.13.  No reverse dependencies.
+# Removal on 2025-04-16.  Bug #951493.
+dev-python/simplebayes
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-17)
+# Xfce 4.22 prereleases.  Masked because they tend to be quite unstable.
+>=xfce-base/exo-4.21
+>=xfce-base/garcon-4.21
+>=xfce-base/libxfce4ui-4.21
+>=xfce-base/thunar-4.21
+>=xfce-base/tumbler-4.21
+>=xfce-base/xfce4-appfinder-4.21
+>=xfce-base/xfce4-panel-4.21
+>=xfce-base/xfce4-power-manager-4.21
+>=xfce-base/xfce4-session-4.21
+>=xfce-base/xfce4-settings-4.21
+>=xfce-base/xfconf-4.21
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-17)
+# A "forever beta" wrapper over dev-python/requests, with no tests,
+# and dead for 9 years already.  Finally, no reverse dependencies left.
+# Removal on 2025-04-16.  Bug #951492.
+dev-python/ssl-fetch
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-17)
+# The package was broken from day one, assigned to python@ team
+# and the actual maintainer has ignored the bug report from day one.
+# No reverse dependencies.
+# Removal on 2025-04-16.  Bug #942776.
+dev-python/django-bootstrap5
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-17)
+# Fragile package with no reverse dependencies.  Currently broken with
+# all dev-python/beartype versions in Gentoo.
+# Removal on 2025-04-16.  Bug #951491.
+dev-python/spdx-tools
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-17)
+# Last release in 2021, aimed at Python 3.9.  Test suite is broken with
+# Python 3.13.  No reverse dependencies.
+# Removal on 2025-04-16.  Bug #951490.
+dev-python/bitvector
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-17)
+# sys-cluster/pacemaker is not really maintained in Gentoo.  It is
+# multiple versions behind, does not support Python 3.11 and has a bunch
+# of other problems reported.  sys-cluster/crmsh is its only
+# unconditional dependency.
+# Removal on 2025-04-16.  Bug #897290.
+sys-cluster/crmsh
+sys-cluster/pacemaker
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2025-03-15)
+# EAPI=7, uses deprecated Go eclasses. Isn't maintained in Gentoo
+# since 2019, with awaiting version bump (upstream is still active).
+# Has open security vulnerabilities.
+# Removal on 2025-04-14.  Bugs #951417, #631076, #679948, #695310,
+# #771051, #844727, #880151, #908590, #948207, #813702, #866356.
+sys-cluster/teleport
+
+# Sam James <sam@gentoo.org> (2025-03-09)
+# Obsolete in favour of dev-lang/ada-bootstrap. Using sys-devel/gcc[ada]
+# should now Just Work. Removal on 2025-04-10.
+dev-lang/gnat-gpl
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2025-03-08)
+# EAPI=7. Broken CLI for packages.g.o.
+# Removal on 2025-04-07.
+app-portage/pgo
+
+# Anna (navi) Figueiredo Gomes <navi@vlhl.dev> (2025-03-08)
+# User services is merged and released in openrc-0.60, this fork
+# is now unmaintained and superseded.
+# Removal on 2025-04-08. Bug #950367
+sys-apps/openrc-navi
+
+# Sam James <sam@gentoo.org> (2025-03-07)
+# May cause emerge to hang (bug #950707). Tests hang on one machine
+# and another strange report upstream: https://github.com/pkgconf/pkgconf/issues/383.
+# Mask out of caution for now.
+=dev-util/pkgconf-2.4.1
+
+# Michał Górny <mgorny@gentoo.org> (2025-03-06)
+# This package is clearly unmaintained.  It has lost all CPython
+# versions, and retained PyPy3 likely only because it wasn't versioned.
+# Also, since it's eclass usage used to be broken, it went under the
+# radar.  Removal on 2025-04-05.  Bug #950702.
+dev-vcs/notify-webhook
+
+# John Helmert III <ajak@gentoo.org> (2025-03-02)
+# Doesn't seem to cleanly load, see:
+# https://github.com/lkrg-org/lkrg/issues/364
+=app-antivirus/lkrg-0.9.9
+
+# Eray Aslan <eras@gentoo.org> (2025-02-24)
+# Mask experimental software
+=mail-mta/postfix-3.11*
+
+# Sam James <sam@gentoo.org> (2025-02-22)
+# (Only) needed for no-yet-released LibreOffice. Mask for now to avoid
+# unnecessary conflicts/backtracking for LO users.
+=dev-libs/liborcus-0.20.0
+=dev-libs/libixion-0.20.0
+=dev-util/mdds-3.0.0
+
+# Nowa Ammerlaan <nowa@gentoo.org> (2025-02-21)
+# Shiboken and Pyside-tools have been merged into dev-python/pyside
+# as of version 6.8.2. Pyside-tools are useable when the "tools" USE
+# flag is enabled.
+dev-python/shiboken6
+dev-python/pyside6-tools
+
+# Maciej Barć <xgqt@gentoo.org> (2025-02-12)
+# Masked for testing. Fails to update from previous version. See bug #949626.
+>=x11-themes/fluent-icon-theme-2025.02.10
+
+# Matt Jolly <kangie@gentoo.org> (2025-02-10)
+# Rust ebuilds are migrating to use RPATH/RUNPATH to find their libraries.
+# New revisions for each Slot are already in-tree and should be used instead.
+# Bug 949374
+=dev-lang/rust-1.71.1-r100
+=dev-lang/rust-1.74.1-r100
+=dev-lang/rust-1.75.0-r100
+=dev-lang/rust-1.76.0-r100
+=dev-lang/rust-1.77.1-r100
+=dev-lang/rust-1.79.0-r100
+=dev-lang/rust-1.78.0-r100
+=dev-lang/rust-1.80.1-r100
+=dev-lang/rust-1.81.0-r100
+=dev-lang/rust-1.82.0-r100
+=dev-lang/rust-1.82.0-r101
+=dev-lang/rust-1.83.0-r1
+=dev-lang/rust-1.84.0
+=dev-lang/rust-1.84.1
+=dev-lang/rust-bin-1.71.1-r101
+=dev-lang/rust-bin-1.74.1-r101
+=dev-lang/rust-bin-1.75.0-r101
+=dev-lang/rust-bin-1.77.1-r101
+=dev-lang/rust-bin-1.79.0-r101
+=dev-lang/rust-bin-1.80.1-r101
+=dev-lang/rust-bin-1.81.0-r101
+=dev-lang/rust-bin-1.82.0-r101
+=dev-lang/rust-bin-1.83.0
+=dev-lang/rust-bin-1.84.0
+=dev-lang/rust-bin-1.84.1
+
+# Michał Górny <mgorny@gentoo.org> (2025-02-08)
+# Suspicious subslot bump, causing humongous rebuilds.
+# https://bugs.gentoo.org/949414
+=dev-cpp/cpp-httplib-0.18.6
+
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-01-23)
+# Qt5 package without any revdeps. Use dev-qt/qttools[qdbus] instead.
+dev-qt/qdbusviewer
+
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-01-23)
+# Qt5 packages without any revdeps.
+dev-qt/assistant
+dev-qt/pixeltool
+dev-qt/qdbus
+dev-qt/qdoc
+dev-qt/qtdiag
+dev-qt/qtgamepad:5
+dev-qt/qtlocation:5
+dev-qt/qtplugininfo
+dev-qt/qtquicktimeline:5
+dev-qt/qtsensors:5
+dev-qt/qtserialbus:5
+dev-qt/qtvirtualkeyboard:5
+dev-qt/qtwebview:5
+
+# Michał Górny <mgorny@gentoo.org> (2024-12-05)
+# 6.12.2 does not boot for me.
+=sys-kernel/gentoo-kernel-6.12.2
+=sys-kernel/gentoo-kernel-bin-6.12.2
+=sys-kernel/vanilla-kernel-6.12.2
+=virtual/dist-kernel-6.12.2
+
+# Ionen Wolkens <ionen@gentoo.org> (2024-11-19)
+# NVIDIA dropped support for the 470.xx branch in September 2024[1].
+#
+# Users are free to unmask and keep using, but be warned it is very
+# likely to be affected by security issues[2] as NVIDIA does not
+# track nor fix these for this branch anymore.
+#
+# Gentoo will keep it packaged for as long as reasonably possible
+# (albeit masked) but no true support will be given nor patches
+# for newer kernels. It is recommended to use 6.6.x LTS kernels or
+# older (6.6.x will be supported upstream until December 2026,
+# and 6.1.x a year further to December 2027).
+#
+# Major issues will lead to removal without further warning, e.g.
+# if no usable kernels left in tree, or if broken with a newer Xorg.
+#
+# >> It is recommended to switch to nouveau[3] drivers (regardless
+#    of its worse performance), or ideally replace the hardware.
+#
+# [1] https://nvidia.custhelp.com/app/answers/detail/a_id/3142
+#     https://nvidia.custhelp.com/app/answers/detail/a_id/5202
+# [2] https://bugs.gentoo.org/942031#c7
+# [3] https://wiki.gentoo.org/wiki/Nouveau
+x11-drivers/nvidia-drivers:0/470
+
+# Matt Jolly <kangie@gentoo.org> (2024-11-09)
+# The legacy Rust ebuilds are no longer maintained and have been
+# replaced by the new slotted Rust. Removal in 30 days.
+=dev-lang/rust-1.71.1
+=dev-lang/rust-1.74.1
+=dev-lang/rust-1.75.0-r1
+=dev-lang/rust-1.77.1
+=dev-lang/rust-1.79.0
+=dev-lang/rust-1.80.1
+=dev-lang/rust-1.81.0
+=dev-lang/rust-1.82.0
+=dev-lang/rust-bin-1.71.1
+=dev-lang/rust-bin-1.74.1
+=dev-lang/rust-bin-1.75.0
+=dev-lang/rust-bin-1.77.1
+=dev-lang/rust-bin-1.79.0
+=dev-lang/rust-bin-1.80.1
+=dev-lang/rust-bin-1.81.0
+=dev-lang/rust-bin-1.82.0
+=virtual/rust-1.71.1-r2
+=virtual/rust-1.74.1-r1
+=virtual/rust-1.75.0-r1
+=virtual/rust-1.77.1
+=virtual/rust-1.79.0
+=virtual/rust-1.80.1
+=virtual/rust-1.81.0-r1
+=virtual/rust-1.82.0
 
 # Viorel Munteanu <ceamac@gentoo.org> (2024-10-18)
 # Experimental version, for testing purposes only.
 # Bug #941566.
 app-emulation/virtualbox-kvm
 
-# Michał Górny <mgorny@gentoo.org> (2024-10-18)
-# Low-quality, test-restricted package with multiple unresolved bugs
-# and version bump pending.  Removal requested by the maintainer.
-# Removal on 2024-11-17.  Bug #941436.
-net-misc/electron-cash
-
-# Michał Górny <mgorny@gentoo.org> (2024-10-18)
-# Causing issues since forever.  We are already deselecting a lot
-# of tests because of cryptic failures.  On top of that, upstream shows
-# no interest in porting to >=dev-python/pytest-8.  No (non-optional)
-# revdeps left.
-# Removal on 2024-11-17.  Bug #937896.
-dev-python/sentry-sdk
-
-# Ulrich Müller <ulm@gentoo.org> (2024-10-15)
-# No longer provided as a separate package; the Emacs mode is now
-# installed by dev-util/quilt with USE=emacs.
-# Removal on 2024-11-14. Bug #247500.
-app-emacs/quilt-el
-
-# Alfredo Tupone <tupone@gentoo.org> (2024-10-14)
-# These packages are no more needed.
-# Use dev-ml/opam, dev-ml/opam-file-format,
-# dev-ml/opam-installer
-# that include these
-# remove on 2024-11-14.
-dev-ml/opam-client
-dev-ml/opam-repository
-dev-ml/opam-state
-dev-ml/opam-format
-dev-ml/opam-core
-dev-ml/opam-solver
-
-# Hans de Graaff <graaff@gentoo.org> (2024-10-13)
-# Obsolete slots without reverse dependencies. Use a newer slot
-# instead. Removal on 2024-11-13.
-dev-ruby/io-event:1.2
-dev-ruby/io-event:1.3
-
-# Holger Hoffstätte <holger@applied-asynchrony.com> (2024-10-11)
-# Vendors an unreleased libbpf version and generates ABI-breaking code.
-# Bug #941185.
-=dev-util/bpftool-7.5.0-r2
-
-# Michał Górny <mgorny@gentoo.org> (2024-10-10)
-# Gentoo package not updated for 4 years now.  No tests upstream.
-# No revdeps.
-# Removal on 2024-11-09.  Bug #941245.
-dev-python/beagle
-
-# Yongxiang Liang <tanekliang@gmail.org> (2024-10-10)
-# Fcitx 4 has been archived. Users can upgrade to Fcitx 5
-app-i18n/fcitx-anthy:4
-app-i18n/fcitx-chewing:4
-app-i18n/fcitx-cloudpinyin:4
-app-i18n/fcitx-configtool:4
-app-i18n/fcitx-hangul:4
-app-i18n/fcitx-libpinyin:4
-app-i18n/fcitx-m17n:4
-app-i18n/fcitx-qt5:4
-app-i18n/fcitx-rime:4
-app-i18n/fcitx-sayura:4
-app-i18n/fcitx-table-extra:4
-app-i18n/fcitx-unikey:4
-app-i18n/fcitx:4
-app-i18n/kcm-fcitx
-
-# Michael Orlitzky <mjo@gentoo.org> (2024-10-09)
-# This is the new stable series of webkit-gtk, but it has a new
-# less-portable rendering engine, and doesn't yet build on ~riscv for
-# reasons unrelated to that. It's easier to play around with it in
-# the tree, but it's not ready for end users yet.
->=net-libs/webkit-gtk-2.46.0
-
-# Ionen Wolkens <ionen@gentoo.org> (2024-10-08)
-# Masked for testing and (mostly) to avoid upgrade noise given
-# PyQt6-6.7.x is known broken with it and depends on <6.8. Feel
-# free to unmask early if not using PyQt6.
-=dev-python/pyside6-6.8.0*
-=dev-python/pyside6-tools-6.8.0*
-=dev-python/shiboken6-6.8.0*
-=dev-qt/qt-docs-6.8.0*
-=dev-qt/qt3d-6.8.0*
-=dev-qt/qt5compat-6.8.0*
-=dev-qt/qtbase-6.8.0*
-=dev-qt/qtcharts-6.8.0*
-=dev-qt/qtconnectivity-6.8.0*
-=dev-qt/qtdeclarative-6.8.0*
-=dev-qt/qthttpserver-6.8.0*
-=dev-qt/qtimageformats-6.8.0*
-=dev-qt/qtlanguageserver-6.8.0*
-=dev-qt/qtlocation-6.8.0*
-=dev-qt/qtmultimedia-6.8.0*
-=dev-qt/qtnetworkauth-6.8.0*
-=dev-qt/qtpositioning-6.8.0*
-=dev-qt/qtquick3d-6.8.0*
-=dev-qt/qtquicktimeline-6.8.0*
-=dev-qt/qtremoteobjects-6.8.0*
-=dev-qt/qtscxml-6.8.0*
-=dev-qt/qtsensors-6.8.0*
-=dev-qt/qtserialbus-6.8.0*
-=dev-qt/qtserialport-6.8.0*
-=dev-qt/qtshadertools-6.8.0*
-=dev-qt/qtspeech-6.8.0*
-=dev-qt/qtsvg-6.8.0*
-=dev-qt/qttools-6.8.0*
-=dev-qt/qttranslations-6.8.0*
-=dev-qt/qtvirtualkeyboard-6.8.0*
-=dev-qt/qtwayland-6.8.0*
-=dev-qt/qtwebchannel-6.8.0*
-=dev-qt/qtwebengine-6.8.0*
-=dev-qt/qtwebsockets-6.8.0*
-=dev-qt/qtwebview-6.8.0*
-
-# Andreas Sturmlechner <asturm@gentoo.org> (2024-10-07)
-# No more revdeps, merged into kde-frameworks/kpeople upstream.
-# Removal on 2024-11-06.
-dev-libs/kpeoplevcard
-
-# Andreas Sturmlechner <asturm@gentoo.org> (2024-10-07)
-# Unmaintained and archived upstream, removal on 2024-11-06.
-net-im/choqok
-
-# Hans de Graaff <graaff@gentoo.org> (2024-10-06)
-# Obsolete slot without reverse dependencies. Use the newer slot
-# instead. Removal on 2024-11-08.
-dev-ruby/base64:0.1
-
-# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2024-10-05)
+# Nowa Ammerlaan <nowa@gentoo.org> (2024-10-05)
 # This version is known to break on certain systems. At the
 # same time it fixes several reported issues. Masked until
 # we can work out how to resolve the situation.
 # See also: https://github.com/gentoo/gentoo/pull/36091
 ~sys-boot/plymouth-24.004.60
-
-# Andreas Sturmlechner <asturm@gentoo.org> (2024-10-05)
-# Masked for removal in 30 days. Broken since KF6 incapacitated
-# breeze-icons-rcc, but no one even complained. Upstream porting
-# effort stalled indefinitely:
-# https://invent.kde.org/office/kexi/-/issues/152
-# Removal on 2024-11-04.
-app-office/kexi
-dev-db/kdb
-dev-libs/kproperty
-dev-libs/kreport
-kde-frameworks/breeze-icons-rcc
-
-# Sebastian Pipping <sping@gentoo.org> (2024-10-03)
-# Masked for removal in 30 days.  Last release in 2021,
-# last commit two years ago, has open bugs, .. (bug #940725).
-# Also removing its two dependencies that have no other
-# reverse dependencies in Gentoo or known use outside of Lurch.
-net-libs/libaxc
-net-libs/libomemo
-x11-plugins/lurch
 
 # Sam James <sam@gentoo.org> (2024-09-30)
 # GCC 10 and older no longer receive upstream support or fixes for
@@ -276,174 +506,18 @@ x11-plugins/lurch
 <sys-devel/gcc-11
 <sys-devel/kgcc64-11
 
-# Michał Górny <mgorny@gentoo.org> (2024-09-29)
-# This package has not been updated since Python 3.11.2.  It bundles
-# part of Python stdlib that's most likely vulnerable by now, as well
-# as some third-party packages.  And it really needs a dedicated
-# maintainer.
-# Removal on 2024-10-29.  Bug #910612.
-dev-python/brython
-
 # Robin H. Johnson <robbat2@gentoo.org> (2024-09-22)
 # Upstream testing release; fails some tests as well here
 # Beware that if you upgrade to it, you may need to reset your keyrings.
 >=app-crypt/gnupg-2.5
 
-# Eli Schwartz <eschwartz@gentoo.org> (2024-09-19)
-# Breaks parallel builds with fatal compiler errors.
-# Bug #939798, #939875.
->=dev-python/ensurepip-setuptools-75.1.0
->=dev-python/setuptools-75.1.0
-
-# Ulrich Müller <ulm@gentoo.org> (2024-09-12)
-# Pretest versions, masked for testing.
-<app-editors/emacs-30.0.9999:30-vcs
-
-# Sam James <sam@gentoo.org> (2024-09-10)
-# Breaks libstdc++ with a casing issue: https://gcc.gnu.org/PR116657
-=sys-libs/timezone-data-2024b
-
 # Fabian Groffen <grobian@gentoo.org> (2024-09-02)
 # exim_tinydb utility crashes due to invalid free() (used in startup script)
 =mail-mta/exim-4.98
 
-# Pacho Ramos <pacho@gentoo.org> (2024-08-09)
-# Mask until we find out a way to deal better with the upstream
-# introduced circular dep, bug #937616
->=dev-libs/glib-2.80
->=dev-util/glib-utils-2.80
->=dev-util/gdbus-codegen-2.80
->=gnome-base/gnome-shell-46
->=gnome-extra/gnome-shell-extensions-46
->=gnome-base/nautilus-46
->=dev-libs/gobject-introspection-1.80
->=dev-libs/gobject-introspection-common-1.80
->=x11-terms/ptyxis-46
-
-# Leonardo Hernández Hernández <leohdz172@proton.me> (2024-07-07)
-# New major ffmpeg version. Tracker bug #928905.
->=media-video/ffmpeg-7.0
-
-# Joonas Niilola <juippis@gentoo.org> (2024-07-04)
-# libxml2-2.13.1 removed "deprecated" symbols that other (older)
-# packages depend upon. It can be mitigated with a --with-legacy
-# configure option, but it's still not a perfect fix. Bug #935452
-# to track and work on tree-wide support. Masking the exact version
-# so we can revbump the package with a fix.
-=dev-libs/libxml2-2.13.1
-=dev-libs/libxslt-1.1.41
-
 # Sam James <sam@gentoo.org> (2024-06-25)
 # The symbol versioning "fix" breaks anything built with 3.0.0.
 =dev-libs/libassuan-3.0.1
-
-# Alfredo Tupone <tupone@gentoo.org> (2024-06-09)
-# Not ready for testing
->=dev-lang/ocaml-5
-dev-ml/sexplib0:0/0.17
-dev-ml/ocaml_intrinsics:0/0.17
-dev-ml/ocaml_intrinsics_kernel:0/0.17
-dev-ml/base:0/0.17
-dev-ml/fieldslib:0/0.17
-dev-ml/stdio:0/0.17
->=dev-ml/ocaml-compiler-libs-0.17
->=dev-ml/ppxlib-0.32.1
-dev-ml/ppx_cold:0/0.17
-dev-ml/ppxlib_jane
-dev-ml/ppx_compare:0/0.17
-dev-ml/ppx_enumerate:0/0.17
-dev-ml/ppx_globalize:0/0.17
-dev-ml/ppx_sexp_conv:0/0.17
-dev-ml/ppx_hash:0/0.17
-dev-ml/ppx_base:0/0.17
-dev-ml/ppx_fields_conv:0/0.17
-dev-ml/ppx_fixed_literal:0/0.17
-dev-ml/ppx_here:0/0.17
-dev-ml/ppx_let:0/0.17
-dev-ml/ppx_sexp_message:0/0.17
-dev-ml/ppx_sexp_value:0/0.17
-dev-ml/ppx_assert:0/0.17
-dev-ml/jane-street-headers:0/0.17
-dev-ml/ppx_optcomp:0/0.17
-dev-ml/jst-config:0/0.17
-dev-ml/time_now:0/0.17
-dev-ml/ppx_inline_test:0/0.17
-dev-ml/ppx_bench:0/0.17
-dev-ml/splittable_random:0/0.17
-dev-ml/base_quickcheck:0/0.17
-dev-ml/ppx_stable:0/0.17
-dev-ml/ppx_string:0/0.17
-dev-ml/ppx_expect:0/0.17
-dev-ml/parsexp:0/0.17
-dev-ml/sexplib:0/0.17
-dev-ml/variantslib:0/0.17
-dev-ml/ppx_variants_conv:0/0.17
-dev-ml/ppx_log:0/0.17
-dev-ml/ppx_ignore_instrumentation:0/0.17
-dev-ml/typerep:0/0.17
-dev-ml/ppx_typerep_conv:0/0.17
-dev-ml/ppx_tydi:0/0.17
-dev-ml/capitalization:0/0.17
-dev-ml/ppx_string_conv:0/0.17
-dev-ml/ppx_stable_witness:0/0.17
-dev-ml/ppx_pipebang:0/0.17
-dev-ml/ppx_optional:0/0.17
-dev-ml/ppx_module_timer:0/0.17
-dev-ml/ppx_disable_unused_warnings:0/0.17
-dev-ml/ppx_custom_printf:0/0.17
-dev-ml/bin_prot:0/0.17
-dev-ml/ppx_bin_prot:0/0.17
-dev-ml/ppx_jane:0/0.17
-dev-ml/gel:0/0.17
-dev-ml/ppx_diff:0/0.17
-dev-ml/int_repr:0/0.17
-dev-ml/base_bigstring:0/0.17
-dev-ml/core:0/0.17
-dev-ml/uopt:0/0.17
-dev-ml/core_kernel:0/0.17
-dev-ml/timezone:0/0.17
-dev-ml/sexp_pretty:0/0.17
-dev-ml/expect_test_helpers_core:0/0.17
-dev-ml/core_unix:0/0.17
-dev-ml/async_kernel:0/0.17
-dev-ml/async_unix:0/0.17
-dev-ml/protocol_version_header:0/0.17
-dev-ml/async_rpc_kernel:0/0.17
-dev-ml/async_log:0/0.17
-dev-ml/textutils:0/0.17
-dev-ml/async:0/0.17
->=dev-ml/labltk-8.06.14
-dev-ml/patience_diff:0/0.17
->=dev-ml/ppx_deriving-6.0.2
-dev-ml/ppx_js_style:0/0.17
->=dev-ml/camlp4-5
-dev-ml/textutils_kernel:0/0.17
-
-# Michał Górny <mgorny@gentoo.org> (2024-06-08)
-# Prereleases of Xfce 4.20.  Masking upon popular request, due to
-# a large number of regressions in every new release.
->=dev-build/xfce4-dev-tools-4.19
->=xfce-base/exo-4.19
->=xfce-base/garcon-4.19
->=xfce-base/libxfce4ui-4.19
->=xfce-base/libxfce4util-4.19
->=xfce-base/libxfce4windowing-4.19.5
->=xfce-base/thunar-4.19
->=xfce-base/thunar-volman-4.19
->=xfce-base/tumbler-4.19
->=xfce-base/xfce4-appfinder-4.19
->=xfce-base/xfce4-meta-4.19
->=xfce-base/xfce4-panel-4.19
->=xfce-base/xfce4-power-manager-4.19
->=xfce-base/xfce4-session-4.19
->=xfce-base/xfce4-settings-4.19
->=xfce-base/xfconf-4.19
->=xfce-base/xfdesktop-4.19
->=xfce-base/xfwm4-4.19
-
-# Sam James <sam@gentoo.org> (2024-04-28)
-# Masked for testing. Tracker bug: bug #930805.
->=sys-libs/ncurses-6.5
 
 # Sam James <sam@gentoo.org> (2024-03-28)
 # Newer 5.4.x releases were signed by a potentially compromised upstream maintainer.
@@ -463,10 +537,6 @@ sec-keys/openpgp-keys-jiatan
 ~app-arch/xz-utils-5.5.2_beta
 ~app-arch/xz-utils-5.6.0
 ~app-arch/xz-utils-5.6.1
-
-# Eray Aslan <eras@gentoo.org> (2024-03-10)
-# Mask experimental software
-=mail-mta/postfix-3.10*
 
 # Sam James <sam@gentoo.org> (2023-12-14)
 # Gentoo's kernel maintainers have decided to discontinue gentoo-sources and
@@ -519,12 +589,6 @@ sec-keys/openpgp-keys-jiatan
 =sci-libs/suitesparseconfig-7.0.0
 =sci-libs/umfpack-6.1.0
 
-# Sam James <sam@gentoo.org> (2023-05-10)
-# Lots of package breakage as usual for new versions. Masked until most/all
-# reverse dependencies are fixed. Tracker bug is bug #906077.
->=dev-libs/libfmt-10
->=games-emulation/dolphin-2407
-
 # Ionen Wolkens <ionen@gentoo.org> (2023-03-30)
 # NVIDIA dropped support for the 390.xx branch in December 2022[1].
 #
@@ -535,7 +599,7 @@ sec-keys/openpgp-keys-jiatan
 # Gentoo will keep it packaged for as long as reasonably possible
 # (albeit masked) but no true support will be given nor patches
 # for newer kernels. It is recommended to use 6.1.x LTS kernels or
-# older (6.1.x will be supported until at least December 2026).
+# older (6.1.x will be supported upstream until December 2027).
 #
 # Major issues will lead to removal without further warning, e.g.
 # if no usable kernels left in tree, or if broken with a newer Xorg.
@@ -571,11 +635,6 @@ x11-drivers/nvidia-drivers:0/vulkan
 # dev-build/automake version 1.11 is EOL and is only useful for testing
 # old de-ANSI-fication/ansi2knr/AM_C_PROTOTYPES code. Please uninstall.
 dev-build/automake:1.11
-
-# Joonas Niilola <juippis@gentoo.org> (2021-07-29)
-# Upstream provided migration instructions from 2. -> 3. update,
-# breaks if not all at least many revdeps. #805011 for tracker bug.
->=net-libs/mbedtls-3.0.0
 
 # Michał Górny <mgorny@gentoo.org> (2021-07-06)
 # Upstream changed license to GPL-3+ in order to deliberately cause

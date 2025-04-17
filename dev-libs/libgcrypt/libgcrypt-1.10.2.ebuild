@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -105,15 +105,6 @@ multilib_src_configure() {
 		use cpu_flags_ppc_vsx3 || local -x gcry_cv_gcc_inline_asm_ppc_arch_3_00=no
 	fi
 
-	# Workaround for GCC < 11.3 bug
-	# https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git;a=commitdiff;h=0b399721ce9709ae25f9d2050360c5ab2115ae29
-	# https://dev.gnupg.org/T5581
-	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=102124
-	if use arm64 && tc-is-gcc && (($(gcc-major-version) == 11)) &&
-		(($(gcc-minor-version) <= 2)) && (($(gcc-micro-version) == 0)) ; then
-		append-flags -fno-tree-loop-vectorize
-	fi
-
 	# ideally we want !tc-ld-is-bfd for best future-proofing, but it needs
 	# https://github.com/gentoo/gentoo/pull/28355
 	# mold needs this too but right now tc-ld-is-mold is also not available
@@ -167,6 +158,9 @@ multilib_src_test() {
 	# t-secmem and t-sexp need mlock which requires extra privileges; nspawn
 	# at least disallows that by default.
 	local -x GCRYPT_IN_ASAN_TEST=1
+	# Avoid running (very) expensive bench-slope test. On hppa, it
+	# takes at least 7 hours.
+	local -x GCRYPT_NO_BENCHMARKS=1
 
 	default
 }

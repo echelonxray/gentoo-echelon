@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=poetry
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{10..13} )
 
 inherit distutils-r1
 
@@ -20,7 +20,7 @@ if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://github.com/${REPO}/${PN}"
 else
 	KEYWORDS="~amd64 ~arm ~arm64 ~riscv ~x86"
-	SRC_URI="https://github.com/APN-Pucky/${PN}/archive/refs/tags/v${PV}.tar.gz -> ${P}.gh.tar.gz"
+	SRC_URI="https://github.com/${REPO}/${PN}/archive/refs/tags/v${PV}.tar.gz -> ${P}.gh.tar.gz"
 fi
 
 IUSE="test"

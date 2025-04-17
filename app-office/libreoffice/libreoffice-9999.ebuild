@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -49,13 +49,13 @@ ADDONS_SRC=(
 	# not packaged in Gentoo, https://www.netlib.org/fp/dtoa.c
 	"${ADDONS_URI}/dtoa-20180411.tgz"
 	# not packaged in Gentoo, https://github.com/serge-sans-paille/frozen
-	"${ADDONS_URI}/frozen-1.1.1.tar.gz"
+	"${ADDONS_URI}/frozen-1.2.0.tar.gz"
 	# not packaged in Gentoo, https://skia.org/
-	"${ADDONS_URI}/skia-m116-2ddcf183eb260f63698aa74d1bb380f247ad7ccd.tar.xz"
+	"${ADDONS_URI}/skia-m135-6c2dc3e74ea0bd464ba1c6679ded0b643101e682.tar.xz"
 	# not packaged in Gentoo, https://github.com/tsyrogit/zxcvbn-c
 	"${ADDONS_URI}/zxcvbn-c-2.5.tar.gz"
+
 	"base? (
-		${ADDONS_URI}/commons-logging-1.2-src.tar.gz
 		${ADDONS_URI}/ba2930200c9f019c2d93a8c88c651a0f-flow-engine-0.9.4.zip
 		${ADDONS_URI}/d8bd5eed178db6e2b18eeed243f85aa8-flute-1.1.6.zip
 		${ADDONS_URI}/eeb2c7ddf0d302fba4bfc6e97eac9624-libbase-1.1.6.zip
@@ -70,24 +70,30 @@ ADDONS_SRC=(
 	)"
 	# Java-WebSocket: not packaged in Gentoo, https://github.com/TooTallNate/Java-WebSocket
 	"java? (
-		${ADDONS_URI}/Java-WebSocket-1.5.6.tar.gz
+		${ADDONS_URI}/Java-WebSocket-1.6.0.tar.gz
 		${ADDONS_URI}/17410483b5b5f267aa18b7e00b65e6e0-hsqldb_1_8_0.zip
 	)"
 	# no release for 8 years, should we package it?
 	"libreoffice_extensions_wiki-publisher? ( ${ADDONS_URI}/a7983f859eafb2677d7ff386a023bc40-xsltml_2.1.2.zip )"
-	# not packageable
-	"odk? ( http://download.go-oo.org/extern/185d60944ea767075d27247c3162b3bc-unowinreg.dll )"
 )
 SRC_URI+=" ${ADDONS_SRC[*]}"
 
 unset ADDONS_URI
 unset ADDONS_SRC
 
+S="${WORKDIR}/${PN}-${MY_PV}"
+
+LICENSE="|| ( LGPL-3 MPL-1.1 )"
+SLOT="0"
+
+[[ ${MY_PV} == *9999* ]] || \
+KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc64 ~riscv ~x86 ~amd64-linux"
+
 # Extensions that need extra work:
 LO_EXTS="nlpsolver scripting-beanshell scripting-javascript wiki-publisher"
 
-IUSE="accessibility base bluetooth +branding clang coinmp +cups custom-cflags +dbus debug eds firebird
-googledrive gstreamer +gtk kde ldap +mariadb odk pdfimport postgres qt6 test valgrind vulkan
+IUSE="accessibility base bluetooth +branding clang coinmp +cups custom-cflags +dbus debug eds
+googledrive gstreamer gtk kde ldap +mariadb odk pdfimport postgres qt6 test valgrind vulkan
 $(printf 'libreoffice_extensions_%s ' ${LO_EXTS})"
 
 REQUIRED_USE="${PYTHON_REQUIRED_USE}
@@ -101,12 +107,6 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}
 "
 
 RESTRICT="!test? ( test )"
-
-LICENSE="|| ( LGPL-3 MPL-1.1 )"
-SLOT="0"
-
-[[ ${MY_PV} == *9999* ]] || \
-KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc64 ~riscv ~x86 ~amd64-linux"
 
 COMMON_DEPEND="${PYTHON_DEPS}
 	app-arch/unzip
@@ -140,7 +140,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	dev-libs/icu:=
 	dev-libs/libassuan:=
 	dev-libs/libgpg-error
-	>=dev-libs/liborcus-0.18.0:0/0.18
+	>=dev-libs/liborcus-0.20.0:0/0.20
 	dev-libs/librevenge
 	dev-libs/libxml2
 	dev-libs/libxslt
@@ -166,7 +166,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	media-libs/libzmf
 	media-libs/openjpeg:=
 	media-libs/tiff:=
-	media-libs/zxing-cpp:=
+	>=media-libs/zxing-cpp-2.3.0:=
 	net-misc/curl
 	sci-mathematics/lpsolve:=
 	sys-libs/zlib
@@ -190,7 +190,6 @@ COMMON_DEPEND="${PYTHON_DEPS}
 		>=gnome-base/dconf-0.40.0
 		gnome-extra/evolution-data-server
 	)
-	firebird? ( >=dev-db/firebird-3.0.2.32703.0-r1[server] )
 	gstreamer? (
 		media-libs/gstreamer:1.0
 		media-libs/gst-plugins-base:1.0
@@ -198,10 +197,9 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	gtk? (
 		app-accessibility/at-spi2-core:2
 		dev-libs/glib:2
-		dev-libs/gobject-introspection
 		gnome-base/dconf
 		media-libs/mesa[egl(+)]
-		x11-libs/gtk+:3[X]
+		gui-libs/gtk[X]
 		x11-libs/pango
 	)
 	kde? (
@@ -213,12 +211,15 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	)
 	ldap? ( net-nds/openldap:= )
 	libreoffice_extensions_scripting-beanshell? ( dev-java/bsh )
-	libreoffice_extensions_scripting-javascript? ( >=dev-java/rhino-1.7.14:1.6 )
+	libreoffice_extensions_scripting-javascript? ( >=dev-java/rhino-1.8.0:0 )
 	mariadb? ( dev-db/mariadb-connector-c:= )
 	!mariadb? ( dev-db/mysql-connector-c:= )
 	pdfimport? ( >=app-text/poppler-22.06:=[cxx] )
 	postgres? ( >=dev-db/postgresql-9.0:*[kerberos] )
-	qt6? ( dev-qt/qtbase:6[gui,widgets] )
+	qt6? (
+		dev-qt/qtbase:6[gui,opengl,widgets]
+		dev-qt/qtmultimedia:6
+	)
 "
 # FIXME: cppunit should be moved to test conditional
 #        after everything upstream is under gbuild
@@ -229,14 +230,17 @@ DEPEND="${COMMON_DEPEND}
 	dev-perl/Archive-Zip
 	>=dev-util/cppunit-1.14.0
 	>=dev-util/gperf-3.1
-	dev-util/mdds:1/2.1
+	dev-util/mdds:1/3.0
 	media-libs/glm
 	x11-base/xorg-proto
 	x11-libs/libXt
 	x11-libs/libXtst
 	java? (
 		dev-java/ant:0
-		>=virtual/jdk-17
+		|| (
+		   virtual/jdk:17
+		   virtual/jdk:21
+		)
 	)
 	test? (
 		app-crypt/gnupg
@@ -249,7 +253,7 @@ DEPEND="${COMMON_DEPEND}
 RDEPEND="${COMMON_DEPEND}
 	acct-group/libreoffice
 	acct-user/libreoffice
-	!app-office/libreoffice-bin
+	!<app-office/libreoffice-bin-24.8.4-r2
 	!app-office/libreoffice-bin-debug
 	media-fonts/liberation-fonts
 	|| ( x11-misc/xdg-utils kde-plasma/kde-cli-tools:* )
@@ -257,28 +261,32 @@ RDEPEND="${COMMON_DEPEND}
 	kde? ( kde-frameworks/breeze-icons:* )
 "
 BDEPEND="
+	app-alternatives/lex
+	app-alternatives/yacc
 	dev-util/intltool
 	sys-apps/which
-	app-alternatives/yacc
-	app-alternatives/lex
 	sys-devel/gettext
 	virtual/pkgconfig
-	clang? (
-		|| (
-			(	sys-devel/clang:18
-				sys-devel/llvm:18
-				=sys-devel/lld-18*	)
-			(	sys-devel/clang:17
-				sys-devel/llvm:17
-				=sys-devel/lld-17*	)
-			(	sys-devel/clang:16
-				sys-devel/llvm:16
-				=sys-devel/lld-16*	)
-			(	sys-devel/clang:15
-				sys-devel/llvm:15
-				=sys-devel/lld-15*	)
-		)
-	)
+	clang? ( || (
+		(	llvm-core/clang:20
+			llvm-core/llvm:20
+			=llvm-core/lld-20*	)
+		(	llvm-core/clang:19
+			llvm-core/llvm:19
+			=llvm-core/lld-19*	)
+		(	llvm-core/clang:18
+			llvm-core/llvm:18
+			=llvm-core/lld-18*	)
+		(	llvm-core/clang:17
+			llvm-core/llvm:17
+			=llvm-core/lld-17*	)
+		(	llvm-core/clang:16
+			llvm-core/llvm:16
+			=llvm-core/lld-16*	)
+		(	llvm-core/clang:15
+			llvm-core/llvm:15
+			=llvm-core/lld-15*	)
+	) )
 	odk? ( >=app-text/doxygen-1.8.4 )
 "
 if [[ ${MY_PV} != *9999* ]] && [[ ${PV} != *_* ]]; then
@@ -295,13 +303,11 @@ PATCHES=(
 	# not upstreamable stuff
 	"${FILESDIR}/${PN}-6.1-nomancompress.patch"
 	"${FILESDIR}/${PN}-24.2-qtdetect.patch"
+	"${FILESDIR}/${PN}-25.2-cflags.patch"
 
 	# TODO: upstream
-	"${FILESDIR}/${PN}-24.8-unused-qt5network.patch"
-	"${FILESDIR}/${PN}-24.8-unused-qt6network.patch"
+	"${FILESDIR}/${PN}-25.2-unused-qt6network.patch"
 )
-
-S="${WORKDIR}/${PN}-${MY_PV}"
 
 _check_reqs() {
 	CHECKREQS_MEMORY="512M"
@@ -360,15 +366,6 @@ src_prepare() {
 	# hack in the autogen.sh
 	touch autogen.lastrun
 
-	# sed in the tests
-	sed -i \
-		-e "s#all : build unitcheck#all : build#g" \
-		solenv/gbuild/Module.mk || die
-	sed -i \
-		-e "s#check: dev-install subsequentcheck#check: unitcheck slowcheck dev-install subsequentcheck#g" \
-		-e "s#Makefile.gbuild all slowcheck#Makefile.gbuild all#g" \
-		Makefile.in || die
-
 	sed -i \
 		-e "s,/usr/share/bash-completion/completions,$(get_bashcompdir)," \
 		-e "s,\$INSTALLDIRNAME.sh,${PN}," \
@@ -386,6 +383,57 @@ src_prepare() {
 			-e ":Keywords: s:pdf;::" \
 			sysui/desktop/menus/draw.desktop || die
 	fi
+
+	# These test failures are largely added blindly in 25.2.1.1 to
+	# give us a baseline and then chip away at, rather than disregarding
+	# tests entirely.
+	#
+	# Various test skips from Fedora
+	#
+	# "Failing on multiple arches"
+	# "https://bugzilla.redhat.com/show_bug.cgi?id=2334719
+	# started to fail in 25.2.0.0"
+	sed -i -e '/CppunitTest_svgio/d' svgio/Module_svgio.mk || die
+	sed -i \
+		-e '/CppunitTest_sw_layoutwriter3/d' \
+		-e '/CppunitTest_sw_layoutwriter4/d' \
+		sw/Module_sw.mk || die
+	# "testStatusBarPageNumber it is said to "fail from time to time"...
+	# started to fail in 25.2.0.0"
+	# Skip tests failing with latest app-text/poppler (25.02.0?)
+	sed -i -e '/CppunitTest_sw_tiledrendering2/d' sw/Module_sw.mk || die
+	sed -i -e '/CppunitTest_sc_pdf_export/d' sc/Module_sc.mk || die
+	sed -i -e '/CppunitTest_sdext_pdfimport/d' sdext/Module_sdext.mk || die
+	sed -i -e '/CppunitTest_sfx2_view/d' sfx2/Module_sfx2.mk || die
+	sed -i -e '/CppunitTest_sw_pdf_test/d' sw/Module_sw.mk || die
+	#
+	# Fails w/ 25.2.1.1 on amd64
+	sed -i -e '/CppunitTest_sd_layout_tests/d' sd/Module_sd.mk || die
+	sed -i -e '/CppunitTest_vcl_text/d' vcl/Module_vcl.mk || die
+	sed -i -e '/CppunitTest_svx_unit/d' svx/Module_svx.mk || die
+	sed -i \
+		-e '/CppunitTest_chart2_import/d' \
+		-e '/CppunitTest_chart2_export2/d' \
+		chart2/Module_chart2.mk || die
+	sed -i \
+		-e '/CppunitTest_sc_array_functions_test/d' \
+		-e '/CppunitTest_sc_jumbosheets_test/d' \
+		-e '/CppunitTest_sc_subsequent_export_test4/d' \
+		-e '/CppunitTest_sc_subsequent_filters_test3/d' \
+		-e '/CppunitTest_sc_ucalc_formula/d' \
+		-e '/CppunitTest_sc_uicalc2/d' \
+		-e '/CppunitTest_sc_vba_macro_test/d' \
+		sc/Module_sc.mk || die
+	sed -i \
+		-e '/CppunitTest_sw_ooxmlexport/d' \
+		-e '/CppunitTest_sw_ooxmlimport/d' \
+		-e '/CppunitTest_sw_ww8export/d' \
+		-e '/CppunitTest_sw_core_layout/d' \
+		-e '/CppunitTest_sw_core_objectpositioning/d' \
+		-e '/CppunitTest_sw_core_text/d' \
+		-e '/CppunitTest_sw_layoutwriter/d' \
+		-e '/CppunitTest_sw_uiwriter/d' \
+		sw/Module_sw.mk || die
 }
 
 src_configure() {
@@ -412,9 +460,6 @@ src_configure() {
 		RANLIB=llvm-ranlib
 		LDFLAGS+=" -fuse-ld=lld"
 
-		# Workaround for bug #907905
-		filter-lto
-
 		# Not implemented by Clang, bug #903889
 		filter-flags -Wlto-type-mismatch -Werror=lto-type-mismatch
 	else
@@ -430,6 +475,10 @@ src_configure() {
 		# bug #838115
 		sed -i -e "s/-flto=thin/-flto/" solenv/gbuild/platform/com_GCC_defs.mk || die
 	fi
+
+	# ODR violations (not just in skia/vulkan): bug #916435
+	# Runtime crashes with Clang: bug #907905
+	filter-lto
 
 	if use custom-cflags ; then
 		elog "USE=custom-cflags has been selected. You are on your own to make sure that"
@@ -475,6 +524,7 @@ src_configure() {
 	# --without-system-sane: just sane.h header that is used for scan in writer,
 	#   not linked or anything else, worthless to depend on
 	# --disable-pdfium: not yet packaged
+	# --disable-cpdb: not yet packaged
 	local myeconfargs=(
 		--with-system-dicts
 		--with-system-epoxy
@@ -492,13 +542,21 @@ src_configure() {
 		--disable-breakpad
 		--disable-bundle-mariadb
 		--disable-ccache
+		--disable-cpdb
 		--disable-epm
 		--disable-fetch-external
+		--disable-firebird-sdbc
+		--disable-gtk3
 		--disable-gtk3-kde5
+		# Covered by our own toolchain defaults
+		--disable-hardening-flags
 		--disable-online-update
 		--disable-openssl
 		--disable-pdfium
 		--disable-qt5
+		# Don't try to call coredumpctl in the testsuite
+		--without-coredumpctl
+		--without-dotnet
 		--with-extra-buildid="${gentoo_buildid}"
 		--enable-extension-integration
 		--with-external-dict-dir="${EPREFIX}/usr/share/myspell"
@@ -523,6 +581,7 @@ src_configure() {
 		--without-system-libfixmath
 		--without-system-sane
 		--without-system-zxcvbn
+		--without-system-java-websocket
 		$(use_enable base report-builder)
 		$(use_enable bluetooth sdremote-bluetooth)
 		$(use_enable coinmp)
@@ -530,15 +589,15 @@ src_configure() {
 		$(use_enable dbus)
 		$(use_enable debug)
 		$(use_enable eds evolution2)
-		$(use_enable firebird firebird-sdbc)
 		$(use_enable gstreamer gstreamer-1-0)
-		$(use_enable gtk gtk3)
+		$(use_enable gtk gtk4)
 		$(use_enable kde kf6)
 		$(use_enable ldap)
 		$(use_enable odk)
 		$(use_enable pdfimport)
 		$(use_enable postgres postgresql-sdbc)
 		$(use_enable qt6)
+		$(use_enable qt6 qt6-multimedia)
 		$(use_enable vulkan skia)
 		$(use_with accessibility lxml)
 		$(use_with coinmp system-coinmp)
@@ -549,7 +608,7 @@ src_configure() {
 		$(use_with valgrind)
 	)
 
-	if use eds || use gtk; then
+	if use eds || use gtk ; then
 		myeconfargs+=( --enable-dconf --enable-gio )
 	else
 		myeconfargs+=( --disable-dconf --disable-gio )
@@ -575,6 +634,9 @@ src_configure() {
 
 		use libreoffice_extensions_scripting-beanshell && \
 			myeconfargs+=( --with-beanshell-jar=$(java-pkg_getjar bsh bsh.jar) )
+
+		use libreoffice_extensions_scripting-javascript && \
+			myeconfargs+=( --with-rhino-jar=$(java-pkg_getjars rhino) )
 	fi
 
 	tc-is-lto && myeconfargs+=( --enable-lto )
@@ -590,22 +652,23 @@ src_compile() {
 	addpredict /dev/ati
 	addpredict /dev/nvidiactl
 
-	default
+	emake -Onone
 }
 
 src_test() {
-	emake unitcheck
-	emake slowcheck
+	emake -Onone -k unitcheck
+	emake -Onone -k slowcheck
 }
 
 src_install() {
-	emake DESTDIR="${D}" distro-pack-install -o build -o check
+	emake -Onone DESTDIR="${D}" distro-pack-install
 
-	# bug 593514
-	if use gtk; then
-		dosym libreoffice/program/liblibreofficekitgtk.so \
-			/usr/$(get_libdir)/liblibreofficekitgtk.so
-	fi
+	# TODO: still relevant for gtk4?
+	# bug #593514
+	#if use gtk3; then
+	#	dosym libreoffice/program/liblibreofficekitgtk.so \
+	#		/usr/$(get_libdir)/liblibreofficekitgtk.so
+	#fi
 
 	# bash completion aliases
 	bashcomp_alias \

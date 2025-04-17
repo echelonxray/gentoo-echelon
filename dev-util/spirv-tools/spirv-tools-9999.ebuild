@@ -36,6 +36,8 @@ multilib_src_configure() {
 		-DSPIRV-Headers_SOURCE_DIR="${ESYSROOT}"/usr/
 		-DSPIRV_WERROR=OFF
 		-DSPIRV_TOOLS_BUILD_STATIC=OFF
+		-DCMAKE_C_FLAGS="${CFLAGS} -DNDEBUG"
+		-DCMAKE_CXX_FLAGS="${CXXFLAGS} -DNDEBUG"
 	)
 
 	cmake_src_configure

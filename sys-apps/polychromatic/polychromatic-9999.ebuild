@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{11..13} )
 
 inherit meson python-single-r1 readme.gentoo-r1 xdg
 
@@ -30,8 +30,8 @@ RDEPEND="
 	${PYTHON_DEPS}
 	>=x11-libs/gtk+-3.20:3[introspection]
 	$(python_gen_cond_dep '
-		dev-python/PyQt6-WebEngine[${PYTHON_USEDEP}]
-		dev-python/PyQt6[svg,${PYTHON_USEDEP}]
+		dev-python/pyqt6-webengine[${PYTHON_USEDEP}]
+		dev-python/pyqt6[svg,${PYTHON_USEDEP}]
 		dev-python/colorama[${PYTHON_USEDEP}]
 		dev-python/colour[${PYTHON_USEDEP}]
 		dev-python/distro[${PYTHON_USEDEP}]
@@ -44,7 +44,6 @@ RDEPEND="
 BDEPEND="
 	${RDEPEND}
 	dev-util/intltool
-	dev-lang/sassc
 "
 
 DOC_CONTENTS="To automatically start up Polychromatic on session login copy

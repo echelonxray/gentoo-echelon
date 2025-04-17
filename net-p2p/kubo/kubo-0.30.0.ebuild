@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -20,7 +20,7 @@ S="${WORKDIR}"
 
 LICENSE="Apache-2.0 BSD BSD-2 CC0-1.0 ISC MIT MPL-2.0"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 ~x86"
 
 DEPEND="
 	acct-group/ipfs
@@ -62,7 +62,7 @@ src_install() {
 	dobin ipfs
 	dobin ipfswatch
 	newbashcomp ipfs-completion.bash ipfs
-	newfishcomp ipfs-completion.fish ipfs
+	newfishcomp ipfs-completion.fish ipfs.fish
 	newzshcomp ipfs-completion.zsh _ipfs
 	einstalldocs
 
