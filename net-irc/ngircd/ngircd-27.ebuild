@@ -1,10 +1,10 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 VERIFY_SIG_OPENPGP_KEY_PATH=/usr/share/openpgp-keys/alexbarton.asc
-inherit tmpfiles systemd verify-sig
+inherit flag-o-matic tmpfiles systemd verify-sig
 
 DESCRIPTION="An IRC server written from scratch"
 HOMEPAGE="https://ngircd.barton.de/"
@@ -13,7 +13,7 @@ SRC_URI+=" verify-sig? ( https://arthur.barton.de/pub/${PN}/${P}.tar.xz.sig )"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~x86 ~x64-macos"
+KEYWORDS="amd64 arm arm64 x86 ~x64-macos"
 IUSE="debug gnutls ident +irc-plus +ipv6 pam +ssl strict-rfc tcpd test zlib"
 
 # Flaky test needs investigation (bug #719256)
@@ -31,7 +31,7 @@ RDEPEND="
 		)
 	)
 	tcpd? ( sys-apps/tcp-wrappers )
-	zlib? ( sys-libs/zlib )
+	zlib? ( virtual/zlib:= )
 "
 DEPEND="${RDEPEND}"
 BDEPEND="
@@ -71,6 +71,7 @@ src_prepare() {
 }
 
 src_configure() {
+	append-cppflags -DPROTOTYPES # fix c23
 	local myeconfargs=(
 		--sysconfdir="${EPREFIX}"/etc/${PN}
 

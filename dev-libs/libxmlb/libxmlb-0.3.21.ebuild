@@ -13,7 +13,7 @@ SRC_URI="https://github.com/hughsie/libxmlb/archive/${PV}.tar.gz -> ${P}.tar.gz"
 LICENSE="LGPL-2.1+"
 SLOT="0/2" # libxmlb.so version
 
-KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc ~ppc64 ~riscv ~x86"
+KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv x86"
 IUSE="doc introspection +lzma stemmer test +zstd"
 
 RESTRICT="!test? ( test )"
@@ -27,7 +27,7 @@ RDEPEND="
 DEPEND="
 	${RDEPEND}
 	doc? ( dev-util/gtk-doc )
-	introspection? ( dev-libs/gobject-introspection )
+	introspection? ( >=dev-libs/gobject-introspection-1.82.0-r2 )
 "
 BDEPEND="
 	${PYTHON_DEPS}

@@ -14,7 +14,7 @@ S="${WORKDIR}"/${PN}-${CommitId}
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 ~arm64"
+KEYWORDS="amd64 ~arm64 ~x86"
 IUSE="test"
 
 BDEPEND="test? ( dev-cpp/gtest )"
@@ -22,6 +22,7 @@ RESTRICT="!test? ( test )"
 
 PATCHES=(
 	"${FILESDIR}"/${P}-gentoo.patch
+	"${FILESDIR}"/${P}-cmake.patch
 )
 
 src_prepare() {

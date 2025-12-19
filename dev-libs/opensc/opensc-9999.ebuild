@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -21,17 +21,19 @@ SLOT="0/11"
 IUSE="ctapi doc openct notify pace +pcsc-lite readline secure-messaging ssl test zlib"
 RESTRICT="!test? ( test )"
 
-RDEPEND="zlib? ( sys-libs/zlib )
+RDEPEND="zlib? ( virtual/zlib:= )
 	readline? ( sys-libs/readline:0= )
 	ssl? ( dev-libs/openssl:0= )
 	openct? ( >=dev-libs/openct-0.5.0 )
 	pace? ( dev-libs/openpace:= )
 	pcsc-lite? ( >=sys-apps/pcsc-lite-1.3.0 )
 	notify? ( dev-libs/glib:2 )"
+# vim-core needed for xxd in tests
 DEPEND="${RDEPEND}
 	app-text/docbook-xsl-stylesheets
 	dev-libs/libxslt
 	test? (
+		app-editors/vim-core
 		dev-util/cmocka
 		dev-libs/softhsm
 	)"

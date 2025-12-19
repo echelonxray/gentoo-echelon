@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..13} )
+PYTHON_COMPAT=( python3_{11..13} )
 PYTHON_REQ_USE="threads(+),xml(+)"
 
 MY_PV="${PV/_alpha/.alpha}"
@@ -51,9 +51,7 @@ ADDONS_SRC=(
 	# not packaged in Gentoo, https://github.com/serge-sans-paille/frozen
 	"${ADDONS_URI}/frozen-1.2.0.tar.gz"
 	# not packaged in Gentoo, https://skia.org/
-	"${ADDONS_URI}/skia-m135-6c2dc3e74ea0bd464ba1c6679ded0b643101e682.tar.xz"
-	# not packaged in Gentoo, https://github.com/tsyrogit/zxcvbn-c
-	"${ADDONS_URI}/zxcvbn-c-2.5.tar.gz"
+	"${ADDONS_URI}/skia-m136-28685d899b0a35894743e2cedad4c9f525e90e1e.tar.xz"
 
 	"base? (
 		${ADDONS_URI}/ba2930200c9f019c2d93a8c88c651a0f-flow-engine-0.9.4.zip
@@ -92,7 +90,7 @@ KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc64 ~riscv ~x86 ~amd64-linux"
 # Extensions that need extra work:
 LO_EXTS="nlpsolver scripting-beanshell scripting-javascript wiki-publisher"
 
-IUSE="accessibility base bluetooth +branding clang coinmp +cups custom-cflags +dbus debug eds
+IUSE="accessibility base bluetooth +branding coinmp +cups custom-cflags +dbus debug eds
 googledrive gstreamer gtk kde ldap +mariadb odk pdfimport postgres qt6 test valgrind vulkan
 $(printf 'libreoffice_extensions_%s ' ${LO_EXTS})"
 
@@ -112,7 +110,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	app-arch/unzip
 	app-arch/zip
 	app-crypt/argon2:=
-	app-crypt/gpgme:=[cxx]
+	dev-cpp/gpgmepp:=
 	app-text/hunspell:=
 	>=app-text/libabw-0.1.0
 	>=app-text/libebook-0.1
@@ -142,11 +140,12 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	dev-libs/libgpg-error
 	>=dev-libs/liborcus-0.20.0:0/0.20
 	dev-libs/librevenge
-	dev-libs/libxml2
+	dev-libs/libxml2:=
 	dev-libs/libxslt
 	dev-libs/nspr
 	dev-libs/nss
 	>=dev-libs/redland-1.0.16
+	dev-libs/zxcvbn-c
 	>=dev-libs/xmlsec-1.2.35:=[nss]
 	>=games-engines/box2d-2.4.1:0
 	media-gfx/fontforge
@@ -169,7 +168,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	>=media-libs/zxing-cpp-2.3.0:=
 	net-misc/curl
 	sci-mathematics/lpsolve:=
-	sys-libs/zlib
+	virtual/zlib:=
 	virtual/opengl
 	x11-libs/cairo[X]
 	x11-libs/libXinerama
@@ -192,14 +191,14 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	)
 	gstreamer? (
 		media-libs/gstreamer:1.0
-		media-libs/gst-plugins-base:1.0
+		media-plugins/gst-plugins-meta:1.0
 	)
 	gtk? (
 		app-accessibility/at-spi2-core:2
 		dev-libs/glib:2
 		gnome-base/dconf
 		media-libs/mesa[egl(+)]
-		gui-libs/gtk[X]
+		gui-libs/gtk[wayland,X]
 		x11-libs/pango
 	)
 	kde? (
@@ -267,26 +266,6 @@ BDEPEND="
 	sys-apps/which
 	sys-devel/gettext
 	virtual/pkgconfig
-	clang? ( || (
-		(	llvm-core/clang:20
-			llvm-core/llvm:20
-			=llvm-core/lld-20*	)
-		(	llvm-core/clang:19
-			llvm-core/llvm:19
-			=llvm-core/lld-19*	)
-		(	llvm-core/clang:18
-			llvm-core/llvm:18
-			=llvm-core/lld-18*	)
-		(	llvm-core/clang:17
-			llvm-core/llvm:17
-			=llvm-core/lld-17*	)
-		(	llvm-core/clang:16
-			llvm-core/llvm:16
-			=llvm-core/lld-16*	)
-		(	llvm-core/clang:15
-			llvm-core/llvm:15
-			=llvm-core/lld-15*	)
-	) )
 	odk? ( >=app-text/doxygen-1.8.4 )
 "
 if [[ ${MY_PV} != *9999* ]] && [[ ${PV} != *_* ]]; then
@@ -304,9 +283,6 @@ PATCHES=(
 	"${FILESDIR}/${PN}-6.1-nomancompress.patch"
 	"${FILESDIR}/${PN}-24.2-qtdetect.patch"
 	"${FILESDIR}/${PN}-25.2-cflags.patch"
-
-	# TODO: upstream
-	"${FILESDIR}/${PN}-25.2-unused-qt6network.patch"
 )
 
 _check_reqs() {
@@ -341,12 +317,12 @@ src_unpack() {
 
 	if [[ ${MY_PV} = *9999* ]]; then
 		local base_uri branch mypv
-		base_uri="https://anongit.freedesktop.org/git"
+		base_uri="https://git.libreoffice.org"
 		branch="master"
 		mypv=${MY_PV/.9999}
 		[[ ${mypv} != ${MY_PV} ]] && branch="${PN}-${mypv/./-}"
-		git-r3_fetch "${base_uri}/${PN}/core" "refs/heads/${branch}"
-		git-r3_checkout "${base_uri}/${PN}/core"
+		git-r3_fetch "${base_uri}/core" "refs/heads/${branch}"
+		git-r3_checkout "${base_uri}/core"
 		LOCOREGIT_VERSION=${EGIT_VERSION}
 
 		git-r3_fetch "${base_uri}/${PN}/help" "refs/heads/master"
@@ -450,31 +426,14 @@ src_configure() {
 	# Workaround for bug #915067
 	append-ldflags $(test-flags-CCLD -Wl,--undefined-version)
 
-	if use clang ; then
-		# Force clang
-		einfo "Enforcing the use of clang due to USE=clang ..."
-		AR=llvm-ar
-		CC=${CHOST}-clang
-		CXX=${CHOST}-clang++
-		NM=llvm-nm
-		RANLIB=llvm-ranlib
-		LDFLAGS+=" -fuse-ld=lld"
+	# Clang flags get used even for GCC builds sometimes (bug #838115)
+	# (... because of our LO_CLANG_* hack)
+	sed -i -e "s/-flto=thin/-flto/" solenv/gbuild/platform/com_GCC_defs.mk || die
 
-		# Not implemented by Clang, bug #903889
-		filter-flags -Wlto-type-mismatch -Werror=lto-type-mismatch
-	else
-		# Force gcc
-		einfo "Enforcing the use of gcc due to USE=-clang ..."
-		AR=gcc-ar
-		CC=${CHOST}-gcc
-		CXX=${CHOST}-g++
-		NM=gcc-nm
-		RANLIB=gcc-ranlib
-
-		# Apparently the Clang flags get used even for GCC builds sometimes.
-		# bug #838115
-		sed -i -e "s/-flto=thin/-flto/" solenv/gbuild/platform/com_GCC_defs.mk || die
-	fi
+	# Don't use Clang for building Skia regardless of CC/CXX!
+	tc-export CC CXX
+	export LO_CLANG_CC=${CC}
+	export LO_CLANG_CXX=${CXX}
 
 	# ODR violations (not just in skia/vulkan): bug #916435
 	# Runtime crashes with Clang: bug #907905
@@ -486,9 +445,6 @@ src_configure() {
 	else
 		strip-flags
 	fi
-
-	export LO_CLANG_CC=${CC}
-	export LO_CLANG_CXX=${CXX}
 
 	# Show flags set at the end
 	einfo "  Used CFLAGS:    ${CFLAGS}"
@@ -574,13 +530,13 @@ src_configure() {
 		--with-help="html"
 		--without-helppack-integration
 		--with-system-gpgmepp
+		--with-system-zxcvbn
 		--without-system-abseil
 		--without-system-dragonbox
 		--without-system-frozen
 		--without-system-jfreereport
 		--without-system-libfixmath
 		--without-system-sane
-		--without-system-zxcvbn
 		--without-system-java-websocket
 		$(use_enable base report-builder)
 		$(use_enable bluetooth sdremote-bluetooth)

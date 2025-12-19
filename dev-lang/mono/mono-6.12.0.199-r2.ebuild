@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -19,7 +19,7 @@ IUSE="doc minimal nls pax-kernel selinux xen"
 # Details on dotnet overlay issue: https://github.com/gentoo/dotnet/issues/429
 DEPEND="
 	app-crypt/mit-krb5[${MULTILIB_USEDEP}]
-	sys-libs/zlib[${MULTILIB_USEDEP}]
+	virtual/zlib:=[${MULTILIB_USEDEP}]
 	!minimal? ( >=dev-dotnet/libgdiplus-6.0.2 )
 	nls? ( sys-devel/gettext )
 "
@@ -40,6 +40,7 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-5.12-try-catch.patch
 	"${FILESDIR}"/${PN}-6.12.0.122-disable-automagic-ccache.patch
 	"${FILESDIR}"/${PN}-6.12.0.199-configure-c99.patch
+	"${FILESDIR}"/${PN}-6.12.0.199-{,boringssl-}cmake4.patch # bug 957434, fixed in git main branch
 )
 
 pkg_pretend() {

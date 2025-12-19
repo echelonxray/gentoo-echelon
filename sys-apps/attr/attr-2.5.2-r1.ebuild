@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit multilib-minimal
+inherit dot-a multilib-minimal
 
 if [[ ${PV} == 9999 ]] ; then
 	EGIT_REPO_URI="https://git.savannah.gnu.org/git/${PN}.git"
@@ -12,7 +12,7 @@ else
 	inherit libtool
 
 	SRC_URI="mirror://nongnu/${PN}/${P}.tar.xz"
-	KEYWORDS="~alpha amd64 arm arm64 hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux"
+	KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 ~sparc x86 ~amd64-linux ~x86-linux"
 fi
 
 DESCRIPTION="Extended attributes tools"
@@ -42,6 +42,8 @@ src_prepare() {
 }
 
 multilib_src_configure() {
+	use static-libs && lto-guarantee-fat
+
 	local myeconfargs=(
 		--bindir="${EPREFIX}"/bin
 		--libexecdir="${EPREFIX}"/usr/$(get_libdir)
@@ -68,5 +70,6 @@ multilib_src_install_all() {
 		find "${ED}" -name '*.la' -delete || die
 	fi
 
+	strip-lto-bytecode
 	einstalldocs
 }

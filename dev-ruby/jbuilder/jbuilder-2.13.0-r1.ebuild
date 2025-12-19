@@ -1,8 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-USE_RUBY="ruby31 ruby32 ruby33"
+
+USE_RUBY="ruby32 ruby33 ruby34"
 
 RUBY_FAKEGEM_BINWRAP=""
 RUBY_FAKEGEM_TASK_TEST="CI=true test"
@@ -20,8 +21,8 @@ KEYWORDS="~amd64"
 IUSE="test"
 
 ruby_add_rdepend "
-	|| ( dev-ruby/activesupport:7.2 dev-ruby/activesupport:7.1 dev-ruby/activesupport:7.0 dev-ruby/activesupport:6.1 )
-	|| ( dev-ruby/actionview:7.2 dev-ruby/actionview:7.1 dev-ruby/actionview:7.0 dev-ruby/actionview:6.1 )
+	|| ( dev-ruby/activesupport:7.2 dev-ruby/activesupport:7.1 dev-ruby/activesupport:7.0 )
+	|| ( dev-ruby/actionview:7.2 dev-ruby/actionview:7.1 dev-ruby/actionview:7.0 )
 "
 
 ruby_add_bdepend "test? (

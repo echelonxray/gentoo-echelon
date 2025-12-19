@@ -46,7 +46,7 @@ DEPEND="
 	app-arch/xz-utils
 	dev-libs/icu:=
 	dev-libs/openssl:0=
-	sys-libs/zlib:=
+	virtual/zlib:=
 	virtual/libiconv
 	argon2? ( dev-libs/libsodium:= )
 	caps? ( sys-libs/libcap )
@@ -108,6 +108,9 @@ src_prepare() {
 
 	# Bug #727244
 	append-cflags -fasynchronous-unwind-tables
+
+	# Can be dropped with 2.4.x (bug #947906)
+	append-cflags -std=gnu17
 }
 
 src_configure() {

@@ -13,7 +13,7 @@ SRC_URI="https://github.com/${PN}/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~x86"
+KEYWORDS="amd64 ~arm ~arm64 ~ppc64 ~x86"
 IUSE="examples hdf5 python test"
 REQUIRED_USE="
 	${PYTHON_REQUIRED_USE}
@@ -27,7 +27,7 @@ RDEPEND="
 	python? ( dev-libs/imath:=[python,${PYTHON_SINGLE_USEDEP}] )
 	hdf5? (
 		>=sci-libs/hdf5-1.10.2:=[zlib(+)]
-		>=sys-libs/zlib-1.2.11-r1
+		>=virtual/zlib-1.2.11-r1:=
 	)
 	python? ( $(python_gen_cond_dep 'dev-libs/boost[python,${PYTHON_USEDEP}]') )
 "

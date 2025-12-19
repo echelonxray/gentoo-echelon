@@ -1,7 +1,7 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 inherit flag-o-matic qmake-utils xdg-utils
 
@@ -13,7 +13,6 @@ LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="amd64 ~arm ~arm64 ~hppa ~ppc ~ppc64 ~riscv x86"
 IUSE="ewf jpeg ntfs gui reiserfs static +sudo zlib"
-
 REQUIRED_USE="static? ( !gui )"
 
 QA_CONFIG_IMPL_DECL_SKIP=(
@@ -32,7 +31,7 @@ DEPEND="
 		jpeg? ( media-libs/libjpeg-turbo:=[static-libs] )
 		ntfs? ( sys-fs/ntfs3g[static-libs] )
 		reiserfs? ( >=sys-fs/progsreiserfs-0.3.1_rc8[static-libs] )
-		zlib? ( sys-libs/zlib[static-libs] )
+		zlib? ( virtual/zlib:=[static-libs] )
 		!arm? ( ewf? ( app-forensics/libewf[static-libs] ) )
 	)
 	!static? (
@@ -47,7 +46,7 @@ DEPEND="
 			dev-qt/qtwidgets:5
 		)
 		reiserfs? ( >=sys-fs/progsreiserfs-0.3.1_rc8 )
-		zlib? ( sys-libs/zlib )
+		zlib? ( virtual/zlib:= )
 		!arm? ( ewf? ( app-forensics/libewf:= ) )
 	)
 "

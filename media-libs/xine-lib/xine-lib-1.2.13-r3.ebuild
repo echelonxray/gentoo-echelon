@@ -13,7 +13,7 @@ if [[ ${PV} == *9999* ]]; then
 	NLS_RDEPEND="virtual/libintl"
 else
 	SRC_URI="https://downloads.sourceforge.net/xine/${P}.tar.xz"
-	KEYWORDS="~amd64 ~arm64 ~hppa ~ppc ~ppc64 ~riscv ~x86"
+	KEYWORDS="amd64 arm64 ~hppa ppc ppc64 ~riscv x86"
 	S="${WORKDIR}"/${PN}-$(ver_cut 1-2)
 
 	NLS_IUSE="nls"
@@ -38,7 +38,7 @@ RDEPEND="
 	dev-libs/libxdg-basedir
 	media-libs/libdvdnav
 	media-video/ffmpeg-compat:6=
-	sys-libs/zlib:=
+	virtual/zlib:=
 	virtual/libiconv
 	a52? ( media-libs/a52dec )
 	aac? ( media-libs/faad2 )

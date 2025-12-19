@@ -14,7 +14,7 @@ SRC_URI="https://github.com/gcovr/gcovr/archive/${PV}.tar.gz -> ${P}.gh.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~loong ~x86"
+KEYWORDS="amd64 ~loong ~x86"
 
 RDEPEND="
 	dev-python/jinja2[${PYTHON_USEDEP}]
@@ -26,6 +26,7 @@ RDEPEND="
 	' 3.10)
 "
 BDEPEND="
+	dev-python/hatch-fancy-pypi-readme[${PYTHON_USEDEP}]
 	dev-python/setuptools-scm[${PYTHON_USEDEP}]
 	test? (
 		dev-python/pytest-timeout[${PYTHON_USEDEP}]

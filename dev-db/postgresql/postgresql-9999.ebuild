@@ -3,11 +3,11 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10,11,12,13} )
-LLVM_COMPAT=( {15..20} )
+PYTHON_COMPAT=( python3_{11..14} )
+LLVM_COMPAT=( {15..21} )
 LLVM_OPTIONAL=1
 
-inherit flag-o-matic linux-info llvm-r1 meson pam python-single-r1 \
+inherit dot-a flag-o-matic linux-info llvm-r1 meson pam python-single-r1 \
 		systemd tmpfiles
 
 DESCRIPTION="PostgreSQL RDBMS"
@@ -20,7 +20,7 @@ if [[ $PV = *9999* ]] ; then
 	inherit git-r3
 	EGIT_REPO_URI="https://git.postgresql.org/git/postgresql.git"
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x64-solaris"
 
 	MY_PV=${PV/_/}
 	SRC_URI="https://ftp.postgresql.org/pub/source/v${MY_PV}/postgresql-${MY_PV}.tar.bz2"
@@ -61,10 +61,10 @@ systemd? ( sys-apps/systemd )
 tcl? ( >=dev-lang/tcl-8:0= )
 uring? ( sys-libs/liburing )
 xml? (
-	dev-libs/libxml2
+	dev-libs/libxml2:=
 	dev-libs/libxslt
 )
-zlib? ( sys-libs/zlib )
+zlib? ( virtual/zlib:= )
 zstd? ( app-arch/zstd )
 "
 
@@ -146,6 +146,8 @@ src_prepare() {
 }
 
 src_configure() {
+	lto-guarantee-fat
+
 	# Fails to build with C23, fallback to the old default in < GCC 15
 	# for now: https://marc.info/?l=pgsql-bugs&m=173185132906874&w=2
 	append-cflags -std=gnu17
@@ -297,6 +299,7 @@ src_install() {
 	use static-libs || \
 		find "${ED}" -name '*.a' ! -name libpgport.a ! -name libpgcommon.a \
 			 -delete
+	strip-lto-bytecode "${ED}"
 
 	if use systemd; then
 		newbin "${FILESDIR}/${PN}-check-db-dir" "${PN}-${SLOT}-check-db-dir"

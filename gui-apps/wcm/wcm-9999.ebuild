@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Gentoo Authors
+# Copyright 2019-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -11,7 +11,7 @@ HOMEPAGE="https://github.com/WayfireWM/wcm"
 if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/WayfireWM/wcm.git"
-	SLOT="0/0.10"
+	SLOT="0/0.11"
 else
 	SRC_URI="https://github.com/WayfireWM/wcm/releases/download/v${PV}/${P}.tar.xz"
 	KEYWORDS="~amd64 ~arm64"
@@ -28,7 +28,7 @@ COMMON_DEPEND="
 	dev-libs/glib:2
 	dev-libs/libevdev
 	dev-libs/libsigc++:2
-	dev-libs/libxml2
+	dev-libs/libxml2:=
 	dev-libs/wayland
 	gui-apps/wf-shell:${SLOT}
 	gui-libs/wf-config:${SLOT}
@@ -48,10 +48,6 @@ BDEPEND="
 	virtual/pkgconfig
 "
 
-PATCHES=(
-	"${FILESDIR}"/${PN}-0.9.0-incompatible-pointer-types.patch
-)
-
 src_prepare() {
 	default
 
@@ -61,7 +57,6 @@ src_prepare() {
 src_configure() {
 	local emesonargs=(
 		-Dwf_shell=enabled
-		-Denable_wdisplays=true
 	)
 
 	meson_src_configure

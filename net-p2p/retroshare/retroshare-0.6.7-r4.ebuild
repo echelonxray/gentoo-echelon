@@ -14,7 +14,7 @@ S="${WORKDIR}/RetroShare"
 
 LICENSE="AGPL-3 Apache-2.0 CC-BY-SA-4.0 GPL-2 GPL-3 LGPL-3"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 IUSE="cli +gui +jsonapi keyring libupnp +miniupnp plugins +service +sqlcipher"
 
 REQUIRED_USE="
@@ -26,7 +26,7 @@ REQUIRED_USE="
 RDEPEND="
 	app-arch/bzip2
 	dev-libs/openssl:0=
-	sys-libs/zlib
+	virtual/zlib:=
 	gui? (
 		dev-qt/qtcore:5
 		dev-qt/qtgui:5

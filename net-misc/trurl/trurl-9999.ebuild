@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..13} )
+PYTHON_COMPAT=( python3_{11..14} )
 inherit toolchain-funcs python-any-r1
 
 DESCRIPTION="Command line tool for URL parsing and manipulation"
@@ -20,7 +20,9 @@ fi
 LICENSE="curl"
 SLOT="0"
 IUSE="test"
-RESTRICT="!test? ( test )"
+# Tests fail w/ >=net-misc/curl-8.15
+# https://github.com/curl/trurl/issues/394
+RESTRICT="!test? ( test ) test"
 
 # Older curls may work but not all features will be present
 DEPEND=">=net-misc/curl-7.81.0"

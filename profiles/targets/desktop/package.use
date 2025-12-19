@@ -1,6 +1,22 @@
 # Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
+# Andreas Sturmlechner <asturm@gentoo.org> (2025-12-16)
+# Enable IUSE qt5 for current stable pkgs with USE-revdeps before dropping
+# it from make.defaults. # Bug #948836
+<app-text/poppler-25.12.0 qt5
+<dev-libs/quazip-1.5 qt5
+<kde-plasma/breeze-6.5.0:6 qt5
+<kde-plasma/oxygen-6.5.0:6 qt5
+<kde-plasma/plasma-integration-6.5.0:6 qt5
+<kde-plasma/plasma-meta-6.5.5 qt5
+<sys-auth/polkit-qt-0.200.0-r1 qt5
+<x11-libs/qwt-6.3.0 qt5
+
+# Sam James <sam@gentoo.org> (2025-10-18)
+# media-libs/freetype works better with media-libs/harfbuzz support.
+media-libs/freetype harfbuzz
+
 # Matt Whitlock <gentoo@mattwhitlock.name> (2025-04-03)
 # Desktop users will probably want QR code scanning in Bitcoin-Qt, but
 # enabling USE=qrcode by default in the ebuild requires also enabling
@@ -23,9 +39,9 @@ dev-qt/qtbase libproxy
 app-text/poppler nss boost
 
 # Andreas Sturmlechner <asturm@gentoo.org> (2023-11-11)
-# egl, libinput required by kde-plasma/kwayland:5
-# accessibility required by kde-plasma/kwin:5
-dev-qt/qtgui:5 accessibility egl libinput
+# egl+libinput required by dev-qt/qtwayland:5
+# libinput required by kde-plasma/kwayland-integration:5
+dev-qt/qtgui:5 egl libinput
 
 # Mart Raudsepp <leio@gentoo.org> (2023-10-01)
 # kde-plasma/kwin and x11-wm/mutter[wayland] require xwayland[libei] for
@@ -37,7 +53,7 @@ x11-base/xwayland libei
 # on desktop profiles and CMake is unavoidable, it feels a shame to drag in
 # Qt 6 just for something people are unlikely to want. Plus, it avoids a
 # circular dependency out of the box.
-dev-build/cmake -gui -qt6
+dev-build/cmake -gui
 
 # Andreas Sturmlechner <asturm@gentoo.org> (2023-07-29)
 # Required by dev-python/pyqt5[multimedia]

@@ -19,20 +19,17 @@ else
 	inherit git-r3
 fi
 
-DESCRIPTION="Qt/KDE IRC client supporting a remote daemon for 24/7 connectivity"
+DESCRIPTION="Qt IRC client supporting a remote daemon for 24/7 connectivity"
 HOMEPAGE="https://quassel-irc.org/"
 
 LICENSE="GPL-3"
 SLOT="0"
-IUSE="crypt +dbus gui kde ldap monolithic oxygen postgres +server spell syslog +system-icons test"
+IUSE="+dbus gui ldap monolithic oxygen postgres +server syslog +system-icons test"
 
 REQUIRED_USE="
 	|| ( gui server monolithic )
-	crypt? ( || ( server monolithic ) )
-	kde? ( dbus spell )
 	ldap? ( || ( server monolithic ) )
 	postgres? ( || ( server monolithic ) )
-	spell? ( || ( gui monolithic ) )
 	syslog? ( || ( server monolithic ) )
 "
 
@@ -41,7 +38,6 @@ RESTRICT="!test? ( test )"
 SERVER_DEPEND="
 	acct-group/quassel
 	acct-user/quassel
-	crypt? ( app-crypt/qca:2[ssl] )
 	ldap? ( net-nds/openldap:= )
 	postgres? ( dev-qt/qtsql:5[postgres] )
 	!postgres? (
@@ -54,20 +50,7 @@ GUI_DEPEND="
 	dev-qt/qtgui:5
 	dev-qt/qtmultimedia:5
 	dev-qt/qtwidgets:5
-	dbus? (
-		>=dev-libs/libdbusmenu-qt-0.9.3_pre20140619
-		dev-qt/qtdbus:5
-	)
-	kde? (
-		kde-frameworks/kconfigwidgets:5
-		kde-frameworks/kcoreaddons:5
-		kde-frameworks/knotifications:5
-		kde-frameworks/knotifyconfig:5
-		kde-frameworks/ktextwidgets:5
-		kde-frameworks/kwidgetsaddons:5
-		kde-frameworks/kxmlgui:5
-	)
-	spell? ( kde-frameworks/sonnet:5 )
+	dbus? ( dev-qt/qtdbus:5 )
 	system-icons? (
 		kde-frameworks/breeze-icons:*
 		oxygen? ( kde-frameworks/oxygen-icons:* )
@@ -77,7 +60,7 @@ RDEPEND="
 	dev-libs/boost:=
 	dev-qt/qtcore:5
 	dev-qt/qtnetwork:5[ssl]
-	sys-libs/zlib
+	virtual/zlib:=
 	monolithic? (
 		${SERVER_DEPEND}
 		${GUI_DEPEND}
@@ -109,7 +92,7 @@ src_configure() {
 		-DWITH_WEBKIT=OFF
 		-DWITH_BUNDLED_ICONS=$(usex !system-icons)
 		-DWANT_QTCLIENT=$(usex gui)
-		-DWITH_KDE=$(usex kde)
+		-DWITH_KDE=OFF # bug 953029
 		-DWITH_LDAP=$(usex ldap)
 		-DWANT_MONO=$(usex monolithic)
 		-DWITH_OXYGEN_ICONS=$(usex oxygen)
@@ -121,15 +104,18 @@ src_configure() {
 	# bug #830708
 	if use gui || use monolithic ; then
 		mycmakeargs+=(
+			-DCMAKE_DISABLE_FIND_PACKAGE_KF5Sonnet=ON
 			-DCMAKE_DISABLE_FIND_PACKAGE_LibsnoreQt5=ON
-			$(cmake_use_find_package dbus dbusmenu-qt5)
+			-DCMAKE_DISABLE_FIND_PACKAGE_dbusmenu-qt5=ON
 			$(cmake_use_find_package dbus Qt5DBus)
-			$(cmake_use_find_package spell KF5Sonnet)
 		)
 	fi
 
 	if use server || use monolithic ; then
-		mycmakeargs+=( $(cmake_use_find_package crypt Qca-qt5) )
+		mycmakeargs+=(
+			# only packaged for qt6 now. Prevent it from being autodetected.
+			-DCMAKE_DISABLE_FIND_PACKAGE_Qca-qt5=ON
+		)
 	fi
 
 	cmake_src_configure

@@ -4,7 +4,7 @@
 EAPI=8
 
 LUA_COMPAT=( lua5-1 luajit )
-PYTHON_COMPAT=( python3_{10..13} )
+PYTHON_COMPAT=( python3_{11..14} )
 inherit flag-o-matic lua-single meson optfeature pax-utils python-single-r1 xdg
 
 if [[ ${PV} == 9999 ]]; then
@@ -51,6 +51,7 @@ COMMON_DEPEND="
 		x11-libs/libX11
 		x11-libs/libXScrnSaver
 		x11-libs/libXext
+		x11-libs/libXfixes
 		x11-libs/libXpresent
 		x11-libs/libXrandr
 		xv? ( x11-libs/libXv )
@@ -91,14 +92,17 @@ COMMON_DEPEND="
 	sixel? ( media-libs/libsixel )
 	sndio? ( media-sound/sndio:= )
 	vaapi? ( media-libs/libva:=[X?,drm(+)?,wayland?] )
-	vdpau? ( x11-libs/libvdpau )
+	vdpau? (
+		media-libs/libglvnd[X]
+		x11-libs/libvdpau
+	)
 	vulkan? ( media-libs/vulkan-loader[X?,wayland?] )
 	wayland? (
 		dev-libs/wayland
 		x11-libs/libxkbcommon
 	)
 	zimg? ( media-libs/zimg )
-	zlib? ( sys-libs/zlib:= )
+	zlib? ( virtual/zlib:= )
 "
 RDEPEND="
 	${COMMON_DEPEND}
@@ -123,15 +127,6 @@ BDEPEND="
 	cli? ( dev-python/docutils )
 	wayland? ( dev-util/wayland-scanner )
 "
-
-pkg_pretend() {
-	if has_version "${CATEGORY}/${PN}[X,opengl]" && use !egl; then #953107
-		ewarn "${PN}'s 'opengl' USE was removed in favour of the 'egl' USE as it was"
-		ewarn "only for the deprecated 'gl-x11' mpv option when 'egl-x11/wayland'"
-		ewarn "should be used if --gpu-api=opengl. It is recommended to enable 'egl'"
-		ewarn "unless using vulkan (default since ${PN}-0.40) or something else."
-	fi
-}
 
 pkg_setup() {
 	use lua && lua-single_pkg_setup
@@ -159,6 +154,7 @@ src_configure() {
 		-Dbuild-date=false
 
 		# misc options
+		$(meson_feature X x11-clipboard)
 		$(meson_feature archive libarchive)
 		$(meson_feature bluray libbluray)
 		$(meson_feature cdda)
@@ -172,7 +168,6 @@ src_configure() {
 		$(meson_feature lcms lcms2)
 		-Dlua=$(usex lua "${ELUA}" disabled)
 		$(meson_feature rubberband)
-		-Dsdl2=$(use gamepad || use sdl && echo enabled || echo disabled) #857156
 		$(meson_feature uchardet)
 		-Dvapoursynth=disabled # only available in overlays
 		$(meson_feature zimg)
@@ -199,10 +194,11 @@ src_configure() {
 		$(meson_feature wayland)
 		$(meson_feature xv)
 
-		-Dgl=$(use aqua || use egl || use libmpv &&
+		-Dgl=$(use aqua || use egl || use libmpv || use vdpau &&
 			echo enabled || echo disabled)
 		$(meson_feature egl)
 		$(meson_feature libmpv plain-gl)
+		$(meson_feature vdpau gl-x11) # only needed for vdpau (bug #955122)
 
 		$(meson_feature vulkan)
 
@@ -216,6 +212,8 @@ src_configure() {
 }
 
 src_test() {
+	unset LANGUAGE #954214
+
 	# ffmpeg tests are picky and easily break without necessarily
 	# meaning that there are runtime issues (bug #921091,#924276)
 	meson_src_test --no-suite ffmpeg

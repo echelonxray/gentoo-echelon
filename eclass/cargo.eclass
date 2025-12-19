@@ -43,7 +43,7 @@ case ${EAPI} in
 			# than the oldest in-tree in future.
 			if [[ -z ${CARGO_BOOTSTRAP} ]]; then
 				if ver_test "${RUST_MIN_VER}" -lt "${_CARGO_ECLASS_RUST_MIN_VER}"; then
-					die "RUST_MIN_VERSION must be at least ${_CARGO_ECLASS_RUST_MIN_VER}"
+					die "RUST_MIN_VER must be at least ${_CARGO_ECLASS_RUST_MIN_VER}"
 				fi
 			fi
 		else
@@ -542,7 +542,7 @@ cargo_src_unpack() {
 		popd >/dev/null || die
 
 		if [[ ${#crates[@]} -ge 300 ]]; then
-			eqawarn "This package uses a very large number of CRATES.  Please provide"
+			eqawarn "QA Notice: This package uses a very large number of CRATES.  Please provide"
 			eqawarn "a crate tarball instead and fetch it via SRC_URI.  You can use"
 			eqawarn "'pycargoebuild --crate-tarball' to create one."
 		fi

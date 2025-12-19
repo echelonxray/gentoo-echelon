@@ -11,14 +11,14 @@ XSERVER_PATCH_VERSION="21"
 
 DESCRIPTION="Remote desktop viewer display system"
 HOMEPAGE="https://tigervnc.org"
-SRC_URI="server? ( ftp://ftp.freedesktop.org/pub/xorg/individual/xserver/xorg-server-${XSERVER_VERSION}.tar.xz )"
+SRC_URI="server? ( https://www.x.org/releases/individual/xserver/xorg-server-${XSERVER_VERSION}.tar.xz )"
 
 if [[ ${PV} == *9999 ]]; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/TigerVNC/tigervnc/"
 else
 	SRC_URI+=" https://github.com/TigerVNC/tigervnc/archive/v${PV}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86"
+	KEYWORDS="~alpha amd64 arm ~arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv ~sparc x86"
 fi
 
 LICENSE="GPL-2"
@@ -37,7 +37,7 @@ COMMON_DEPEND="
 	dev-libs/gmp:=
 	dev-libs/nettle:=
 	media-libs/libjpeg-turbo:=
-	sys-libs/zlib:=
+	virtual/zlib:=
 	x11-libs/libX11
 	x11-libs/libXext
 	x11-libs/libXrandr

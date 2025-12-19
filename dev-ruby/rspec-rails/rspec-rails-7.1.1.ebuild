@@ -3,7 +3,7 @@
 
 EAPI=8
 
-USE_RUBY="ruby31 ruby32 ruby33"
+USE_RUBY="ruby32 ruby33 ruby34"
 
 RUBY_FAKEGEM_RECIPE_TEST="rspec3"
 
@@ -52,6 +52,9 @@ all_ruby_prepare() {
 
 	# Avoid broken controller generator specs for now.
 	rm -fr spec/generators/rspec || die
+
+	# Avoid test depending on a network.
+	rm -f spec/rspec/rails/example/system_example_group_spec.rb || die
 
 	# Test with a compatible rails version
 	#sed -i -e '1igem "rails", "<7.0"' spec/spec_helper.rb || die

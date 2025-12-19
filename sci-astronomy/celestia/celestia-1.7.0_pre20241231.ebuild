@@ -30,7 +30,8 @@ HOMEPAGE="https://celestiaproject.space/ https://github.com/CelestiaProject/Cele
 
 LICENSE="GPL-2+"
 SLOT="0"
-IUSE="ffmpeg gtk lto lua nls +qt6 sdl"
+IUSE="ffmpeg gtk lto lua nls +qt6 sdl test"
+RESTRICT="!test? ( test )"
 REQUIRED_USE="|| ( gtk qt6 sdl )
 	lua? ( ${LUA_REQUIRED_USE} )"
 
@@ -44,7 +45,7 @@ DEPEND="
 	media-libs/libepoxy
 	media-libs/libjpeg-turbo:0=
 	media-libs/libpng:0=
-	sys-libs/zlib:=
+	virtual/zlib:=
 	virtual/glu
 	virtual/opengl
 	gtk? ( x11-libs/gtk+:3 )
@@ -81,6 +82,7 @@ src_configure() {
 		-DENABLE_QT6="$(usex qt6)"
 		-DENABLE_WIN=OFF
 		-DENABLE_SDL="$(usex sdl)"
+		-DENABLE_TESTS="$(usex test)"
 	)
 	# Upstream always looks for LuaJIT first unless stopped, and we only need
 	# the version specification when linking against PUC Lua

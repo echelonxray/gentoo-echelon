@@ -14,7 +14,7 @@ S="${WORKDIR}/${PN}/${MY_PV}/${PN}"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 ~loong ~mips ppc ppc64 ~riscv sparc x86"
+KEYWORDS="~alpha amd64 arm arm64 ~loong ~mips ppc ppc64 ~riscv ~sparc x86"
 IUSE="intel-led led mini static"
 
 RDEPEND=">=sys-fs/lvm2-2.02.45[lvm(+)]"
@@ -67,6 +67,9 @@ src_prepare() {
 }
 
 src_configure() {
+	# bug #944298
+	append-cflags -std=gnu17
+
 	# bug 908662
 	use elibc_musl && append-flags -D_LARGEFILE64_SOURCE
 

@@ -15,7 +15,7 @@ S="${WORKDIR}"/${P}-source
 
 LICENSE="AGPL-3"
 SLOT="0/${PV}"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv ~s390 ~sparc x86"
 IUSE="archive +javascript +jpeg2k opengl ssl X"
 REQUIRED_USE="opengl? ( javascript )"
 
@@ -35,7 +35,7 @@ RDEPEND="
 	jpeg2k? ( >=media-libs/openjpeg-2.1:2= )
 	opengl? ( >=media-libs/freeglut-3.0.0 )
 	ssl? ( >=dev-libs/openssl-1.1:0= )
-	sys-libs/zlib
+	virtual/zlib:=
 	X? (
 		media-libs/libglvnd[X]
 		x11-libs/libX11

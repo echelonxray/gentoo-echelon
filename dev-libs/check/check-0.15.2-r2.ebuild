@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit cmake-multilib
+inherit cmake-multilib dot-a
 
 DESCRIPTION="A unit test framework for C"
 HOMEPAGE="https://libcheck.github.io/check/"
@@ -11,7 +11,7 @@ SRC_URI="https://github.com/libcheck/check/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="LGPL-2.1+"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 ~sparc x86 ~amd64-linux ~x86-linux ~x64-macos ~x64-solaris"
 IUSE="doc subunit test"
 
 # Tests seem to timeout on ppc* systems, #736661
@@ -28,6 +28,11 @@ PATCHES=(
 	"${FILESDIR}"/check-0.14.0-r2-disable-automagic-dep.patch
 	"${FILESDIR}"/${P}-Fix-pkgconfig-file-s-libdir-value.patch
 )
+
+src_configure() {
+	lto-guarantee-fat
+	cmake-multilib_src_configure
+}
 
 multilib_src_configure() {
 	local mycmakeargs=(
@@ -50,4 +55,5 @@ multilib_src_compile() {
 multilib_src_install_all() {
 	use doc && local HTML_DOCS=( "${S}"/doc/html/. )
 	einstalldocs
+	strip-lto-bytecode
 }

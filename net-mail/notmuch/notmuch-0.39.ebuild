@@ -6,7 +6,7 @@ EAPI=8
 DISTUTILS_EXT=1
 DISTUTILS_OPTIONAL=1
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
+PYTHON_COMPAT=( python3_{11..14} pypy3_11 )
 
 inherit bash-completion-r1 desktop distutils-r1 elisp-common flag-o-matic pax-utils toolchain-funcs xdg-utils
 
@@ -21,7 +21,7 @@ LICENSE="GPL-3"
 # Sub-slot corresponds to major wersion of libnotmuch.so.X.Y. Bump of Y is
 # meant to be binary backward compatible.
 SLOT="0/5"
-KEYWORDS="~alpha amd64 ~arm ~arm64 ~ppc64 ~riscv x86 ~x64-macos"
+KEYWORDS="~alpha amd64 arm arm64 ~ppc64 ~riscv x86 ~x64-macos"
 REQUIRED_USE="
 	${PYTHON_REQUIRED_USE}
 	nmbug? ( python )
@@ -53,7 +53,7 @@ COMMON_DEPEND="
 	dev-libs/gmime:3.0[crypt]
 	>=dev-libs/xapian-1.4.0:=
 	sys-libs/talloc
-	sys-libs/zlib:=
+	virtual/zlib:=
 	emacs? ( >=app-editors/emacs-${NEED_EMACS}:* )
 	python? (
 		${PYTHON_DEPS}
@@ -95,6 +95,7 @@ SITEFILE="50${PN}-gentoo.el"
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-0.39-no-compress-man-pages.patch
+	"${FILESDIR}"/${PN}-0.39-test-skip-debug-symbols.patch
 )
 
 pkg_setup() {

@@ -11,14 +11,13 @@ DESCRIPTION="Reference implementation of the Bitcoin cryptocurrency"
 HOMEPAGE="https://bitcoincore.org/"
 SRC_URI="
 	https://github.com/bitcoin/bitcoin/archive/v${PV/_rc/rc}.tar.gz -> ${P}.tar.gz
-	https://github.com/bitcoin/bitcoin/pull/30997/commits/f9472962d1cdf58bfc1ad64c4bb44ddf5d0b4db2.patch?full_index=1 -> ${PN}-29.0-qt6.patch
 "
 S="${WORKDIR}/${PN/-core}-${PV/_rc/rc}"
 
 LICENSE="MIT"
 SLOT="0"
 if [[ "${PV}" != *_rc* ]] ; then
-	KEYWORDS="~amd64 ~arm ~arm64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux"
+	KEYWORDS="amd64 arm arm64 ~ppc ~ppc64 x86 ~amd64-linux ~x86-linux"
 fi
 IUSE="asm +berkdb +cli +daemon dbus examples +external-signer gui qrcode +sqlite +system-libsecp256k1 systemtap test test-full zeromq"
 RESTRICT="!test? ( test )"
@@ -92,7 +91,7 @@ DOCS=(
 )
 
 PATCHES=(
-	"${DISTDIR}/${PN}-29.0-qt6.patch"
+	"${FILESDIR}/29.0-qt6.patch"
 	"${FILESDIR}/29.0-cmake-syslibs.patch"
 	"${FILESDIR}/26.0-init.patch"
 )
@@ -139,6 +138,10 @@ pkg_setup() {
 }
 
 src_prepare() {
+	# https://bugs.gentoo.org/958361
+	# https://github.com/google/crc32c/commit/2bbb3be42e20a0e6c0f7b39dc07dc863d9ffbc07
+	sed -e '/^cmake_minimum_required(VERSION 3\.1)$/s/)$/6)/' -i src/crc32c/CMakeLists.txt || die
+
 	eapply_user
 	! use system-libsecp256k1 || rm -r src/secp256k1 || die
 	cmake_src_prepare

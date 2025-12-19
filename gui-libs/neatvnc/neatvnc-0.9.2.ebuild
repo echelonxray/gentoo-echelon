@@ -1,4 +1,4 @@
-# Copyright 2020-2024 Gentoo Authors
+# Copyright 2020-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -13,7 +13,7 @@ if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://github.com/any1/neatvnc.git"
 else
 	SRC_URI="https://github.com/any1/neatvnc/archive/v${PV}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc64 ~riscv ~x86"
+	KEYWORDS="amd64 arm arm64 ~loong ppc64 ~riscv x86"
 fi
 
 LICENSE="ISC"
@@ -24,7 +24,7 @@ RESTRICT="!test? ( test )"
 
 RDEPEND="
 	=dev-libs/aml-0.3*
-	sys-libs/zlib
+	virtual/zlib:=
 	x11-libs/pixman
 	examples? (
 		media-libs/libpng:=
@@ -53,7 +53,7 @@ BDEPEND="
 src_prepare() {
 	default
 
-	# useful soname
+	# useful soname (https://github.com/any1/neatvnc/issues/124)
 	sed -i -e "s/'0.0.0'/meson.project_version()/" meson.build || die
 }
 

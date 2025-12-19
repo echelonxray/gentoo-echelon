@@ -20,12 +20,12 @@ if [[ ${PV} == *_p* ]] ; then
 else
 	SRC_URI="mirror://gnu/${PN}/${P}.tar.xz"
 	SRC_URI+=" verify-sig? ( mirror://gnu/${PN}/${P}.tar.xz.sig )"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
+	KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 ~sparc x86 ~amd64-linux ~x86-linux ~arm64-macos ~x64-macos ~x64-solaris"
 fi
 
 LICENSE="GPL-3+"
 SLOT="0"
-IUSE="+egrep-fgrep nls pcre static"
+IUSE="+egrep-fgrep nls pcre static test-full"
 
 # We lack dev-libs/libsigsegv[static-libs] for now
 REQUIRED_USE="static? ( !sparc )"
@@ -73,6 +73,8 @@ src_prepare() {
 
 src_configure() {
 	use static && append-ldflags -static
+
+	export RUN_{VERY_,}EXPENSIVE_TESTS=$(usex test-full yes no)
 
 	# We used to turn this off unconditionally (bug #673524) but we now
 	# allow it for cases where libsigsegv is better for userspace handling

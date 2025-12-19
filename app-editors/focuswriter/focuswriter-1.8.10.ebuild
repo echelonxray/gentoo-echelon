@@ -12,7 +12,7 @@ SRC_URI="https://gottcode.org/${PN}/${P}.tar.bz2"
 
 LICENSE="GPL-3+ LGPL-3"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64 ~riscv ~x86"
+KEYWORDS="amd64 ~arm64 ~riscv x86"
 
 BDEPEND="
 	dev-qt/qttools:6[linguist]
@@ -22,6 +22,10 @@ RDEPEND="
 	app-text/hunspell:=
 	dev-qt/qtbase:6[concurrent,gui,widgets]
 	dev-qt/qtmultimedia:6
-	sys-libs/zlib
+	virtual/zlib:=
 "
 DEPEND="${RDEPEND}"
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-1.8.10-qt-6.9.patch
+)

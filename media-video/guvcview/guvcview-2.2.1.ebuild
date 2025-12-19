@@ -19,6 +19,7 @@ BDEPEND="
 	sys-devel/gettext
 	virtual/pkgconfig
 "
+# <media-libs/libsfml-3: breaking changes
 RDEPEND="
 	media-libs/libpng:=
 	media-libs/libv4l
@@ -35,7 +36,7 @@ RDEPEND="
 	)
 	sfml? (
 		media-libs/libglvnd
-		media-libs/libsfml:=
+		<media-libs/libsfml-3:=
 	)
 	!sfml? ( media-libs/libsdl2 )
 "
@@ -49,6 +50,8 @@ DEPEND="
 PATCHES=(
 	"${FILESDIR}"/${PN}-2.2.1-fix-desktop-file-for-cmake.patch
 	"${FILESDIR}"/${PN}-2.2.1-set-metainfo-dir.patch
+	"${FILESDIR}"/${PN}-2.2.1-ffmpeg-8.patch
+	"${FILESDIR}"/${PN}-2.2.1-musl.patch
 )
 
 src_configure() {

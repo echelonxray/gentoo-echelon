@@ -1,15 +1,15 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit multilib-minimal libtool
+inherit dot-a multilib-minimal libtool
 
 MY_P="gc-${PV}"
 
 DESCRIPTION="The Boehm-Demers-Weiser conservative garbage collector"
-HOMEPAGE="https://www.hboehm.info/gc/ https://github.com/ivmai/bdwgc/"
-SRC_URI="https://github.com/ivmai/bdwgc/releases/download/v${PV}/${MY_P}.tar.gz"
+HOMEPAGE="https://www.hboehm.info/gc/ https://github.com/bdwgc/bdwgc/"
+SRC_URI="https://github.com/bdwgc/bdwgc/releases/download/v${PV}/${MY_P}.tar.gz"
 S="${WORKDIR}/${MY_P}"
 
 LICENSE="boehm-gc"
@@ -17,7 +17,7 @@ LICENSE="boehm-gc"
 # We've been using subslot 0 for these instead of "1.1".
 SLOT="0"
 # Don't keyword versions if upstream mark them as pre-release.
-KEYWORDS="~alpha amd64 arm arm64 hppa ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv ~s390 ~sparc x86 ~amd64-linux ~x86-linux ~arm64-macos ~x64-macos ~x64-solaris"
 IUSE="cxx +large static-libs +threads"
 
 RDEPEND=">=dev-libs/libatomic_ops-7.4[${MULTILIB_USEDEP}]"
@@ -29,6 +29,11 @@ src_prepare() {
 
 	# bug #594754
 	elibtoolize
+}
+
+src_configure() {
+	use static-libs && lto-guarantee-fat
+	multilib-minimal_src_configure
 }
 
 multilib_src_configure() {
@@ -53,4 +58,6 @@ multilib_src_install_all() {
 	find "${ED}" -name '*.la' -delete || die
 
 	newman doc/gc.man GC_malloc.1
+
+	strip-lto-bytecode
 }

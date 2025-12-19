@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -11,7 +11,7 @@ XSERVER_PATCH_VERSION="21"
 
 DESCRIPTION="Remote desktop viewer display system"
 HOMEPAGE="https://tigervnc.org"
-SRC_URI="server? ( ftp://ftp.freedesktop.org/pub/xorg/individual/xserver/xorg-server-${XSERVER_VERSION}.tar.xz )"
+SRC_URI="server? ( https://www.x.org/releases/individual/xserver/xorg-server-${XSERVER_VERSION}.tar.xz )"
 
 if [[ ${PV} == *9999 ]]; then
 	inherit git-r3
@@ -37,7 +37,7 @@ COMMON_DEPEND="
 	dev-libs/gmp:=
 	dev-libs/nettle:=
 	media-libs/libjpeg-turbo:=
-	sys-libs/zlib:=
+	virtual/zlib:=
 	x11-libs/libX11
 	x11-libs/libXext
 	x11-libs/libXrandr

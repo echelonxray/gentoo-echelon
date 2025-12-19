@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{11..13} )
 VERIFY_SIG_OPENPGP_KEY_PATH=/usr/share/openpgp-keys/botan.asc
 inherit edo flag-o-matic multiprocessing python-r1 toolchain-funcs verify-sig
 
@@ -17,7 +17,7 @@ S="${WORKDIR}/${MY_P}"
 LICENSE="BSD-2"
 # New major versions are parallel-installable
 SLOT="$(ver_cut 1)/$(ver_cut 1-2)" # soname version
-KEYWORDS="amd64 ~arm ~arm64 ~hppa ~loong ppc ppc64 ~riscv ~sparc x86 ~ppc-macos"
+KEYWORDS="amd64 arm arm64 ~hppa ~loong ppc ppc64 ~riscv ~sparc x86"
 IUSE="doc boost bzip2 lzma python static-libs sqlite test tools zlib"
 CPU_USE=(
 	cpu_flags_arm_{aes,neon}
@@ -35,7 +35,7 @@ DEPEND="
 	lzma? ( app-arch/xz-utils:= )
 	python? ( ${PYTHON_DEPS} )
 	sqlite? ( dev-db/sqlite:3= )
-	zlib? ( >=sys-libs/zlib-1.2.3:= )
+	zlib? ( >=virtual/zlib-1.2.3:= )
 "
 RDEPEND="
 	${DEPEND}
@@ -57,6 +57,7 @@ PATCHES=(
 	"${FILESDIR}"/${P}-no-distutils.patch
 	"${FILESDIR}"/${P}-boost-1.87.patch
 	"${FILESDIR}"/${P}-cloudflare.patch
+	"${FILESDIR}"/${P}-include.patch
 )
 
 python_check_deps() {

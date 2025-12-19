@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{11..13} )
 
 inherit cmake python-single-r1 readme.gentoo-r1 systemd
 
@@ -66,7 +66,7 @@ DEPEND="
 	sasl? ( >=dev-libs/cyrus-sasl-2 )
 	ssl? ( dev-libs/openssl:0= )
 	tcl? ( dev-lang/tcl:0= )
-	zlib? ( sys-libs/zlib:0= )
+	zlib? ( virtual/zlib:= )
 "
 RDEPEND="
 	${DEPEND}

@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{11..13} )
 DISTUTILS_USE_PEP517="setuptools"
 DISTUTILS_SINGLE_IMPL=1
 PYPI_NO_NORMALIZE=1
@@ -19,7 +19,7 @@ if [[ ${PV} == *9999 ]]; then
 	EGIT_REPO_URI="https://github.com/retext-project/retext.git"
 else
 	inherit pypi
-	KEYWORDS="~amd64 ~riscv ~x86"
+	KEYWORDS="amd64 ~riscv ~x86"
 fi
 
 LICENSE="GPL-2+"

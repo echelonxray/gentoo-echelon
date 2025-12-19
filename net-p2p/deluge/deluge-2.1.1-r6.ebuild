@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -16,7 +16,7 @@ if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://git.deluge-torrent.org/${PN}"
 else
 	SRC_URI="http://download.deluge-torrent.org/source/$(ver_cut 1-2)/${P}.tar.xz"
-	KEYWORDS="~amd64 ~arm ~arm64 ~riscv ~x86"
+	KEYWORDS="amd64 ~arm ~arm64 ~riscv x86"
 fi
 
 LICENSE="GPL-2"
@@ -29,11 +29,6 @@ REQUIRED_USE="
 
 BDEPEND="
 	dev-util/intltool
-	test? (
-		$(python_gen_cond_dep '
-			>=dev-python/pytest-twisted-1.13.4-r1[${PYTHON_USEDEP}]
-		')
-	)
 "
 
 RDEPEND="
@@ -69,6 +64,7 @@ PATCHES=(
 	"${FILESDIR}/${P}-email-module-replace.patch"
 )
 
+EPYTEST_PLUGINS=( pytest-twisted )
 distutils_enable_tests pytest
 
 python_prepare_all() {
@@ -110,8 +106,7 @@ python_test() {
 		'deluge/tests/test_core.py::TestCore::test_pause_torrent'
 	)
 
-	# dev-python/pytest-twisted has disabled autoloading
-	epytest -m "not (todo or gtkui)" -p pytest_twisted -v
+	epytest -m "not (todo or gtkui)" -v
 }
 
 python_install_all() {

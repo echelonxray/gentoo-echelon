@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -29,7 +29,7 @@ else
 	S="${WORKDIR}"/${MY_P}
 
 	if [[ ${PV} != *_beta* ]] && ! [[ $(ver_cut 3) =~ [a-z] ]] ; then
-		KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~x64-solaris"
+		KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~arm64-macos ~x64-macos ~x64-solaris"
 	fi
 
 	BDEPEND="verify-sig? ( sec-keys/openpgp-keys-zackweinberg )"
@@ -42,7 +42,6 @@ HOMEPAGE="https://www.gnu.org/software/autoconf/autoconf.html"
 
 LICENSE="GPL-3+"
 SLOT="$(ver_cut 1-2)"
-IUSE="emacs"
 
 BDEPEND+="
 	>=dev-lang/perl-5.10
@@ -55,7 +54,6 @@ RDEPEND="
 	!~${CATEGORY}/${P}:2.5
 "
 [[ ${PV} == 9999 ]] && BDEPEND+=" >=sys-apps/texinfo-4.3"
-PDEPEND="emacs? ( app-emacs/autoconf-mode )"
 
 src_prepare() {
 	if [[ ${PV} == *9999 ]] ; then
@@ -64,7 +62,11 @@ src_prepare() {
 		local ver=$(./build-aux/git-version-gen .tarball-version)
 		echo "${ver}" > .tarball-version || die
 
-		autoreconf -f -i || die
+		export WANT_AUTOCONF=2.5
+		export WANT_AUTOMAKE=1.17
+		# Don't try wrapping the autotools - this thing runs as it tends
+		# to be a bit esoteric, and the script does `set -e` itself.
+		./bootstrap || die
 	fi
 
 	# usr/bin/libtool is provided by binutils-apple, need gnu libtool
@@ -88,6 +90,9 @@ src_test() {
 
 src_install() {
 	toolchain-autoconf_src_install
+
+	# dissuade Portage from removing our dir file
+	touch "${ED}"/usr/share/${P}/info/.keepinfodir || die
 
 	local f
 	for f in config.{guess,sub} ; do

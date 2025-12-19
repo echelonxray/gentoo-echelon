@@ -15,14 +15,14 @@ S="${WORKDIR}/${MY_P}"
 
 LICENSE="w3m"
 SLOT="0"
-KEYWORDS="~amd64 ~ppc ~riscv ~x86"
+KEYWORDS="amd64 ppc ~riscv x86"
 IUSE="gpm nls ssl"
 
 DEPEND=">=dev-libs/boehm-gc-7.2
 	dev-libs/libmoe
 	dev-lang/perl
 	sys-libs/ncurses:0=
-	sys-libs/zlib
+	virtual/zlib:=
 	gpm? ( sys-libs/gpm )
 	nls? ( sys-devel/gettext )
 	ssl? (

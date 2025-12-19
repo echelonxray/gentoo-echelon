@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{10..13} )
 inherit python-any-r1
 
 DESCRIPTION="GNU Image Manipulation Program help files"
@@ -12,7 +12,7 @@ SRC_URI="mirror://gimp/help/${P}.tar.bz2"
 
 LICENSE="FDL-1.2+"
 SLOT="2"
-KEYWORDS="~alpha amd64 ~hppa ppc ppc64 ~riscv sparc x86"
+KEYWORDS="~alpha amd64 ~hppa ppc ppc64 ~riscv ~sparc x86"
 IUSE="nls"
 
 BDEPEND="

@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -14,7 +14,7 @@ S="${WORKDIR}/${MY_PN}-${PV}"
 
 LICENSE="|| ( LGPL-2 BSD )"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 ~sparc x86 ~amd64-linux ~x86-linux"
 IUSE="gtk"
 
 RDEPEND="gtk? ( x11-libs/gtk+:2 )"
@@ -41,6 +41,7 @@ src_prepare() {
 }
 
 src_configure() {
+	# XXX: Can be dropped on next release (after 3.52.16)
 	# -Werror=lto-type-mismatch
 	# https://bugs.gentoo.org/924665
 	# https://github.com/openlink/iODBC/issues/100

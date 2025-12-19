@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..13} )
+PYTHON_COMPAT=( python3_{11..13} )
 inherit cmake desktop flag-o-matic python-any-r1 toolchain-funcs xdg verify-sig virtualx
 
 DESCRIPTION="3D photo-realistic skies in real time"
@@ -37,7 +37,7 @@ SRC_URI="
 
 LICENSE="GPL-2+ SGI-B-2.0"
 SLOT="0"
-KEYWORDS="~amd64 ~riscv ~x86"
+KEYWORDS="amd64 ~riscv ~x86"
 IUSE="debug deep-sky doc gps +lens-distortion libcxx media nls +scripting +show-my-sky stars telescope test webengine +xlsx"
 
 # Python interpreter is used while building RemoteControl plugin
@@ -56,7 +56,7 @@ RDEPEND="
 	dev-qt/qtcharts:6
 	media-fonts/dejavu
 	>=sci-astronomy/calcmysky-0.3.0:=[qt6(+)]
-	sys-libs/zlib
+	virtual/zlib:=
 	gps? (
 		dev-qt/qtpositioning:6
 		dev-qt/qtserialport:6

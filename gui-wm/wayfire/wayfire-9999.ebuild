@@ -1,9 +1,9 @@
-# Copyright 2019-2024 Gentoo Authors
+# Copyright 2019-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit meson
+inherit dot-a meson toolchain-funcs
 
 DESCRIPTION="compiz like 3D wayland compositor"
 HOMEPAGE="https://github.com/WayfireWM/wayfire"
@@ -11,7 +11,7 @@ HOMEPAGE="https://github.com/WayfireWM/wayfire"
 if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/WayfireWM/${PN}.git"
-	SLOT="0/0.10"
+	SLOT="0/0.11"
 else
 	SRC_URI="https://github.com/WayfireWM/${PN}/releases/download/v${PV}/${P}.tar.xz"
 	KEYWORDS="~amd64 ~arm64 ~riscv"
@@ -19,25 +19,28 @@ else
 fi
 
 LICENSE="MIT"
-IUSE="+dbus +gles3 test X"
+IUSE="X +dbus +gles3 openmp test"
 RESTRICT="!test? ( test )"
 
 # bundled wlroots has the following dependency string according to included headers.
 # wlroots[drm,gles2-renderer,libinput,x11-backend?,X?]
 # enable x11-backend with X and vice versa
-CDEPEND="
+COMMON_DEPEND="
 	dev-cpp/nlohmann_json
 	dev-libs/glib:2
 	dev-libs/libevdev
 	dev-libs/libinput:=
 	dev-libs/wayland
+	dev-libs/yyjson
 	>=dev-libs/wayland-protocols-1.12
 	gui-libs/wf-config:${SLOT}
-	gui-libs/wlroots:0/17[drm(+),libinput(+),x11-backend,X?]
+	gui-libs/wlroots:0.19[drm(+),libinput(+),x11-backend,X?]
 	media-libs/glm
 	media-libs/libglvnd
 	media-libs/libjpeg-turbo:=
 	media-libs/libpng:=
+	media-libs/vulkan-loader
+	virtual/libudev:=
 	x11-libs/cairo
 	x11-libs/libxkbcommon
 	x11-libs/pango
@@ -47,17 +50,31 @@ CDEPEND="
 "
 
 RDEPEND="
-	${CDEPEND}
+	${COMMON_DEPEND}
 	x11-misc/xkeyboard-config
 "
 DEPEND="
-	${CDEPEND}
+	${COMMON_DEPEND}
 	test? ( dev-cpp/doctest )
 "
 BDEPEND="
 	dev-util/wayland-scanner
 	virtual/pkgconfig
+	openmp? (
+		|| (
+			sys-devel/gcc[openmp]
+			llvm-runtimes/clang-runtime[openmp]
+		)
+	)
 "
+
+pkg_pretend() {
+	[[ ${MERGE_TYPE} != binary ]] && use openmp && tc-check-openmp
+}
+
+pkg_setup() {
+	[[ ${MERGE_TYPE} != binary ]] && use openmp && tc-check-openmp
+}
 
 src_prepare() {
 	default
@@ -70,14 +87,16 @@ src_prepare() {
 }
 
 src_configure() {
+	lto-guarantee-fat
+
 	local emesonargs=(
 		$(meson_feature test tests)
 		$(meson_feature X xwayland)
 		$(meson_use gles3 enable_gles32)
+		$(meson_use openmp enable_openmp)
 		-Duse_system_wfconfig=enabled
 		-Duse_system_wlroots=enabled
 	)
-
 	meson_src_configure
 }
 
@@ -95,4 +114,6 @@ src_install() {
 
 	insinto "/etc"
 	doins "${FILESDIR}"/wayfire.env
+
+	strip-lto-bytecode
 }

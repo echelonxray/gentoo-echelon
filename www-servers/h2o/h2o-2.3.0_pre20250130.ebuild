@@ -15,7 +15,7 @@ SRC_URI="https://github.com/${PN}/${PN}/archive/${EGIT_COMMIT}.tar.gz -> ${P}.ta
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 IUSE="libh2o +mruby"
 
 RDEPEND="acct-group/h2o
@@ -24,7 +24,7 @@ RDEPEND="acct-group/h2o
 	dev-libs/openssl:0=
 	!sci-libs/libh2o
 	sys-libs/libcap
-	sys-libs/zlib
+	virtual/zlib:=
 	libh2o? (
 		app-arch/brotli
 		dev-libs/libuv

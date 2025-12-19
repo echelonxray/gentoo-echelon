@@ -3,9 +3,10 @@
 
 EAPI=8
 
+DISTUTILS_EXT=1
 DISTUTILS_SINGLE_IMPL=1
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..13} )
+PYTHON_COMPAT=( python3_{11..13} )
 PYTHON_REQ_USE="ncurses(+)"
 
 MY_COMMIT="a14256a3ff74eeee59493ac088561f1bafab85a7"
@@ -18,7 +19,7 @@ S="${WORKDIR}/${PN}-${MY_COMMIT::7}"
 
 LICENSE="GPL-2+"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 arm arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv ~sparc x86 ~amd64-linux ~x86-linux"
 
 RDEPEND="!sys-process/iotop-c"
 
@@ -27,6 +28,7 @@ CONFIG_CHECK="~TASK_IO_ACCOUNTING ~TASK_DELAY_ACCT ~TASKSTATS ~VM_EVENT_COUNTERS
 DOCS=( NEWS README THANKS )
 
 pkg_setup() {
+	linux-info_pkg_setup
 	python-single-r1_pkg_setup
 }
 

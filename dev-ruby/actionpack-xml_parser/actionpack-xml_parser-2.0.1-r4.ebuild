@@ -2,7 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-USE_RUBY="ruby31 ruby32 ruby33"
+
+USE_RUBY="ruby32 ruby33 ruby34"
 
 RUBY_FAKEGEM_GEMSPEC="actionpack-xml_parser.gemspec"
 
@@ -19,8 +20,8 @@ KEYWORDS="~amd64"
 IUSE="test"
 
 ruby_add_rdepend "
-	|| ( dev-ruby/actionpack:7.2 dev-ruby/actionpack:7.1 dev-ruby/actionpack:7.0 dev-ruby/actionpack:6.1 )
-	|| ( dev-ruby/railties:7.2 dev-ruby/railties:7.1 dev-ruby/railties:7.0 dev-ruby/railties:6.1 )
+	|| ( dev-ruby/actionpack:7.2 dev-ruby/actionpack:7.1 dev-ruby/actionpack:7.0 )
+	|| ( dev-ruby/railties:7.2 dev-ruby/railties:7.1 dev-ruby/railties:7.0 )
 "
 
 ruby_add_bdepend "test? ( =dev-ruby/railties-7* )"

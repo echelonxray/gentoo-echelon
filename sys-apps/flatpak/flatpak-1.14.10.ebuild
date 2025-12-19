@@ -12,7 +12,7 @@ SRC_URI="https://github.com/${PN}/${PN}/releases/download/${PV}/${P}.tar.xz"
 
 LICENSE="LGPL-2.1+"
 SLOT="0"
-KEYWORDS="amd64 ~arm arm64 ~loong ~ppc64 ~riscv x86"
+KEYWORDS="amd64 arm arm64 ~loong ~ppc64 ~riscv x86"
 IUSE="doc introspection policykit seccomp systemd X"
 RESTRICT="test"
 
@@ -56,7 +56,7 @@ BDEPEND="
 	dev-util/glib-utils
 	app-alternatives/yacc
 	$(python_gen_any_dep 'dev-python/pyparsing[${PYTHON_USEDEP}]')
-	introspection? ( >=dev-libs/gobject-introspection-1.40 )
+	introspection? ( >=dev-libs/gobject-introspection-1.82.0-r2 )
 	doc? (
 		app-text/xmlto
 		dev-libs/libxslt

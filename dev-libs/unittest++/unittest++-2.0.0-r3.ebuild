@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit cmake
+inherit cmake dot-a
 
 MY_PN="unittest-cpp"
 MY_P="${MY_PN}-${PV}"
@@ -15,7 +15,7 @@ S="${WORKDIR}/${MY_P}"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ppc ppc64 ~riscv ~s390 ~sparc x86"
 IUSE="test"
 RESTRICT="!test? ( test )"
 
@@ -37,6 +37,8 @@ src_prepare() {
 }
 
 src_configure() {
+	lto-guarantee-fat
+
 	local mycmakeargs=(
 		# Don't build with -Werror: https://bugs.gentoo.org/747583
 		-DUTPP_AMPLIFY_WARNINGS=OFF
@@ -47,4 +49,9 @@ src_configure() {
 
 src_test() {
 	"${BUILD_DIR}/TestUnitTest++" || die "Tests failed"
+}
+
+src_install() {
+	cmake_src_install
+	strip-lto-bytecode
 }

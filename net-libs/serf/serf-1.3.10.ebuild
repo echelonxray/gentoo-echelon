@@ -3,17 +3,18 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
-
+PYTHON_COMPAT=( python3_{11..13} )
 inherit flag-o-matic python-any-r1 scons-utils toolchain-funcs
 
 DESCRIPTION="HTTP client library"
 HOMEPAGE="https://serf.apache.org/"
-SRC_URI="mirror://apache/${PN}/${P}.tar.bz2"
+SRC_URI="
+	mirror://apache/${PN}/${P}.tar.bz2
+"
 
 LICENSE="Apache-2.0"
 SLOT="1"
-KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 ~sparc x86 ~amd64-linux ~x86-linux ~x64-macos ~x64-solaris"
 IUSE="kerberos"
 # Many test failures.
 RESTRICT="test"
@@ -21,13 +22,16 @@ RESTRICT="test"
 RDEPEND="
 	dev-libs/apr:1=
 	dev-libs/apr-util:1=
-	dev-libs/openssl:0=
-	sys-libs/zlib:0=
-	kerberos? ( virtual/krb5 )"
+	dev-libs/openssl:=
+	virtual/zlib:=
+	kerberos? ( virtual/krb5 )
+"
 DEPEND="${RDEPEND}"
-BDEPEND=">=dev-build/scons-2.3.0"
 
-PATCHES=( "${FILESDIR}"/${PN}-1.3.8-static-lib.patch )
+PATCHES=(
+	"${FILESDIR}"/${PN}-1.3.8-static-lib.patch
+	"${FILESDIR}"/${PN}-1.3.10-multilib-link-path.patch
+)
 
 src_prepare() {
 	default

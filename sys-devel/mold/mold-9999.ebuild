@@ -28,7 +28,7 @@ RDEPEND="
 	app-arch/zstd:=
 	>=dev-cpp/tbb-2021.7.0-r1:=
 	dev-libs/blake3:=
-	sys-libs/zlib
+	virtual/zlib:=
 	!kernel_Darwin? (
 		>=dev-libs/mimalloc-2:=
 	)
@@ -63,6 +63,11 @@ src_prepare() {
 
 	# Fails if binutils errors out on textrels by default
 	rm test/textrel.sh test/textrel2.sh || die
+
+	# Fails with (sometimes, maybe dependent on sys-devel/clang default
+	# linker):
+	# "/usr/bin/x86_64-pc-linux-gnu-ld.bfd: unrecognised emulation mode: llvm"
+	rm test/lto-llvm2.sh || die
 
 	# static-pie tests require glibc built with static-pie support
 	if ! has_version -d 'sys-libs/glibc[static-pie(+)]'; then

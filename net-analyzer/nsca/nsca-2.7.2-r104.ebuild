@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -9,7 +9,7 @@ SRC_URI="https://downloads.sourceforge.net/nagios/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~ppc ppc64 sparc x86"
+KEYWORDS="~alpha amd64 ~arm ~ppc ppc64 ~sparc x86"
 IUSE="tcpd +crypt minimal"
 
 DEPEND="crypt? ( >=dev-libs/libmcrypt-2.5.1-r4 )
@@ -27,7 +27,7 @@ RDEPEND="${DEPEND}
 			net-analyzer/nagios
 		)
 	)
-	|| ( sys-apps/openrc sys-apps/openrc-navi )"
+	sys-apps/openrc"
 
 src_configure() {
 	use tcpd || export ac_cv_lib_wrap_main=no

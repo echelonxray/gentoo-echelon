@@ -11,11 +11,11 @@ SRC_URI="https://download.joedog.org/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~mips ~ppc ~x86 ~x64-macos"
+KEYWORDS="amd64 ~arm ~arm64 ~hppa ~mips ppc x86 ~x64-macos"
 IUSE="ssl"
 
 RDEPEND="
-	sys-libs/zlib
+	virtual/zlib:=
 	ssl? ( dev-libs/openssl:0= )
 "
 DEPEND="${RDEPEND}"

@@ -18,7 +18,7 @@ SRC_URI+=" https://ftp.sendmail.org/past-releases/${PN}.${PV}.tar.gz"
 
 LICENSE="Sendmail GPL-2" # GPL-2 is here for initscript
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="~alpha amd64 arm ~hppa ~mips ppc ppc64 ~riscv ~s390 ~sparc x86"
 IUSE="+berkdb eai ipv6 ldap mbox nis sasl selinux sockets ssl tinycdb tcpd"
 REQUIRED_USE="|| ( berkdb tinycdb )"
 
@@ -66,7 +66,8 @@ PDEPEND="
 
 src_prepare() {
 	eapply "${FILESDIR}"/${PN}-8.16.1-build-system.patch
-	eapply "${FILESDIR}"/${PN}-8.18.1-ctime.patch
+	eapply "${FILESDIR}"/${PN}-8.18.1-c23-ctime.patch
+	eapply "${FILESDIR}"/${PN}-8.18.1-c23-sm_strtoll.patch
 	eapply -p0 "${FILESDIR}"/${PN}-delivered_hdr.patch
 	eapply_user
 

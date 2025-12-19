@@ -8,7 +8,7 @@ inherit toolchain-funcs
 DESCRIPTION="User-mode networking daemons for VMs and namespaces, replacement for Slirp"
 HOMEPAGE="https://passt.top/"
 
-RELEASE_COMMIT="32f6212"
+RELEASE_COMMIT="0293c6f"
 
 if [[ ${PV} == 9999* ]]; then
 	inherit git-r3

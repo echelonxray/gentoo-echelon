@@ -36,14 +36,19 @@ LICENSE+="
 "
 
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="amd64 ~arm64"
 
-# many failures (WIP)
+# Currently suffers from (at least):
+# - problems with crate tarball
+# - hardcoded/hand-rolled multilib assumptions
+# - possibly sandbox
 RESTRICT="test"
 
 BDEPEND="
 	dev-util/cargo-c
 "
+
+QA_FLAGS_IGNORED="usr/lib64/libblazesym_c.so.${PV}"
 
 src_prepare() {
 	default

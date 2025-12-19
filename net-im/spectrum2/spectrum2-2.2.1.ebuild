@@ -12,7 +12,7 @@ SRC_URI="https://github.com/SpectrumIM/spectrum2/archive/${PV}.tar.gz -> ${P}.ta
 LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="amd64"
-IUSE="doc frotz irc mysql postgres purple sms +sqlite test twitter whatsapp xmpp"
+IUSE="doc frotz irc mysql postgres purple sms +sqlite test twitter xmpp"
 REQUIRED_USE="
 	|| ( mysql postgres sqlite )
 	test? ( irc )
@@ -33,7 +33,7 @@ RDEPEND="
 	net-dns/libidn:=
 	>=net-im/swift-4.0.2-r2:=
 	net-misc/curl
-	sys-libs/zlib:=
+	virtual/zlib:=
 	frotz? ( !games-engines/frotz )
 	irc? ( net-im/libcommuni )
 	mysql? (
@@ -49,8 +49,7 @@ RDEPEND="
 	)
 	sms? ( app-mobilephone/smstools )
 	sqlite? ( dev-db/sqlite:3 )
-	twitter? ( net-misc/curl )
-	whatsapp? ( net-im/transwhat )"
+	twitter? ( net-misc/curl )"
 
 DEPEND="
 	${RDEPEND}
@@ -60,7 +59,7 @@ DEPEND="
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-2.2.1-boost-1.85.patch
-	"${FILESDIR}"/${PN}-2.2.1-use-c++14.patch
+	"${FILESDIR}"/${PN}-2.2.1-use-c++17.patch
 )
 
 src_prepare() {

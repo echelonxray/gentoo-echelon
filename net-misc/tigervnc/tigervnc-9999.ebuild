@@ -6,12 +6,12 @@ EAPI=8
 CMAKE_IN_SOURCE_BUILD=1
 inherit autotools cmake eapi9-ver flag-o-matic java-pkg-opt-2 optfeature systemd xdg
 
-XSERVER_VERSION="21.1.14"
+XSERVER_VERSION="21.1.20"
 XSERVER_PATCH_VERSION="21"
 
 DESCRIPTION="Remote desktop viewer display system"
 HOMEPAGE="https://tigervnc.org"
-SRC_URI="server? ( ftp://ftp.freedesktop.org/pub/xorg/individual/xserver/xorg-server-${XSERVER_VERSION}.tar.xz )"
+SRC_URI="server? ( https://www.x.org/releases/individual/xserver/xorg-server-${XSERVER_VERSION}.tar.xz )"
 
 if [[ ${PV} == *9999 ]]; then
 	inherit git-r3
@@ -23,20 +23,22 @@ fi
 
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="dri3 +drm gnutls java nls +opengl +server +viewer xinerama"
+IUSE="dri3 +drm gnutls java nls +opengl pwquality +server test +viewer wayland xinerama"
 REQUIRED_USE="
 	dri3? ( drm )
 	java? ( viewer )
 	opengl? ( server )
 	|| ( server viewer )
 "
+RESTRICT="!test? ( test )"
 
 # TODO: sys-libs/libselinux
+# <fltk-1.4: https://github.com/TigerVNC/tigervnc/pull/1887#issuecomment-2545662546
 COMMON_DEPEND="
 	dev-libs/gmp:=
 	dev-libs/nettle:=
 	media-libs/libjpeg-turbo:=
-	sys-libs/zlib:=
+	virtual/zlib
 	x11-libs/libX11
 	x11-libs/libXext
 	x11-libs/libXrandr
@@ -64,11 +66,20 @@ COMMON_DEPEND="
 			x11-libs/libxshmfence
 		)
 		opengl? ( media-libs/libglvnd[X] )
+		pwquality? ( dev-libs/libpwquality )
+		wayland? (
+			dev-libs/glib:2
+			dev-libs/wayland
+			dev-util/wayland-scanner
+			media-video/pipewire:=
+			sys-apps/util-linux
+			x11-libs/libxkbcommon
+		)
 		!net-misc/turbovnc[server]
 	)
 	viewer? (
 		media-video/ffmpeg:=
-		x11-libs/fltk:1=
+		<x11-libs/fltk-1.4:1=
 		x11-libs/libXi
 		x11-libs/libXrender
 		!net-misc/turbovnc[viewer]
@@ -95,13 +106,14 @@ DEPEND="${COMMON_DEPEND}
 BDEPEND="
 	virtual/pkgconfig
 	nls? ( sys-devel/gettext )
+	test? ( dev-cpp/gtest )
 "
 
 PATCHES=(
 	# Restore Java viewer
 	"${FILESDIR}"/${PN}-1.11.0-install-java-viewer.patch
 	"${FILESDIR}"/${PN}-1.14.0-xsession-path.patch
-	"${FILESDIR}"/${PN}-1.12.80-disable-server-and-pam.patch
+	"${FILESDIR}"/${PN}-1.15.90-r2-disable-server-and-pam.patch
 	"${FILESDIR}"/${PN}-1.14.1-pam.patch
 )
 
@@ -135,6 +147,11 @@ src_prepare() {
 }
 
 src_configure() {
+	if ! use server; then
+		use wayland && ewarn "USE=wayland is ignored when USE=server is not set"
+		use pwquality && ewarn "USE=pwquality is ignored when USE=server is not set"
+	fi
+
 	if use arm || use hppa; then
 		append-flags "-fPIC"
 	fi
@@ -142,6 +159,8 @@ src_configure() {
 	local mycmakeargs=(
 		-DENABLE_GNUTLS=$(usex gnutls)
 		-DENABLE_NLS=$(usex nls)
+		-DENABLE_WAYLAND=$(usex wayland)
+		-DENABLE_PWQUALITY=$(usex pwquality)
 		-DBUILD_JAVA=$(usex java)
 		-DBUILD_SERVER=$(usex server)
 		-DBUILD_VIEWER=$(usex viewer)
@@ -193,6 +212,10 @@ src_compile() {
 			emake -C unix/xserver/"${d}"
 		done
 	fi
+}
+
+src_test() {
+	ctest --test-dir tests/unit/
 }
 
 src_install() {

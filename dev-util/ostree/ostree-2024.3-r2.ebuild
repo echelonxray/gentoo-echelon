@@ -15,7 +15,7 @@ S="${WORKDIR}/lib${P}"
 
 LICENSE="LGPL-2+"
 SLOT="0"
-KEYWORDS="amd64 ~arm arm64 ~loong ~ppc64 ~riscv x86"
+KEYWORDS="amd64 arm arm64 ~loong ~ppc64 ~riscv x86"
 IUSE="archive +curl doc dracut gnutls +gpg grub +http2 introspection libmount selinux sodium ssl +soup systemd zeroconf"
 RESTRICT="test"
 REQUIRED_USE="
@@ -27,7 +27,7 @@ RDEPEND="
 	app-arch/xz-utils
 	dev-libs/glib:2
 	sys-fs/fuse:3=
-	sys-libs/zlib
+	virtual/zlib:=
 	archive? ( app-arch/libarchive:= )
 	curl? ( net-misc/curl )
 	dracut? ( sys-kernel/dracut )
@@ -36,7 +36,7 @@ RDEPEND="
 		dev-libs/libgpg-error
 	)
 	grub? ( sys-boot/grub:2= )
-	introspection? ( dev-libs/gobject-introspection )
+	introspection? ( >=dev-libs/gobject-introspection-1.82.0-r2 )
 	libmount? ( sys-apps/util-linux )
 	selinux? ( sys-libs/libselinux )
 	sodium? ( >=dev-libs/libsodium-1.0.14:= )
@@ -112,6 +112,7 @@ src_configure() {
 
 src_install() {
 	default
+	dotmpfiles src/boot/ostree-tmpfiles.conf #901797
 	find "${D}" -name '*.la' -delete || die
 }
 

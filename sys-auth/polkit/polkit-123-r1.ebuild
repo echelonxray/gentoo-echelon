@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..11} )
+PYTHON_COMPAT=( python3_11 )
 inherit meson pam pax-utils python-any-r1 systemd xdg-utils
 
 DESCRIPTION="Policy framework for controlling privileges for system-wide services"
@@ -22,8 +22,8 @@ fi
 
 LICENSE="LGPL-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86"
-IUSE="+daemon examples gtk +introspection kde pam selinux systemd test"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv ~s390 ~sparc x86"
+IUSE="examples gtk +introspection kde pam selinux systemd test"
 # https://gitlab.freedesktop.org/polkit/polkit/-/issues/181 for test restriction
 RESTRICT="!test? ( test ) test"
 
@@ -46,7 +46,7 @@ BDEPEND="
 	dev-util/glib-utils
 	sys-devel/gettext
 	virtual/pkgconfig
-	introspection? ( >=dev-libs/gobject-introspection-0.6.2 )
+	introspection? ( >=dev-libs/gobject-introspection-1.82.0-r2 )
 	test? (
 		$(python_gen_any_dep '
 			dev-python/dbus-python[${PYTHON_USEDEP}]
@@ -57,7 +57,7 @@ BDEPEND="
 DEPEND="
 	>=dev-libs/glib-2.32:2
 	dev-libs/expat
-	daemon? ( dev-lang/duktape:= )
+	dev-lang/duktape:=
 	pam? (
 		sys-auth/pambase
 		sys-libs/pam
@@ -120,7 +120,7 @@ src_configure() {
 		-Dsession_tracking="$(usex systemd libsystemd-login libelogind)"
 		-Dsystemdsystemunitdir="$(systemd_get_systemunitdir)"
 		-Djs_engine=duktape
-		$(meson_use !daemon libs-only)
+		-Dlibs-only=false
 		$(meson_use introspection)
 		$(meson_use test tests)
 		$(usex pam "-Dpam_module_dir=$(getpam_mod_dir)" '')
@@ -143,16 +143,14 @@ src_install() {
 		dodoc src/examples/{*.c,*.policy*}
 	fi
 
-	if use daemon; then
-		if [[ ${EUID} == 0 ]]; then
-			diropts -m 0700 -o polkitd
-		fi
-		keepdir /etc/polkit-1/rules.d
+	if [[ ${EUID} == 0 ]]; then
+		diropts -m 0700 -o polkitd
 	fi
+	keepdir /etc/polkit-1/rules.d
 }
 
 pkg_postinst() {
-	if use daemon && [[ ${EUID} == 0 ]]; then
+	if [[ ${EUID} == 0 ]]; then
 		chmod 0700 "${EROOT}"/{etc,usr/share}/polkit-1/rules.d
 		chown polkitd "${EROOT}"/{etc,usr/share}/polkit-1/rules.d
 	fi

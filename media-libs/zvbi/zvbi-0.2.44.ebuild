@@ -11,7 +11,7 @@ SRC_URI="https://github.com/zapping-vbi/zvbi/archive/v${PV}.tar.gz -> ${P}.tar.g
 
 LICENSE="GPL-2+ LGPL-2+ LGPL-2.1+ MIT"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv ~sparc x86"
 IUSE="doc dvb nls proxy test v4l X"
 RESTRICT="!test? ( test )"
 
@@ -28,6 +28,12 @@ BDEPEND="
 	doc? ( app-text/doxygen )
 	nls? ( sys-devel/gettext )
 "
+
+PATCHES=(
+	# fix typo/c23
+	# https://github.com/zapping-vbi/zvbi/pull/59.patch
+	"${FILESDIR}"/${P}-fix_typo.patch
+)
 
 src_prepare() {
 	default
@@ -50,7 +56,7 @@ multilib_src_install() {
 
 	if multilib_is_native_abi; then
 		if use doc; then
-			local HTML_DOCS=( doc/html/*.{css,gif,html,js,png,svg} )
+			local HTML_DOCS=( doc/html/. )
 			einstalldocs
 		fi
 	fi

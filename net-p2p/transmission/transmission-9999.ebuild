@@ -1,8 +1,9 @@
-# Copyright 2006-2024 Gentoo Authors
+# Copyright 2006-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
+CMAKE_REMOVE_MODULES_LIST=( FindMbedTLS )
 inherit cmake flag-o-matic tmpfiles systemd xdg-utils
 
 if [[ ${PV} == 9999 ]]; then
@@ -42,12 +43,12 @@ COMMON_DEPEND="
 	app-arch/libdeflate:=[gzip(+)]
 	>=dev-libs/libevent-2.1.0:=[threads(+)]
 	!mbedtls? ( dev-libs/openssl:0= )
-	mbedtls? ( net-libs/mbedtls:0= )
+	mbedtls? ( net-libs/mbedtls:3= )
 	net-libs/libnatpmp
 	>=net-libs/libpsl-0.21.1
 	>=net-libs/miniupnpc-1.7:=
 	>=net-misc/curl-7.28.0[ssl]
-	sys-libs/zlib:=
+	virtual/zlib:=
 	nls? ( virtual/libintl )
 	gtk? (
 		>=dev-cpp/gtkmm-4.11.1:4.0
@@ -120,8 +121,6 @@ src_install() {
 	newconfd "${FILESDIR}"/transmission-daemon.confd.4 transmission-daemon
 
 	if use systemd; then
-		# Service sets Type=notify
-		systemd_dounit daemon/transmission-daemon.service
 		systemd_install_serviced "${FILESDIR}"/transmission-daemon.service.conf
 	fi
 

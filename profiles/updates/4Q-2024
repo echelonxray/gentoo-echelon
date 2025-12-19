@@ -11,7 +11,6 @@ move dev-python/rpy dev-python/rpy2
 move dev-python/qscintilla-python dev-python/qscintilla
 move dev-python/python-netlink dev-python/netlink
 move dev-python/python-lhafile dev-python/lhafile
-move dev-python/pysvg dev-python/pysvg-py3
 move dev-python/libpillowfight dev-python/pypillowfight
 move dev-python/cchardet dev-python/faust-cchardet
 move dev-python/protobuf-python dev-python/protobuf
@@ -20,7 +19,6 @@ move net-analyzer/RustScan net-analyzer/rustscan
 move dev-python/APScheduler dev-python/apscheduler
 move dev-python/Arpeggio dev-python/arpeggio
 move dev-python/Babel dev-python/babel
-move dev-python/BitVector dev-python/bitvector
 move dev-python/ConfigArgParse dev-python/configargparse
 move dev-python/CppHeaderParser dev-python/cppheaderparser
 move dev-python/Events dev-python/events
@@ -35,7 +33,6 @@ move dev-python/IPy dev-python/ipy
 move dev-python/jinja2_pluralize dev-python/jinja2-pluralize
 move dev-python/Levenshtein dev-python/levenshtein
 move dev-python/MechanicalSoup dev-python/mechanicalsoup
-move dev-python/mitmproxy_wireguard dev-python/mitmproxy-wireguard
 move dev-python/mypy_extensions dev-python/mypy-extensions
 move dev-python/Nuitka dev-python/nuitka
 move dev-python/Opcodes dev-python/opcodes
@@ -57,7 +54,6 @@ move dev-python/QtPy dev-python/qtpy
 move dev-python/PyQt-builder dev-python/pyqt-builder
 move dev-python/PyQt6-WebEngine dev-python/pyqt6-webengine
 move dev-python/PyQt6-sip dev-python/pyqt6-sip
-move dev-python/PyQtWebEngine dev-python/pyqtwebengine
 move dev-python/PyQt5-sip dev-python/pyqt5-sip
 move dev-python/PyQt5 dev-python/pyqt5
 move dev-python/PyQt6 dev-python/pyqt6
@@ -69,7 +65,7 @@ move sys-libs/libcxxabi llvm-runtimes/libcxxabi
 move sys-libs/libcxx llvm-runtimes/libcxx
 move sys-libs/compiler-rt-sanitizers llvm-runtimes/compiler-rt-sanitizers
 move sys-libs/compiler-rt llvm-runtimes/compiler-rt
-move sys-devel/clang-runtime llvm-core/clang-runtime
+move sys-devel/clang-runtime llvm-runtimes/clang-runtime
 move sys-devel/clang-toolchain-symlinks llvm-core/clang-toolchain-symlinks
 move sys-devel/clang-common llvm-core/clang-common
 move sys-devel/clang llvm-core/clang

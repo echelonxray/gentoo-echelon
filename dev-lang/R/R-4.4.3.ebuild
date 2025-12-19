@@ -37,7 +37,7 @@ DEPEND="
 	dev-libs/libpcre2:=
 	>=dev-libs/tre-0.8.0_p20210321[approx]
 	net-misc/curl
-	sys-libs/zlib[minizip]
+	virtual/minizip:=
 	sys-apps/coreutils
 	sys-libs/timezone-data
 	virtual/blas
@@ -141,6 +141,15 @@ src_configure() {
 	append-cflags -std=gnu17
 
 	filter-ldflags -Wl,-Bdirect -Bdirect
+
+	# Avoid automagically finding (incomplete) TL components if
+	# USE=-doc where not all required files may be available.
+	if ! use doc ; then
+		export ac_cv_path_PDFTEX=
+		export ac_cv_path_PDFLATEX=
+		export ac_cv_path_MAKEINDEX=
+		export ac_cv_path_KPSEWHICH=
+	fi
 
 	econf \
 		--enable-byte-compiled-packages \

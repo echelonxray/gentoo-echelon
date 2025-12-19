@@ -27,7 +27,7 @@ else
 			$(rust_arch_uri powerpc64le-unknown-linux-musl rust-${PV})
 		) ) )
 	"
-	KEYWORDS="~amd64 ~arm ~arm64 ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+	KEYWORDS="amd64 arm arm64 ~loong ~mips ppc ppc64 ~riscv ~s390 ~sparc x86"
 fi
 
 DESCRIPTION="Systems programming language from Mozilla"
@@ -70,6 +70,7 @@ RDEPEND="
 	)
 	!dev-lang/rust:stable
 	!dev-lang/rust-bin:stable
+	!dev-lang/rust-bin:1.86
 "
 BDEPEND="
 	prefix? ( dev-util/patchelf )
@@ -204,8 +205,8 @@ rust_native_abi_install() {
 
 	if use prefix; then
 		local interpreter=$(patchelf --print-interpreter "${EPREFIX}"/bin/bash)
-		ebegin "Changing interpreter to ${interpreter} for Gentoo prefix at ${ED}/opt/${SLOT}/bin"
-		find "${ED}/opt/${SLOT}/bin" -type f -print0 | \
+		ebegin "Changing interpreter to ${interpreter} for Gentoo prefix at ${ED}/opt/rust-bin-${SLOT}/bin"
+		find "${ED}/opt/rust-bin-${SLOT}/bin" -type f -print0 | \
 			while IFS=  read -r -d '' filename; do
 				patchelf_for_bin ${filename} ${interpreter} \; || die
 			done

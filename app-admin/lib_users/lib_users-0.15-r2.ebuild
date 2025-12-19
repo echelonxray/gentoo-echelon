@@ -8,12 +8,12 @@ PYTHON_COMPAT=( python3_{10..13} )
 inherit python-r1
 
 DESCRIPTION="Check for mapped libs and open files that are marked as deleted"
-HOMEPAGE="https://github.com/klausman/lib_users"
-SRC_URI="https://github.com/klausman/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
+HOMEPAGE="https://codeberg.org/klausman/lib_users"
+SRC_URI="https://codeberg.org/klausman/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ppc ~ppc64 ~sparc ~x86"
+KEYWORDS="~alpha amd64 ~arm arm64 ~hppa ppc ppc64 ~sparc x86"
 IUSE="test"
 RESTRICT="!test? ( test )"
 
